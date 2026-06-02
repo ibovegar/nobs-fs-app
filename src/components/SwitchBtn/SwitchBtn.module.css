@@ -1,0 +1,42 @@
+/* card shell lives in PanelCard — only switch-specific styles here */
+
+.label {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--text-mid);
+}
+
+.indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid var(--text-dim);
+  background: transparent;
+  transition: background 0.1s, border-color 0.1s, box-shadow 0.1s;
+}
+
+.indicatorOn {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+.state {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+}
+
+.stateOn {
+  color: var(--accent);
+}
+
+.count {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
+}

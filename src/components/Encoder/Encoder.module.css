@@ -1,0 +1,83 @@
+/* card shell lives in PanelCard — only encoder-specific styles here */
+
+.label {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--text-bright);
+}
+
+.body {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.arrow {
+  font-size: 16px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  color: var(--text-dim);
+  border: 1px solid transparent;
+}
+
+.arrowCw.arrowLive {
+  color: var(--accent);
+  background: var(--accent-dim);
+  border-color: var(--accent-dim);
+  text-shadow: 0 0 10px var(--accent-glow);
+}
+
+.arrowCcw.arrowLive {
+  color: var(--danger);
+  background: var(--danger-dim);
+  border-color: var(--danger-dim);
+  text-shadow: 0 0 10px var(--danger-glow);
+}
+
+.arrowCw.arrowPulsed  { animation: cwPulse  0.65s ease-out forwards; }
+.arrowCcw.arrowPulsed { animation: ccwPulse 0.65s ease-out forwards; }
+
+@keyframes cwPulse {
+  0%   { color: var(--accent); background: var(--accent-dim); border-color: var(--accent-dim); text-shadow: 0 0 14px var(--accent-glow); }
+  100% { color: var(--text-dim); background: transparent; border-color: transparent; text-shadow: none; }
+}
+
+@keyframes ccwPulse {
+  0%   { color: var(--danger); background: var(--danger-dim); border-color: var(--danger-dim); text-shadow: 0 0 14px var(--danger-glow); }
+  100% { color: var(--text-dim); background: transparent; border-color: transparent; text-shadow: none; }
+}
+
+.counts {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 52px;
+  justify-content: center;
+}
+
+.countCcw { color: var(--danger); }
+.countCw  { color: var(--accent); }
+.sep      { color: var(--text-dim); }
+
+.net {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
+  line-height: 1;
+  min-height: 22px;
+}
+
+.netActive {
+  color: var(--accent);
+  text-shadow: 0 0 10px var(--accent-glow);
+}
