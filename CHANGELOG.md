@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   identification, and two-way communication options.
 - `CLAUDE.md` — project conventions and structure for AI-assisted development.
 - Biome (`biome.json`) for linting and formatting; `format` script (`biome check --write .`).
+- `.gitattributes` enforcing LF line endings repo-wide for consistent Windows/Linux development.
 
 ### Changed
 - `useGamepad` now returns a single `ButtonState[]` (`{ pressed, lastPress, count }`)
