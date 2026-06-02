@@ -21,6 +21,8 @@ fresh `[Unreleased]` above it.
 - React 19, Vite 8, TypeScript 6, pnpm
 - CSS Modules for all component styles
 - No UI library
+- Biome for lint + format (`pnpm lint` to check, `pnpm format` to auto-fix). Style: single
+  quotes, no semicolons, 2-space indent, 100 col — enforced by `biome.json`.
 
 ## Conventions
 

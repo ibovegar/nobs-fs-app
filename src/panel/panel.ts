@@ -34,9 +34,7 @@ export function decodeButton(id: number): DecodedButton {
 }
 
 // ── Physical front-panel layout — 6 columns × 2 rows ─────────────────────────
-export type PanelCell =
-  | { kind: 'switch'; index: number }
-  | { kind: 'encoder'; index: number }
+export type PanelCell = { kind: 'switch'; index: number } | { kind: 'encoder'; index: number }
 
 export const PANEL_LAYOUT: PanelCell[] = [
   // Row 1: all switches
@@ -49,8 +47,8 @@ export const PANEL_LAYOUT: PanelCell[] = [
   // Row 2: enc · enc · sw · enc · enc · sw
   { kind: 'encoder', index: 0 },
   { kind: 'encoder', index: 1 },
-  { kind: 'switch',  index: 6 },
+  { kind: 'switch', index: 6 },
   { kind: 'encoder', index: 2 },
   { kind: 'encoder', index: 3 },
-  { kind: 'switch',  index: 7 },
+  { kind: 'switch', index: 7 },
 ]

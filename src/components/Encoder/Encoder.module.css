@@ -1,7 +1,7 @@
 /* card shell lives in PanelCard — only encoder-specific styles here */
 
 .label {
-  font-family: 'Consolas', 'Courier New', monospace;
+  font-family: "Consolas", "Courier New", monospace;
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.16em;
@@ -40,21 +40,45 @@
   text-shadow: 0 0 10px var(--danger-glow);
 }
 
-.arrowCw.arrowPulsed  { animation: cwPulse  0.65s ease-out forwards; }
-.arrowCcw.arrowPulsed { animation: ccwPulse 0.65s ease-out forwards; }
+.arrowCw.arrowPulsed {
+  animation: cwPulse 0.65s ease-out forwards;
+}
+.arrowCcw.arrowPulsed {
+  animation: ccwPulse 0.65s ease-out forwards;
+}
 
 @keyframes cwPulse {
-  0%   { color: var(--accent); background: var(--accent-dim); border-color: var(--accent-dim); text-shadow: 0 0 14px var(--accent-glow); }
-  100% { color: var(--text-dim); background: transparent; border-color: transparent; text-shadow: none; }
+  0% {
+    color: var(--accent);
+    background: var(--accent-dim);
+    border-color: var(--accent-dim);
+    text-shadow: 0 0 14px var(--accent-glow);
+  }
+  100% {
+    color: var(--text-dim);
+    background: transparent;
+    border-color: transparent;
+    text-shadow: none;
+  }
 }
 
 @keyframes ccwPulse {
-  0%   { color: var(--danger); background: var(--danger-dim); border-color: var(--danger-dim); text-shadow: 0 0 14px var(--danger-glow); }
-  100% { color: var(--text-dim); background: transparent; border-color: transparent; text-shadow: none; }
+  0% {
+    color: var(--danger);
+    background: var(--danger-dim);
+    border-color: var(--danger-dim);
+    text-shadow: 0 0 14px var(--danger-glow);
+  }
+  100% {
+    color: var(--text-dim);
+    background: transparent;
+    border-color: transparent;
+    text-shadow: none;
+  }
 }
 
 .counts {
-  font-family: 'Consolas', 'Courier New', monospace;
+  font-family: "Consolas", "Courier New", monospace;
   font-size: 11px;
   display: flex;
   align-items: center;
@@ -63,12 +87,18 @@
   justify-content: center;
 }
 
-.countCcw { color: var(--danger); }
-.countCw  { color: var(--accent); }
-.sep      { color: var(--text-dim); }
+.countCcw {
+  color: var(--danger);
+}
+.countCw {
+  color: var(--accent);
+}
+.sep {
+  color: var(--text-dim);
+}
 
 .net {
-  font-family: 'Consolas', 'Courier New', monospace;
+  font-family: "Consolas", "Courier New", monospace;
   font-size: 18px;
   font-weight: 700;
   color: var(--text-dim);

@@ -1,6 +1,6 @@
-export { palette } from './palette'
-export type { Palette } from './palette'
 export { cssVars, injectThemeCssVars } from './cssVars'
+export type { Palette } from './palette'
+export { palette } from './palette'
 
 import { palette } from './palette'
 

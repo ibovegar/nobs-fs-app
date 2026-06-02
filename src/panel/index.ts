@@ -1,11 +1,11 @@
+export type { ButtonState, DecodedButton, PanelCell } from './panel'
 export {
-  NUM_SWITCHES,
-  NUM_ENCODERS,
   BUTTON_COUNT,
-  ENCODER_LABELS,
-  cwButton,
   ccwButton,
+  cwButton,
   decodeButton,
+  ENCODER_LABELS,
+  NUM_ENCODERS,
+  NUM_SWITCHES,
   PANEL_LAYOUT,
 } from './panel'
-export type { ButtonState, DecodedButton, PanelCell } from './panel'

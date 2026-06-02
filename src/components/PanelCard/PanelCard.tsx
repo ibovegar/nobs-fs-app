@@ -7,9 +7,5 @@ interface Props {
 }
 
 export function PanelCard({ active = false, children }: Props) {
-  return (
-    <div className={`${styles.card}${active ? ` ${styles.active}` : ''}`}>
-      {children}
-    </div>
-  )
+  return <div className={`${styles.card}${active ? ` ${styles.active}` : ''}`}>{children}</div>
 }

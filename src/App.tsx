@@ -1,7 +1,7 @@
-import { useState, useCallback, useRef } from 'react'
-import { useGamepad, type GamepadEvent } from '~/hooks'
-import { Header, Section, PanelGrid, EventLog } from '~/components'
+import { useCallback, useRef, useState } from 'react'
 import type { LogEntry } from '~/components'
+import { EventLog, Header, PanelGrid, Section } from '~/components'
+import { type GamepadEvent, useGamepad } from '~/hooks'
 import { decodeButton, ENCODER_LABELS } from '~/panel'
 import styles from './App.module.css'
 
@@ -12,25 +12,28 @@ export default function App() {
   const seq = useRef(0)
 
   const addLog = useCallback((entry: Omit<LogEntry, 'key'>) => {
-    setLog(prev => [{ ...entry, key: seq.current++ }, ...prev].slice(0, MAX_LOG))
+    setLog((prev) => [{ ...entry, key: seq.current++ }, ...prev].slice(0, MAX_LOG))
   }, [])
 
-  const handleEvent = useCallback((ev: GamepadEvent) => {
-    const control = decodeButton(ev.id)
-    if (control.kind === 'switch') {
-      addLog({
-        ts: ev.time,
-        text: `SW ${control.index + 1}    ${ev.type === 'press' ? 'PRESSED' : 'RELEASED'}`,
-        kind: ev.type,
-      })
-    } else if (ev.type === 'press') {
-      addLog({
-        ts: ev.time,
-        text: `${ENCODER_LABELS[control.index]}    ${control.dir === 'cw' ? '▶  CW' : '◀  CCW'}`,
-        kind: control.dir,
-      })
-    }
-  }, [addLog])
+  const handleEvent = useCallback(
+    (ev: GamepadEvent) => {
+      const control = decodeButton(ev.id)
+      if (control.kind === 'switch') {
+        addLog({
+          ts: ev.time,
+          text: `SW ${control.index + 1}    ${ev.type === 'press' ? 'PRESSED' : 'RELEASED'}`,
+          kind: ev.type,
+        })
+      } else if (ev.type === 'press') {
+        addLog({
+          ts: ev.time,
+          text: `${ENCODER_LABELS[control.index]}    ${control.dir === 'cw' ? '▶  CW' : '◀  CCW'}`,
+          kind: control.dir,
+        })
+      }
+    },
+    [addLog],
+  )
 
   const gp = useGamepad(handleEvent)
 

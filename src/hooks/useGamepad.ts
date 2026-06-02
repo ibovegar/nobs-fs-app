@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { BUTTON_COUNT, type ButtonState } from '~/panel'
 
 export interface GamepadEvent {
@@ -32,7 +32,7 @@ export function useGamepad(onEvent: (ev: GamepadEvent) => void): GamepadState {
 
       if (gp) {
         const now = Date.now()
-        setState(prev => {
+        setState((prev) => {
           let changed = !prev.isConnected
 
           const buttons = prev.buttons.map((b, i) => {
@@ -51,11 +51,11 @@ export function useGamepad(onEvent: (ev: GamepadEvent) => void): GamepadState {
           return changed ? { isConnected: true, buttons } : prev
         })
       } else {
-        setState(prev => {
+        setState((prev) => {
           if (!prev.isConnected) return prev
           return {
             isConnected: false,
-            buttons: prev.buttons.map(b => (b.pressed ? { ...b, pressed: false } : b)),
+            buttons: prev.buttons.map((b) => (b.pressed ? { ...b, pressed: false } : b)),
           }
         })
       }

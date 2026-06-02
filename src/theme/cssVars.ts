@@ -10,36 +10,36 @@ const hex2rgba = (hex: string, alpha: number) => {
 
 export const cssVars: Record<string, string> = {
   /* Backgrounds */
-  '--bg':         p.background.default,
-  '--bg-panel':   p.grey[100],
-  '--bg-card':    p.grey[200],
+  '--bg': p.background.default,
+  '--bg-panel': p.grey[100],
+  '--bg-card': p.grey[200],
   '--bg-card-hi': p.action.selected,
 
   /* Borders */
-  '--border':     p.grey[400],
+  '--border': p.grey[400],
   '--border-mid': p.grey[500],
 
   /* Text scale */
-  '--text-dim':    p.grey.A100,
-  '--text-mid':    p.grey.A400,
-  '--text':        p.grey.A700,
+  '--text-dim': p.grey.A100,
+  '--text-mid': p.grey.A400,
+  '--text': p.grey.A700,
   '--text-bright': p.common.white,
 
   /* Primary — sapphire (CW direction / accent) */
-  '--accent':      p.primary.light,
+  '--accent': p.primary.light,
   '--accent-main': p.primary.main,
   '--accent-dark': p.primary.dark,
-  '--accent-dim':  hex2rgba(p.primary.main, 0.14),
+  '--accent-dim': hex2rgba(p.primary.main, 0.14),
   '--accent-glow': hex2rgba(p.primary.light, 0.5),
 
   /* Secondary — red (CCW direction / danger) */
-  '--danger':      p.secondary.light,
+  '--danger': p.secondary.light,
   '--danger-main': p.secondary.main,
-  '--danger-dim':  hex2rgba(p.secondary.main, 0.14),
+  '--danger-dim': hex2rgba(p.secondary.main, 0.14),
   '--danger-glow': hex2rgba(p.secondary.light, 0.5),
 
   /* Status */
-  '--green':     p.status.success,
+  '--green': p.status.success,
   '--green-dim': p.status.successDim,
 }
 

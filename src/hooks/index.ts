@@ -1,2 +1,2 @@
-export { useGamepad } from './useGamepad'
 export type { GamepadEvent, GamepadState } from './useGamepad'
+export { useGamepad } from './useGamepad'

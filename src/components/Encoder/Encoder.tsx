@@ -18,7 +18,9 @@ export function Encoder({ label, cw, ccw }: Props) {
         <div
           key={`ccw-${ccw.lastPress}`}
           className={`${styles.arrow} ${styles.arrowCcw}${ccw.pressed ? ` ${styles.arrowLive}` : ''}${ccw.lastPress > 0 ? ` ${styles.arrowPulsed}` : ''}`}
-        >◀</div>
+        >
+          ◀
+        </div>
 
         <div className={styles.counts}>
           <span className={styles.countCcw}>{ccw.count}</span>
@@ -29,7 +31,9 @@ export function Encoder({ label, cw, ccw }: Props) {
         <div
           key={`cw-${cw.lastPress}`}
           className={`${styles.arrow} ${styles.arrowCw}${cw.pressed ? ` ${styles.arrowLive}` : ''}${cw.lastPress > 0 ? ` ${styles.arrowPulsed}` : ''}`}
-        >▶</div>
+        >
+          ▶
+        </div>
       </div>
 
       <div className={`${styles.net}${net !== 0 ? ` ${styles.netActive}` : ''}`}>
