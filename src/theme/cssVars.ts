@@ -1,4 +1,5 @@
 import { palette as p } from './palette'
+import { spacing } from './spacing'
 
 // Derive rgba helpers from hex for glow/dim variants
 const hex2rgba = (hex: string, alpha: number) => {
@@ -11,12 +12,12 @@ const hex2rgba = (hex: string, alpha: number) => {
 export const cssVars: Record<string, string> = {
   /* Backgrounds */
   '--bg': p.background.default,
-  '--bg-panel': p.grey[100],
-  '--bg-card': p.grey[200],
+  '--bg-panel': p.background.paper,
+  '--bg-card': p.background.paper,
   '--bg-card-hi': p.action.selected,
 
   /* Borders */
-  '--border': p.grey[400],
+  '--border': p.background.default,
   '--border-mid': p.grey[500],
 
   /* Text scale */
@@ -41,6 +42,9 @@ export const cssVars: Record<string, string> = {
   /* Status */
   '--green': p.status.success,
   '--green-dim': p.status.successDim,
+
+  /* Spacing — 4px base scale */
+  ...Object.fromEntries(Object.entries(spacing).map(([k, v]) => [`--sp-${k}`, v])),
 }
 
 export function injectThemeCssVars() {

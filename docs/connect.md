@@ -35,32 +35,32 @@ navigator.getGamepads()
 
 Each entry shows its full `id`. Find the one that belongs to the ESP32.
 
-### Step 2 — set a stable VID/PID in firmware
+### Step 2 — VID/PID (Arduino Micro defaults)
 
-The default VID/PID may clash with other ESP32 projects. Set a custom identity in the firmware **before** `USB.begin()`:
+The firmware sets a custom identity via `build.opt`:
 
-```cpp
-USB.productName("NOBSFS Autopilot");
-USB.manufacturerName("NobsFS");
-USB.PID(0xA001);  // any value not already taken
-USB.begin();
+```
+vid=0x2341
+pid=0x0657
 ```
 
-Flash this once and the device will always announce itself with this name and PID.
+The browser will see the device as: `"... (Vendor: 2341 Product: 0657)"`.
 
-### Step 3 — filter by name in the app
+### Step 3 — filter by VID/PID in the app (already implemented)
 
-In `useGamepad.ts`, replace the first-gamepad logic with a name match:
+`useGamepad.ts` already filters by `DEVICE_VID` / `DEVICE_PID` from `~/panel`:
 
 ```ts
-const gp = Array.from(gps).find(g => g?.id.includes('NOBSFS Autopilot')) ?? null
+// src/panel/panel.ts
+export const DEVICE_VID = '2341'
+export const DEVICE_PID = '0657'
+
+// src/hooks/useGamepad.ts
+const gp =
+  Array.from(gps).find((g) => g?.id.includes(DEVICE_VID) && g.id.includes(DEVICE_PID)) ?? null
 ```
 
-Or match by PID if you prefer (more robust, name-independent):
-
-```ts
-const gp = Array.from(gps).find(g => g?.id.includes('a001')) ?? null
-```
+If the VID/PID changes in firmware, update `DEVICE_VID`/`DEVICE_PID` in `src/panel/panel.ts`.
 
 ---
 

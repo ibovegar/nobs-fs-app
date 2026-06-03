@@ -20,8 +20,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `CLAUDE.md` — project conventions and structure for AI-assisted development.
 - Biome (`biome.json`) for linting and formatting; `format` script (`biome check --write .`).
 - `.gitattributes` enforcing LF line endings repo-wide for consistent Windows/Linux development.
+- `spacing.ts` — 4px base spacing scale (`spacing[0..16]`) exposed as `--sp-*` CSS custom
+  properties via `injectThemeCssVars()` and exported from `~/theme`.
+- `DEVICE_VID` / `DEVICE_PID` constants (`2341` / `0657`) in `~/panel` matching the firmware
+  VID/PID; `useGamepad` now filters by these instead of picking the first available gamepad.
+- `docs/firmware.md` — step-by-step guide for patching Arduino's `boards.txt` to bake the
+  custom USB identity (VID `0x2341`, PID `0x0657`, name "Nobs Autopilot") into the firmware.
+- `docs/mapping.md` — full HID button mapping: firmware indices, app constants, decode logic,
+  and current test-setup reference table.
 
 ### Changed
+- Pressing the encoder push button now resets the CW and CCW counters for that encoder.
+  `useGamepad` exposes `resetCounts(indices[])` and `App.tsx` calls it via a ref from within
+  `handleEvent`. Log entry reads `ENC1 PUSH  (reset)`.
+- Button mapping corrected to match firmware: encoders occupy 3 buttons each (CW, CCW, push)
+  before standalone switches. Added `BUTTONS_PER_ENCODER`, `pushButton()`, and `switchButton()`
+  helpers to `~/panel`; `BUTTON_COUNT` updated to 20.
+- `Encoder` gains a `push` prop (`ButtonState`) and shows a small push-button indicator dot
+  next to the label, lit when pressed.
+- `PanelGrid` uses `switchButton()` and `pushButton()` for correct index lookup.
+- Event log now records encoder push events (`ENC1 PUSH` etc.).
 - `useGamepad` now returns a single `ButtonState[]` (`{ pressed, lastPress, count }`)
   instead of three parallel arrays; `BUTTON_COUNT` derives from the panel config.
 - `Encoder` reduced from 7 scalar props to 3 (`label`, `cw`, `ccw`).

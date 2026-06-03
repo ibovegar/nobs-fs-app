@@ -5,14 +5,18 @@ interface Props {
   label: string
   cw: ButtonState
   ccw: ButtonState
+  push: ButtonState
 }
 
-export function Encoder({ label, cw, ccw }: Props) {
+export function Encoder({ label, cw, ccw, push }: Props) {
   const net = cw.count - ccw.count
 
   return (
     <>
-      <div className={styles.label}>{label}</div>
+      <div className={styles.header}>
+        <span className={styles.label}>{label}</span>
+        <span className={`${styles.push}${push.pressed ? ` ${styles.pushOn}` : ''}`} />
+      </div>
 
       <div className={styles.body}>
         <div

@@ -1,4 +1,12 @@
-import { type ButtonState, ccwButton, cwButton, ENCODER_LABELS, PANEL_LAYOUT } from '~/panel'
+import {
+  type ButtonState,
+  ccwButton,
+  cwButton,
+  ENCODER_LABELS,
+  PANEL_LAYOUT,
+  pushButton,
+  switchButton,
+} from '~/panel'
 import { Encoder } from '../Encoder/Encoder'
 import { PanelCard } from '../PanelCard'
 import { SwitchBtn } from '../SwitchBtn/SwitchBtn'
@@ -14,7 +22,7 @@ export function PanelGrid({ buttons }: Props) {
       {PANEL_LAYOUT.map((cell) => {
         const key = `${cell.kind}-${cell.index}`
         if (cell.kind === 'switch') {
-          const sw = buttons[cell.index]
+          const sw = buttons[switchButton(cell.index)]
           return (
             <PanelCard key={key} active={sw.pressed}>
               <SwitchBtn index={cell.index} pressed={sw.pressed} count={sw.count} />
@@ -23,9 +31,10 @@ export function PanelGrid({ buttons }: Props) {
         }
         const cw = buttons[cwButton(cell.index)]
         const ccw = buttons[ccwButton(cell.index)]
+        const push = buttons[pushButton(cell.index)]
         return (
-          <PanelCard key={key} active={cw.pressed || ccw.pressed}>
-            <Encoder label={ENCODER_LABELS[cell.index]} cw={cw} ccw={ccw} />
+          <PanelCard key={key} active={cw.pressed || ccw.pressed || push.pressed}>
+            <Encoder label={ENCODER_LABELS[cell.index]} cw={cw} ccw={ccw} push={push} />
           </PanelCard>
         )
       })}

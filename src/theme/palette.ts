@@ -31,8 +31,8 @@ export const palette = {
     A700: '#f0f0f4',
   },
   background: {
-    paper: 'rgba(26, 26, 32, 0.9)',
-    default: '#141418',
+    paper: '#232930',
+    default: '#171e24',
   },
   common: {
     black: '#000',

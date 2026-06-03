@@ -11,7 +11,7 @@ fresh `[Unreleased]` above it.
 
 ## Hardware
 
-- Arduino ESP32 Nano (ESP32-S3) as USB HID Gamepad
+- Arduino Micro as USB HID Gamepad (VID: 0x2341, PID: 0x0657)
 - 4 Bourns PEC11 rotary encoders (with push button)
 - 8 ON-ON momentary switches
 - Button mapping: `buttons[0–7]` = switches SW1–SW8, `buttons[8–15]` = encoders (CW/CCW pairs)

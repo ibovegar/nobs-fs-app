@@ -8,8 +8,9 @@ export function Header({ isConnected }: Props) {
   return (
     <header className={styles.header}>
       <div className={styles.title}>
-        <span className={styles.titleMain}>NOBSFS AUTOPILOT</span>
-        <span className={styles.titleSub}>4 ENCODERS · 8 SWITCHES</span>
+        <span className={styles.titleMain}>Nobs</span>
+        <span className={styles.titleSub}>Autopilot</span>
+        {/* <span className={styles.titleSub}>4 ENCODERS · 8 SWITCHES</span> */}
       </div>
       <div className={`${styles.badge} ${isConnected ? styles.badgeOn : styles.badgeOff}`}>
         <span className={styles.dot} />

@@ -1,11 +1,35 @@
 /* card shell lives in PanelCard — only encoder-specific styles here */
 
+.header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .label {
   font-family: "Consolas", "Courier New", monospace;
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.16em;
   color: var(--text-bright);
+}
+
+.push {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid var(--text-dim);
+  background: transparent;
+  transition:
+    background 0.1s,
+    border-color 0.1s,
+    box-shadow 0.1s;
+}
+
+.pushOn {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 6px var(--accent-glow);
 }
 
 .body {

@@ -1,18 +1,35 @@
 // ── Hardware definition ──────────────────────────────────────────────────────
 // Single source of truth for the ESP32 HID gamepad button mapping.
-// Buttons 0..NUM_SWITCHES-1     → momentary switches
-// Buttons NUM_SWITCHES..end     → encoders, interleaved CW/CCW pairs
+//
+// Firmware layout (Arduino sketch, Joystick.setButton):
+//   Each encoder occupies 3 consecutive buttons: CW, CCW, push
+//   Standalone switches follow after all encoders
+//
+//   buttons[enc * 3 + 0]                    → encoder CW
+//   buttons[enc * 3 + 1]                    → encoder CCW
+//   buttons[enc * 3 + 2]                    → encoder push button
+//   buttons[NUM_ENCODERS * 3 + sw]          → standalone switch
+
+// USB identity — must match firmware vid/pid in build.opt (0x2341 / 0x0657).
+// Gamepad API exposes these as "... (Vendor: 2341 Product: 0657)"
+export const DEVICE_VID = '2341'
+export const DEVICE_PID = '0657'
 
 export const NUM_SWITCHES = 8
 export const NUM_ENCODERS = 4
-export const BUTTON_COUNT = NUM_SWITCHES + NUM_ENCODERS * 2
+export const BUTTONS_PER_ENCODER = 3 // CW, CCW, push
+export const BUTTON_COUNT = NUM_ENCODERS * BUTTONS_PER_ENCODER + NUM_SWITCHES
 
 export const ENCODER_LABELS = ['ENC1', 'ENC2', 'ENC3', 'ENC4'] as const
 
 /** HID button index for an encoder's clockwise pulse. */
-export const cwButton = (enc: number) => NUM_SWITCHES + enc * 2
+export const cwButton = (enc: number) => enc * BUTTONS_PER_ENCODER
 /** HID button index for an encoder's counter-clockwise pulse. */
-export const ccwButton = (enc: number) => NUM_SWITCHES + enc * 2 + 1
+export const ccwButton = (enc: number) => enc * BUTTONS_PER_ENCODER + 1
+/** HID button index for an encoder's push button. */
+export const pushButton = (enc: number) => enc * BUTTONS_PER_ENCODER + 2
+/** HID button index for a standalone switch. */
+export const switchButton = (sw: number) => NUM_ENCODERS * BUTTONS_PER_ENCODER + sw
 
 // ── Runtime state of a single button ─────────────────────────────────────────
 export interface ButtonState {
@@ -25,12 +42,16 @@ export interface ButtonState {
 export type DecodedButton =
   | { kind: 'switch'; index: number }
   | { kind: 'encoder'; index: number; dir: 'cw' | 'ccw' }
+  | { kind: 'encoder-push'; index: number }
 
 /** Decode a raw HID button index into its logical control. */
 export function decodeButton(id: number): DecodedButton {
-  if (id < NUM_SWITCHES) return { kind: 'switch', index: id }
-  const rel = id - NUM_SWITCHES
-  return { kind: 'encoder', index: Math.floor(rel / 2), dir: rel % 2 === 0 ? 'cw' : 'ccw' }
+  const encoderEnd = NUM_ENCODERS * BUTTONS_PER_ENCODER
+  if (id >= encoderEnd) return { kind: 'switch', index: id - encoderEnd }
+  const enc = Math.floor(id / BUTTONS_PER_ENCODER)
+  const offset = id % BUTTONS_PER_ENCODER
+  if (offset === 2) return { kind: 'encoder-push', index: enc }
+  return { kind: 'encoder', index: enc, dir: offset === 0 ? 'cw' : 'ccw' }
 }
 
 // ── Physical front-panel layout — 6 columns × 2 rows ─────────────────────────

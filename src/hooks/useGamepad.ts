@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
-import { BUTTON_COUNT, type ButtonState } from '~/panel'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { BUTTON_COUNT, type ButtonState, DEVICE_PID, DEVICE_VID } from '~/panel'
 
 export interface GamepadEvent {
   id: number
@@ -10,13 +10,14 @@ export interface GamepadEvent {
 export interface GamepadState {
   isConnected: boolean
   buttons: ButtonState[]
+  resetCounts: (indices: number[]) => void
 }
 
 const freshButtons = (): ButtonState[] =>
   Array.from({ length: BUTTON_COUNT }, () => ({ pressed: false, lastPress: 0, count: 0 }))
 
 export function useGamepad(onEvent: (ev: GamepadEvent) => void): GamepadState {
-  const [state, setState] = useState<GamepadState>(() => ({
+  const [state, setState] = useState<{ isConnected: boolean; buttons: ButtonState[] }>(() => ({
     isConnected: false,
     buttons: freshButtons(),
   }))
@@ -28,7 +29,8 @@ export function useGamepad(onEvent: (ev: GamepadEvent) => void): GamepadState {
   useEffect(() => {
     const poll = () => {
       const gps = navigator.getGamepads?.() ?? []
-      const gp = Array.from(gps).find((g): g is Gamepad => g !== null) ?? null
+      const gp =
+        Array.from(gps).find((g) => g?.id.includes(DEVICE_VID) && g.id.includes(DEVICE_PID)) ?? null
 
       if (gp) {
         const now = Date.now()
@@ -67,5 +69,14 @@ export function useGamepad(onEvent: (ev: GamepadEvent) => void): GamepadState {
     return () => cancelAnimationFrame(rafRef.current)
   }, [])
 
-  return state
+  const resetCounts = useCallback((indices: number[]) => {
+    setState((prev) => ({
+      ...prev,
+      buttons: prev.buttons.map((b, i) =>
+        indices.includes(i) ? { ...b, count: 0, lastPress: 0 } : b,
+      ),
+    }))
+  }, [])
+
+  return { ...state, resetCounts }
 }

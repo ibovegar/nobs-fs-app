@@ -2,7 +2,7 @@ import { useCallback, useRef, useState } from 'react'
 import type { LogEntry } from '~/components'
 import { EventLog, Header, PanelGrid, Section } from '~/components'
 import { type GamepadEvent, useGamepad } from '~/hooks'
-import { decodeButton, ENCODER_LABELS } from '~/panel'
+import { ccwButton, cwButton, decodeButton, ENCODER_LABELS } from '~/panel'
 import styles from './App.module.css'
 
 const MAX_LOG = 60
@@ -10,6 +10,7 @@ const MAX_LOG = 60
 export default function App() {
   const [log, setLog] = useState<LogEntry[]>([])
   const seq = useRef(0)
+  const resetCountsRef = useRef<(indices: number[]) => void>(() => {})
 
   const addLog = useCallback((entry: Omit<LogEntry, 'key'>) => {
     setLog((prev) => [{ ...entry, key: seq.current++ }, ...prev].slice(0, MAX_LOG))
@@ -24,7 +25,14 @@ export default function App() {
           text: `SW ${control.index + 1}    ${ev.type === 'press' ? 'PRESSED' : 'RELEASED'}`,
           kind: ev.type,
         })
-      } else if (ev.type === 'press') {
+      } else if (control.kind === 'encoder-push' && ev.type === 'press') {
+        resetCountsRef.current([cwButton(control.index), ccwButton(control.index)])
+        addLog({
+          ts: ev.time,
+          text: `${ENCODER_LABELS[control.index]}    PUSH  (reset)`,
+          kind: 'press',
+        })
+      } else if (control.kind === 'encoder' && ev.type === 'press') {
         addLog({
           ts: ev.time,
           text: `${ENCODER_LABELS[control.index]}    ${control.dir === 'cw' ? '▶  CW' : '◀  CCW'}`,
@@ -36,12 +44,13 @@ export default function App() {
   )
 
   const gp = useGamepad(handleEvent)
+  resetCountsRef.current = gp.resetCounts
 
   return (
     <div className={styles.panel}>
       <Header isConnected={gp.isConnected} />
       <main className={styles.body}>
-        <Section label="PANEL">
+        <Section>
           <PanelGrid buttons={gp.buttons} />
         </Section>
         <Section label="EVENT LOG">
