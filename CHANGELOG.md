@@ -8,6 +8,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- "Slate Dusk" background gradient — subtle diagonal (135°) cool blue-grey fade derived from
+  `background.paper` (`#222931`), defined in `palette.ts` (`gradient.slateDusk`) and exposed as
+  the `--bg-gradient-slate-dusk` CSS custom property.
+- Product view: Nobs Autopilot (existing encoder + switch panel), Nobs Approach, and Nobs
+  Panel, each rendered in its own `Section` card with the controls on the left and the product
+  image on the right.
+- `ProductCard` component (`~/components`) — card shell that lays out a product's image and
+  controls side by side.
+- `ProductImage` component (`~/components`) — renders a product image with its name overlaid
+  at the top-left.
+- `Approach` / `Panel` components (`~/components`) — six placeholder switches each for the
+  not-yet-wired products.
+- `nobs_approach.svg` / `nobs_panel.svg` — dummy placeholder images for the new products.
+- `nobs_autopilot.png` panel image, bundled via Vite asset import.
 - `~/panel` module — single source of truth for the ESP32 HID button mapping
   (`NUM_SWITCHES`, `NUM_ENCODERS`, `BUTTON_COUNT`, `ENCODER_LABELS`, `cwButton`/`ccwButton`
   index helpers, `decodeButton()`, and the physical `PANEL_LAYOUT`).

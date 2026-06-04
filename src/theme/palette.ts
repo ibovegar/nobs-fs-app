@@ -31,8 +31,8 @@ export const palette = {
     A700: '#f0f0f4',
   },
   background: {
-    paper: '#232930',
-    default: '#171e24',
+    paper: '#222931',
+    default: '#171F24',
   },
   common: {
     black: '#000',
@@ -46,6 +46,14 @@ export const palette = {
   status: {
     success: '#10b981',
     successDim: 'rgba(16, 185, 129, 0.15)',
+  },
+  gradient: {
+    // "Slate Dusk" — cool blue-grey fade derived from background.paper (#222931)
+    slateDusk: {
+      light: '#2A323C',
+      base: '#222931',
+      dark: '#1C2128',
+    },
   },
 } as const
 

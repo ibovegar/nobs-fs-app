@@ -1,0 +1,36 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 480px;
+  padding: var(--sp-5);
+  background: var(--bg-gradient-slate-dusk);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-bright);
+}
+
+.imageContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-self: stretch;
+  flex: 1;
+
+  img {
+    display: block;
+    width: 180px;
+    object-fit: contain;
+    align-self: center;
+  }
+}

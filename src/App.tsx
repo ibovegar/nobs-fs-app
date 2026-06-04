@@ -1,6 +1,18 @@
 import { useCallback, useRef, useState } from 'react'
+import approachImg from '~/assets/images/nobs_approach.svg'
+import autopilotImg from '~/assets/images/nobs_autopilot.png'
+import panelImg from '~/assets/images/nobs_panel.svg'
 import type { LogEntry } from '~/components'
-import { EventLog, Header, PanelGrid, Section } from '~/components'
+import {
+  Approach,
+  EventLog,
+  Header,
+  Panel,
+  PanelGrid,
+  ProductCard,
+  ProductImage,
+  Section,
+} from '~/components'
 import { type GamepadEvent, useGamepad } from '~/hooks'
 import { ccwButton, cwButton, decodeButton, ENCODER_LABELS } from '~/panel'
 import styles from './App.module.css'
@@ -51,7 +63,22 @@ export default function App() {
       <Header isConnected={gp.isConnected} />
       <main className={styles.body}>
         <Section>
-          <PanelGrid buttons={gp.buttons} />
+          <ProductCard>
+            <ProductImage name="Nobs Autopilot" image={autopilotImg} />
+            <PanelGrid buttons={gp.buttons} />
+          </ProductCard>
+        </Section>
+        <Section>
+          <ProductCard>
+            <ProductImage name="Nobs Approach" image={approachImg} />
+            <Approach />
+          </ProductCard>
+        </Section>
+        <Section>
+          <ProductCard>
+            <ProductImage name="Nobs Panel" image={panelImg} />
+            <Panel />
+          </ProductCard>
         </Section>
         <Section label="EVENT LOG">
           <EventLog log={log} isConnected={gp.isConnected} />
