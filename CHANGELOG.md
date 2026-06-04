@@ -7,10 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- All product control grids (`PanelGrid`, `Approach`, `Panel`) now distribute their cells with
+  equal height and width. Grid rows use `1fr` instead of `auto`, and `Approach`/`Panel` gained
+  `flex: 1` so they fill the product card like `PanelGrid` — every cell fills an equal share of
+  the available space in both the default and `max-width: 720px` layouts.
+- Regenerated `palette.grey` as a cool blue-grey ramp hue-aligned with the backgrounds (replaces
+  the old neutral/purple-ish greys).
+- Renamed `background.paper` → `background.card` (`#222931`); `--bg-panel` / `--bg-card` now map
+  to it.
+- `--bg-gradient-slate-dusk` is now defined directly from `background.card` → `background.default`
+  (135° two-stop) instead of a separate `gradient.slateDusk` palette object, which was removed.
+
 ### Added
-- "Slate Dusk" background gradient — subtle diagonal (135°) cool blue-grey fade derived from
-  `background.paper` (`#222931`), defined in `palette.ts` (`gradient.slateDusk`) and exposed as
-  the `--bg-gradient-slate-dusk` CSS custom property.
+- `--bg-darker` background token (`#10161A`, `palette.background.darker`) — a shade darker than
+  the page background, used as the `Header` background bar.
+- "Slate Dusk" background gradient — subtle diagonal (135°) cool blue-grey fade between
+  `background.card` and `background.default`, exposed as the `--bg-gradient-slate-dusk` CSS custom
+  property.
 - Product view: Nobs Autopilot (existing encoder + switch panel), Nobs Approach, and Nobs
   Panel, each rendered in its own `Section` card with the controls on the left and the product
   image on the right.

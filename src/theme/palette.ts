@@ -14,25 +14,27 @@ export const palette = {
     dark: '#b71c1c',
     contrastText: '#000',
   },
+  // Cool blue-grey ramp, hue-aligned with the backgrounds (darker → default → card → text)
   grey: {
-    50: '#18181c',
-    100: '#1c1c21',
-    200: '#202026',
-    300: '#24242c',
-    400: '#282833',
-    500: '#2e2e38',
-    600: '#343440',
-    700: '#3e3e4a',
-    800: '#4c4c58',
-    900: '#5c5c68',
-    A100: '#a0a0aa',
-    A200: '#bcbcc6',
-    A400: '#d8d8e0',
-    A700: '#f0f0f4',
+    50: '#161D22',
+    100: '#1B232A',
+    200: '#222C33',
+    300: '#2A343C',
+    400: '#323D46',
+    500: '#3C4751',
+    600: '#49555F',
+    700: '#586571',
+    800: '#6C7884',
+    900: '#828E99',
+    A100: '#9AA5AF',
+    A200: '#B4BEC7',
+    A400: '#D2D9DF',
+    A700: '#EEF1F3',
   },
   background: {
-    paper: '#222931',
+    card: '#222931',
     default: '#171F24',
+    darker: '#10161A',
   },
   common: {
     black: '#000',
@@ -46,14 +48,6 @@ export const palette = {
   status: {
     success: '#10b981',
     successDim: 'rgba(16, 185, 129, 0.15)',
-  },
-  gradient: {
-    // "Slate Dusk" — cool blue-grey fade derived from background.paper (#222931)
-    slateDusk: {
-      light: '#2A323C',
-      base: '#222931',
-      dark: '#1C2128',
-    },
   },
 } as const
 

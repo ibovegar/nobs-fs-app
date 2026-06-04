@@ -12,12 +12,13 @@ const hex2rgba = (hex: string, alpha: number) => {
 export const cssVars: Record<string, string> = {
   /* Backgrounds */
   '--bg': p.background.default,
-  '--bg-panel': p.background.paper,
-  '--bg-card': p.background.paper,
+  '--bg-darker': p.background.darker,
+  '--bg-panel': p.background.card,
+  '--bg-card': p.background.card,
   '--bg-card-hi': p.action.selected,
 
-  /* Gradients — "Slate Dusk" */
-  '--bg-gradient-slate-dusk': `linear-gradient(135deg, ${p.gradient.slateDusk.light} 0%, ${p.gradient.slateDusk.base} 24%, ${p.gradient.slateDusk.dark} 100%)`,
+  /* Gradients — "Slate Dusk", a cool fade from card → default background */
+  '--bg-gradient-slate-dusk': `linear-gradient(135deg, #252C33 0%, ${p.background.default} 85%)`,
 
   /* Borders */
   '--border': p.background.default,
