@@ -60,7 +60,7 @@ export default function App() {
 
   return (
     <div className={styles.panel}>
-      <Header isConnected={gp.isConnected} />
+      <Header />
       <main className={styles.body}>
         <Section>
           <ProductCard>

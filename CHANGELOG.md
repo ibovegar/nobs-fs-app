@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- Replaced all hardcoded `gap`/`padding`/`margin` pixel values across component CSS with
+  `--sp-*` spacing-scale tokens (`App`, `Header`, `Section`, `PanelCard`, `Encoder`, `EventLog`,
+  `ConnectionIndicator`). Off-scale values were snapped to the nearest 4px step (3/5px → 4,
+  6px → 8, 10px → 12, 14px → 16). The `1px` grid `gap`s in `PanelGrid`/`Approach`/`Panel` are
+  hairline dividers, not spacing, and were left as-is.
 - All product control grids (`PanelGrid`, `Approach`, `Panel`) now distribute their cells with
   equal height and width. Grid rows use `1fr` instead of `auto`, and `Approach`/`Panel` gained
   `flex: 1` so they fill the product card like `PanelGrid` — every cell fills an equal share of
@@ -16,8 +21,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the old neutral/purple-ish greys).
 - Renamed `background.paper` → `background.card` (`#222931`); `--bg-panel` / `--bg-card` now map
   to it.
-- `--bg-gradient-slate-dusk` is now defined directly from `background.card` → `background.default`
-  (135° two-stop) instead of a separate `gradient.slateDusk` palette object, which was removed.
+- `--bg-gradient-slate-dusk` is now a 135° two-stop gradient (`#252C33` → `#1D2228`) defined
+  directly in `cssVars` instead of via a separate `gradient.slateDusk` palette object, which was
+  removed.
+
+### Removed
+- Connection status badge from the `Header` — connection state is now shown per product via the
+  `ConnectionIndicator` on each `ProductImage`, so `Header` no longer takes an `isConnected` prop.
 
 ### Added
 - `--bg-darker` background token (`#10161A`, `palette.background.darker`) — a shade darker than

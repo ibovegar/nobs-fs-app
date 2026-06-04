@@ -18,7 +18,7 @@ export const cssVars: Record<string, string> = {
   '--bg-card-hi': p.action.selected,
 
   /* Gradients — "Slate Dusk", a cool fade from card → default background */
-  '--bg-gradient-slate-dusk': `linear-gradient(135deg, #252C33 0%, ${p.background.default} 85%)`,
+  '--bg-gradient-slate-dusk': `linear-gradient(135deg, #252C33 0%, #1D2228 85%)`,
 
   /* Borders */
   '--border': p.background.default,

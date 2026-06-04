@@ -2,8 +2,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 8px 24px;
+  gap: var(--sp-4);
+  padding: var(--sp-3) var(--sp-6);
   background: var(--bg-darker);
 }
 
@@ -11,7 +11,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 3px;
+  gap: var(--sp-1);
 }
 
 .titleMain {
@@ -19,8 +19,8 @@
   font-weight: 700;
   letter-spacing: 0.14em;
   color: var(--text-bright);
-  padding: 3px 5px;
-  margin-right: 5px;
+  padding: var(--sp-1) var(--sp-1);
+  margin-right: var(--sp-1);
   border-radius: 5px;
   background: var(--accent-main);
 }
@@ -30,59 +30,4 @@
   font-weight: 400;
   letter-spacing: 0.1em;
   color: var(--text-bright);
-}
-
-/* .titleSub {
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  color: var(--text-dim);
-} */
-
-.badge {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-family: "Consolas", "Courier New", monospace;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  padding: 6px 14px;
-  border-radius: 20px;
-  border: 1px solid;
-  white-space: nowrap;
-}
-
-.badgeOn {
-  color: var(--green);
-  border-color: var(--green-dim);
-  background: var(--green-dim);
-}
-
-.badgeOff {
-  color: var(--text-mid);
-  border-color: var(--border-mid);
-  background: transparent;
-}
-
-.dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: currentColor;
-  flex-shrink: 0;
-}
-
-.badgeOn .dot {
-  box-shadow: 0 0 6px currentColor;
-  animation: pulse 2s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.45;
-  }
 }

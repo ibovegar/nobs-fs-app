@@ -10,9 +10,9 @@
 }
 
 .body {
-  flex: 1;
-  padding: 20px 24px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  flex: 1;
+  padding: var(--sp-6);
+  gap: var(--sp-6);
 }

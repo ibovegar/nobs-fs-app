@@ -3,7 +3,7 @@
 .header {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--sp-2);
 }
 
 .label {
@@ -35,7 +35,7 @@
 .body {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--sp-2);
 }
 
 .arrow {
@@ -106,7 +106,7 @@
   font-size: 11px;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--sp-1);
   min-width: 52px;
   justify-content: center;
 }

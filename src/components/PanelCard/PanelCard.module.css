@@ -1,11 +1,11 @@
 .card {
   background: var(--bg-card);
-  padding: 16px 12px;
+  padding: var(--sp-4) var(--sp-3);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: var(--sp-3);
   transition: background 0.12s;
 }
 
