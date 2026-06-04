@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { BUTTON_COUNT, type ButtonState, DEVICE_PID, DEVICE_VID } from '~/panel'
+import type { ButtonState, DeviceConfig } from '~/panel'
 
 export interface GamepadEvent {
   id: number
@@ -13,13 +13,16 @@ export interface GamepadState {
   resetCounts: (indices: number[]) => void
 }
 
-const freshButtons = (): ButtonState[] =>
-  Array.from({ length: BUTTON_COUNT }, () => ({ pressed: false, lastPress: 0, count: 0 }))
+const freshButtons = (count: number): ButtonState[] =>
+  Array.from({ length: count }, () => ({ pressed: false, lastPress: 0, count: 0 }))
 
-export function useGamepad(onEvent: (ev: GamepadEvent) => void): GamepadState {
+export function useGamepad(
+  device: DeviceConfig,
+  onEvent?: (ev: GamepadEvent) => void,
+): GamepadState {
   const [state, setState] = useState<{ isConnected: boolean; buttons: ButtonState[] }>(() => ({
     isConnected: false,
-    buttons: freshButtons(),
+    buttons: freshButtons(device.buttonCount),
   }))
 
   const rafRef = useRef<number>(0)
@@ -30,7 +33,7 @@ export function useGamepad(onEvent: (ev: GamepadEvent) => void): GamepadState {
     const poll = () => {
       const gps = navigator.getGamepads?.() ?? []
       const gp =
-        Array.from(gps).find((g) => g?.id.includes(DEVICE_VID) && g.id.includes(DEVICE_PID)) ?? null
+        Array.from(gps).find((g) => g?.id.includes(device.vid) && g.id.includes(device.pid)) ?? null
 
       if (gp) {
         const now = Date.now()
@@ -43,10 +46,10 @@ export function useGamepad(onEvent: (ev: GamepadEvent) => void): GamepadState {
 
             changed = true
             if (pressed) {
-              onEventRef.current({ id: i, time: now, type: 'press' })
+              onEventRef.current?.({ id: i, time: now, type: 'press' })
               return { pressed: true, lastPress: now, count: b.count + 1 }
             }
-            onEventRef.current({ id: i, time: now, type: 'release' })
+            onEventRef.current?.({ id: i, time: now, type: 'release' })
             return { ...b, pressed: false }
           })
 
@@ -67,7 +70,7 @@ export function useGamepad(onEvent: (ev: GamepadEvent) => void): GamepadState {
 
     rafRef.current = requestAnimationFrame(poll)
     return () => cancelAnimationFrame(rafRef.current)
-  }, [])
+  }, [device.vid, device.pid])
 
   const resetCounts = useCallback((indices: number[]) => {
     setState((prev) => ({

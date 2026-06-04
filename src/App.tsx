@@ -1,8 +1,6 @@
-import { useCallback, useRef, useState } from 'react'
 import approachImg from '~/assets/images/nobs_approach.svg'
 import autopilotImg from '~/assets/images/nobs_autopilot.png'
 import panelImg from '~/assets/images/nobs_panel.svg'
-import type { LogEntry } from '~/components'
 import {
   Approach,
   EventLog,
@@ -13,50 +11,14 @@ import {
   ProductImage,
   Section,
 } from '~/components'
-import { type GamepadEvent, useGamepad } from '~/hooks'
-import { ccwButton, cwButton, decodeButton, ENCODER_LABELS } from '~/panel'
+import { useEventLog, useGamepad } from '~/hooks'
+import { DEVICES } from '~/panel'
 import styles from './App.module.css'
 
-const MAX_LOG = 60
-
 export default function App() {
-  const [log, setLog] = useState<LogEntry[]>([])
-  const seq = useRef(0)
-  const resetCountsRef = useRef<(indices: number[]) => void>(() => {})
-
-  const addLog = useCallback((entry: Omit<LogEntry, 'key'>) => {
-    setLog((prev) => [{ ...entry, key: seq.current++ }, ...prev].slice(0, MAX_LOG))
-  }, [])
-
-  const handleEvent = useCallback(
-    (ev: GamepadEvent) => {
-      const control = decodeButton(ev.id)
-      if (control.kind === 'switch') {
-        addLog({
-          ts: ev.time,
-          text: `SW ${control.index + 1}    ${ev.type === 'press' ? 'PRESSED' : 'RELEASED'}`,
-          kind: ev.type,
-        })
-      } else if (control.kind === 'encoder-push' && ev.type === 'press') {
-        resetCountsRef.current([cwButton(control.index), ccwButton(control.index)])
-        addLog({
-          ts: ev.time,
-          text: `${ENCODER_LABELS[control.index]}    PUSH  (reset)`,
-          kind: 'press',
-        })
-      } else if (control.kind === 'encoder' && ev.type === 'press') {
-        addLog({
-          ts: ev.time,
-          text: `${ENCODER_LABELS[control.index]}    ${control.dir === 'cw' ? '▶  CW' : '◀  CCW'}`,
-          kind: control.dir,
-        })
-      }
-    },
-    [addLog],
-  )
-
-  const gp = useGamepad(handleEvent)
-  resetCountsRef.current = gp.resetCounts
+  const autopilot = useEventLog()
+  const approach = useGamepad(DEVICES.approach)
+  const panel = useGamepad(DEVICES.panel)
 
   return (
     <div className={styles.panel}>
@@ -64,24 +26,36 @@ export default function App() {
       <main className={styles.body}>
         <Section>
           <ProductCard>
-            <ProductImage name="Nobs Autopilot" image={autopilotImg} />
-            <PanelGrid buttons={gp.buttons} />
+            <ProductImage
+              name={DEVICES.autopilot.name}
+              image={autopilotImg}
+              isConnected={autopilot.isConnected}
+            />
+            <PanelGrid buttons={autopilot.buttons} />
           </ProductCard>
         </Section>
         <Section>
           <ProductCard>
-            <ProductImage name="Nobs Approach" image={approachImg} />
-            <Approach />
+            <ProductImage
+              name={DEVICES.approach.name}
+              image={approachImg}
+              isConnected={approach.isConnected}
+            />
+            <Approach buttons={approach.buttons} />
           </ProductCard>
         </Section>
         <Section>
           <ProductCard>
-            <ProductImage name="Nobs Panel" image={panelImg} />
-            <Panel />
+            <ProductImage
+              name={DEVICES.panel.name}
+              image={panelImg}
+              isConnected={panel.isConnected}
+            />
+            <Panel buttons={panel.buttons} />
           </ProductCard>
         </Section>
         <Section label="EVENT LOG">
-          <EventLog log={log} isConnected={gp.isConnected} />
+          <EventLog log={autopilot.log} isConnected={autopilot.isConnected} />
         </Section>
       </main>
     </div>

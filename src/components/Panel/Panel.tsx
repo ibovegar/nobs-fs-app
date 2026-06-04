@@ -1,18 +1,26 @@
+import type { ButtonState } from '~/panel'
 import { PanelCard } from '../PanelCard'
 import { SwitchBtn } from '../SwitchBtn/SwitchBtn'
 import styles from './Panel.module.css'
 
-// Placeholder switches — Nobs Panel is not yet wired to hardware.
+// Stable cell keys — Nobs Panel exposes 6 switches.
 const SWITCHES = ['sw1', 'sw2', 'sw3', 'sw4', 'sw5', 'sw6']
 
-export function Panel() {
+interface Props {
+  buttons: ButtonState[]
+}
+
+export function Panel({ buttons }: Props) {
   return (
     <div className={styles.grid}>
-      {SWITCHES.map((id, i) => (
-        <PanelCard key={id} active={false}>
-          <SwitchBtn index={i} pressed={false} count={0} />
-        </PanelCard>
-      ))}
+      {SWITCHES.map((id, i) => {
+        const b = buttons[i]
+        return (
+          <PanelCard key={id} active={b.pressed}>
+            <SwitchBtn index={i} pressed={b.pressed} count={b.count} />
+          </PanelCard>
+        )
+      })}
     </div>
   )
 }

@@ -7,7 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `useEventLog` hook that owns the event-log state and the gamepad-event → `LogEntry` translation
+  (including encoder-push count reset), wrapping `useGamepad` internally.
+- Device registry (`DEVICES` + `DeviceConfig`) in `~/panel`. Nobs Approach and Nobs Panel are now
+  modeled as their own USB HID gamepads (6 switches each) alongside Nobs Autopilot, each with its
+  own VID/PID. Approach/Panel use **imaginary** identities (`f110:0a01`, `f110:0a02`) until the
+  hardware exists; Autopilot keeps the real `2341:0657`.
+
 ### Changed
+- `App` no longer contains the `handleEvent`/`addLog` logic; it now consumes `useEventLog` and
+  just wires `log`, `isConnected`, and `buttons` into the layout.
+- `useGamepad` now takes a `DeviceConfig` (vid/pid/buttonCount) instead of hardcoding the
+  Autopilot constants, and `onEvent` is optional. App polls all three devices independently.
+- `Approach` and `Panel` now render live button state from their gamepad (via a `buttons` prop)
+  instead of static placeholder switches.
+- `ProductImage` takes an `isConnected` prop and feeds it to its `ConnectionIndicator`, so each
+  product's connection badge reflects its actual device (previously hardcoded to connected).
+
+### Removed
+- `DEVICE_VID` / `DEVICE_PID` constants from `~/panel` — superseded by `DEVICES.autopilot`.
 - Replaced all hardcoded `gap`/`padding`/`margin` pixel values across component CSS with
   `--sp-*` spacing-scale tokens (`App`, `Header`, `Section`, `PanelCard`, `Encoder`, `EventLog`,
   `ConnectionIndicator`). Off-scale values were snapped to the nearest 4px step (3/5px → 4,

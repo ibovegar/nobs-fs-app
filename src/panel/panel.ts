@@ -10,17 +10,30 @@
 //   buttons[enc * 3 + 2]                    → encoder push button
 //   buttons[NUM_ENCODERS * 3 + sw]          → standalone switch
 
-// USB identity — must match firmware vid/pid in build.opt (0x2341 / 0x0657).
-// Gamepad API exposes these as "... (Vendor: 2341 Product: 0657)"
-export const DEVICE_VID = '2341'
-export const DEVICE_PID = '0657'
-
 export const NUM_SWITCHES = 8
 export const NUM_ENCODERS = 4
 export const BUTTONS_PER_ENCODER = 3 // CW, CCW, push
 export const BUTTON_COUNT = NUM_ENCODERS * BUTTONS_PER_ENCODER + NUM_SWITCHES
 
 export const ENCODER_LABELS = ['ENC1', 'ENC2', 'ENC3', 'ENC4'] as const
+
+// ── Device registry ──────────────────────────────────────────────────────────
+// Every Nobs product is its own USB HID gamepad. The Gamepad API exposes the USB
+// identity as "... (Vendor: <vid> Product: <pid>)"; `useGamepad` matches on those.
+export interface DeviceConfig {
+  name: string
+  vid: string
+  pid: string
+  buttonCount: number
+}
+
+export const DEVICES = {
+  // Real hardware — vid/pid must match the firmware build.opt (0x2341 / 0x0657).
+  autopilot: { name: 'Nobs Autopilot', vid: '2341', pid: '0657', buttonCount: BUTTON_COUNT },
+  // Imaginary identities — placeholders until the hardware exists. 6 switches each.
+  approach: { name: 'Nobs Approach', vid: 'f110', pid: '0a01', buttonCount: 6 },
+  panel: { name: 'Nobs Panel', vid: 'f110', pid: '0a02', buttonCount: 6 },
+} satisfies Record<string, DeviceConfig>
 
 /** HID button index for an encoder's clockwise pulse. */
 export const cwButton = (enc: number) => enc * BUTTONS_PER_ENCODER
