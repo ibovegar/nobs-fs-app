@@ -2,7 +2,28 @@
   "permissions": {
     "allow": [
       "Bash(pnpm format *)",
-      "Bash(pnpm exec *)"
+      "Bash(pnpm exec *)",
+      "Bash(git --no-pager diff src/theme/cssVars.ts)",
+      "Bash(git --no-pager diff CHANGELOG.md)",
+      "Bash(git --no-pager diff .claude/settings.json)",
+      "Bash(git commit -m '@ *)",
+      "Bash(git --no-pager log -1 --format='%B')",
+      "Bash(git commit --amend -m 'feat: cool blue-grey theme refresh with Slate Dusk gradient' -m '- Regenerate palette.grey as a cool blue-grey ramp hue-aligned with the backgrounds *)",
+      "Bash(git --no-pager diff --cached --stat)",
+      "Bash(Select-Object -First 1)",
+      "Bash(git --no-pager log -1 --format='%s')",
+      "Bash(git commit --amend -m '@ *)",
+      "Bash(git commit --amend -m 'refactor: spacing tokens, drop Header badge, tweak Slate Dusk gradient *)",
+      "PowerShell(pnpm lint)",
+      "PowerShell(pnpm format 2>&1)",
+      "PowerShell(npx tsc --noEmit)",
+      "PowerShell(if \\($?\\) { \"tsc OK\" })",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(npm view *)",
+      "WebFetch(domain:lineicons.com)",
+      "Bash(npx tsc *)",
+      "Bash(echo \"EXIT: $?\")"
     ]
   }
 }

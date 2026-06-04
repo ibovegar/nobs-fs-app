@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- `Sidebar` — a 72px icon rail (Home / Devices / Event log / Settings), each item an icon with a
+  label beneath it, using LineIcons. Transparent background, no border. Tracks a local `active`
+  selection (visual only — not yet wired to view switching/routing). App layout is now a column
+  with the header on top, and a sidebar + body row beneath it.
 - LineIcons icon library via the official React SVG packages (`@lineiconshq/react-lineicons` +
   `@lineiconshq/free-icons`) — tree-shakeable, typed named icon imports. Added a thin `Icon`
   wrapper (`~/components`) over `Lineicons` so call sites import from `~/components` instead of the

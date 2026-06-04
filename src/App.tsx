@@ -10,6 +10,7 @@ import {
   ProductCard,
   ProductImage,
   Section,
+  Sidebar,
 } from '~/components'
 import { useEventLog, useGamepad } from '~/hooks'
 import { DEVICES } from '~/panel'
@@ -21,43 +22,46 @@ export default function App() {
   const panel = useGamepad(DEVICES.panel)
 
   return (
-    <div className={styles.panel}>
+    <div className={styles.app}>
       <Header />
-      <main className={styles.body}>
-        <Section>
-          <ProductCard>
-            <ProductImage
-              name={DEVICES.autopilot.name}
-              image={autopilotImg}
-              isConnected={autopilot.isConnected}
-            />
-            <PanelGrid buttons={autopilot.buttons} />
-          </ProductCard>
-        </Section>
-        <Section>
-          <ProductCard>
-            <ProductImage
-              name={DEVICES.approach.name}
-              image={approachImg}
-              isConnected={approach.isConnected}
-            />
-            <Approach buttons={approach.buttons} />
-          </ProductCard>
-        </Section>
-        <Section>
-          <ProductCard>
-            <ProductImage
-              name={DEVICES.panel.name}
-              image={panelImg}
-              isConnected={panel.isConnected}
-            />
-            <Panel buttons={panel.buttons} />
-          </ProductCard>
-        </Section>
-        <Section label="EVENT LOG">
-          <EventLog log={autopilot.log} isConnected={autopilot.isConnected} />
-        </Section>
-      </main>
+      <div className={styles.layout}>
+        <Sidebar />
+        <main className={styles.body}>
+          <Section>
+            <ProductCard>
+              <ProductImage
+                name={DEVICES.autopilot.name}
+                image={autopilotImg}
+                isConnected={autopilot.isConnected}
+              />
+              <PanelGrid buttons={autopilot.buttons} />
+            </ProductCard>
+          </Section>
+          <Section>
+            <ProductCard>
+              <ProductImage
+                name={DEVICES.approach.name}
+                image={approachImg}
+                isConnected={approach.isConnected}
+              />
+              <Approach buttons={approach.buttons} />
+            </ProductCard>
+          </Section>
+          <Section>
+            <ProductCard>
+              <ProductImage
+                name={DEVICES.panel.name}
+                image={panelImg}
+                isConnected={panel.isConnected}
+              />
+              <Panel buttons={panel.buttons} />
+            </ProductCard>
+          </Section>
+          <Section label="EVENT LOG">
+            <EventLog log={autopilot.log} isConnected={autopilot.isConnected} />
+          </Section>
+        </main>
+      </div>
     </div>
   )
 }

@@ -1,18 +1,25 @@
-.panel {
-  min-height: 100vh;
-  background: var(--bg);
+.app {
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
+  background: var(--bg);
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
   font-size: 13px;
   color: var(--text);
   -webkit-font-smoothing: antialiased;
 }
 
+.layout {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
 .body {
   display: flex;
   flex-direction: column;
   flex: 1;
+  min-width: 0;
   padding: var(--sp-6);
   gap: var(--sp-6);
 }
