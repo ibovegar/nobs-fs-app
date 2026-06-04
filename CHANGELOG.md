@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- LineIcons icon library via the official React SVG packages (`@lineiconshq/react-lineicons` +
+  `@lineiconshq/free-icons`) — tree-shakeable, typed named icon imports. Added a thin `Icon`
+  wrapper (`~/components`) over `Lineicons` so call sites import from `~/components` instead of the
+  vendor; `color` defaults to `currentColor`, so icons follow the theme color cascade.
 - `useEventLog` hook that owns the event-log state and the gamepad-event → `LogEntry` translation
   (including encoder-push count reset), wrapping `useGamepad` internally.
 - Device registry (`DEVICES` + `DeviceConfig`) in `~/panel`. Nobs Approach and Nobs Panel are now

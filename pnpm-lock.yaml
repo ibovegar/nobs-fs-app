@@ -8,6 +8,12 @@ importers:
 
   .:
     dependencies:
+      '@lineiconshq/free-icons':
+        specifier: ^1.0.6
+        version: 1.0.6
+      '@lineiconshq/react-lineicons':
+        specifier: ^1.0.5
+        version: 1.0.5(react@19.2.7)
       react:
         specifier: ^19.2.6
         version: 19.2.7
@@ -199,6 +205,19 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
+
+  '@lineiconshq/free-icons@0.0.1':
+    resolution: {integrity: sha512-fnWSSjIv/4vojAKsBZXluhMRr1LIb5p85IzXK0Dh27KF9qXxz89HZJrnvXH71ZqMCP+NFzo/xh0dJsv8PT+3xg==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
+  '@lineiconshq/free-icons@1.0.6':
+    resolution: {integrity: sha512-wWT7v+SEKT5Y3+2u4icjiyXP7Et91tLvrvNAgrfUtQhI7zSynCJIPx75bgkrCRHYl914DYx0tvVl9YT303R6NQ==}
+
+  '@lineiconshq/react-lineicons@1.0.5':
+    resolution: {integrity: sha512-GfUBSMLoL7siDOmVwDTTGwGCREu7Q/g7PAzqoMII+SF6ZWQS3ZfTLupNcQkTx4R6+mTibz5OIoWHCseVF8WsMQ==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   '@napi-rs/wasm-runtime@1.1.4':
     resolution: {integrity: sha512-3NQNNgA1YSlJb/kMH1ildASP9HW7/7kYnRI2szWJaofaS1hWmbGI4H+d3+22aGzXXN9IJ+n+GiFVcGipJP18ow==}
@@ -513,6 +532,9 @@ packages:
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
+  meilisearch@0.53.0:
+    resolution: {integrity: sha512-nG4VXbEOSzUmtbfsgOo+t6yX1ECEgXaT4hC0ap9MBpQGK5xwT+NWYDENYsKWR75cVaWaAqva+ok4zHlgtdXlLw==}
+
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
 
@@ -800,6 +822,19 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
+  '@lineiconshq/free-icons@0.0.1(react@19.2.7)':
+    dependencies:
+      react: 19.2.7
+
+  '@lineiconshq/free-icons@1.0.6':
+    dependencies:
+      meilisearch: 0.53.0
+
+  '@lineiconshq/react-lineicons@1.0.5(react@19.2.7)':
+    dependencies:
+      '@lineiconshq/free-icons': 0.0.1(react@19.2.7)
+      react: 19.2.7
+
   '@napi-rs/wasm-runtime@1.1.4(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)':
     dependencies:
       '@emnapi/core': 1.10.0
@@ -1011,6 +1046,8 @@ snapshots:
   lru-cache@5.1.1:
     dependencies:
       yallist: 3.1.1
+
+  meilisearch@0.53.0: {}
 
   ms@2.1.3: {}
 

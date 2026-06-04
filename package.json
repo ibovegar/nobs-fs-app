@@ -11,6 +11,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@lineiconshq/free-icons": "^1.0.6",
+    "@lineiconshq/react-lineicons": "^1.0.5",
     "react": "^19.2.6",
     "react-dom": "^19.2.6"
   },
