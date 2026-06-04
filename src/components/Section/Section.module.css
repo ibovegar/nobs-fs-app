@@ -10,6 +10,6 @@
   font-weight: 700;
   letter-spacing: 0.22em;
   color: var(--text-dim);
-  padding: var(--sp-2) var(--sp-4);
+  padding: var(--sp-4) var(--sp-4);
   text-transform: uppercase;
 }

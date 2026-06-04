@@ -1,18 +1,7 @@
-import approachImg from '~/assets/images/nobs_approach.svg'
-import autopilotImg from '~/assets/images/nobs_autopilot.png'
-import panelImg from '~/assets/images/nobs_panel.svg'
-import {
-  Approach,
-  EventLog,
-  Header,
-  Panel,
-  PanelGrid,
-  ProductCard,
-  ProductImage,
-  Section,
-  Sidebar,
-} from '~/components'
+import { Route, Routes } from 'react-router'
+import { Header, Sidebar } from '~/components'
 import { useEventLog, useGamepad } from '~/hooks'
+import { Devices, Events, Home, Settings } from '~/pages'
 import { DEVICES } from '~/panel'
 import styles from './App.module.css'
 
@@ -27,39 +16,15 @@ export default function App() {
       <div className={styles.layout}>
         <Sidebar />
         <main className={styles.body}>
-          <Section>
-            <ProductCard>
-              <ProductImage
-                name={DEVICES.autopilot.name}
-                image={autopilotImg}
-                isConnected={autopilot.isConnected}
-              />
-              <PanelGrid buttons={autopilot.buttons} />
-            </ProductCard>
-          </Section>
-          <Section>
-            <ProductCard>
-              <ProductImage
-                name={DEVICES.approach.name}
-                image={approachImg}
-                isConnected={approach.isConnected}
-              />
-              <Approach buttons={approach.buttons} />
-            </ProductCard>
-          </Section>
-          <Section>
-            <ProductCard>
-              <ProductImage
-                name={DEVICES.panel.name}
-                image={panelImg}
-                isConnected={panel.isConnected}
-              />
-              <Panel buttons={panel.buttons} />
-            </ProductCard>
-          </Section>
-          <Section label="EVENT LOG">
-            <EventLog log={autopilot.log} isConnected={autopilot.isConnected} />
-          </Section>
+          <Routes>
+            <Route
+              path="/"
+              element={<Home autopilot={autopilot} approach={approach} panel={panel} />}
+            />
+            <Route path="/devices" element={<Devices />} />
+            <Route path="/events" element={<Events autopilot={autopilot} />} />
+            <Route path="/settings" element={<Settings />} />
+          </Routes>
         </main>
       </div>
     </div>

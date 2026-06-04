@@ -21,6 +21,7 @@
   background: transparent;
   color: var(--text-mid);
   font: inherit;
+  text-decoration: none;
   cursor: pointer;
   transition:
     background 0.15s ease,
@@ -39,6 +40,6 @@
 }
 
 .label {
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.02em;
 }

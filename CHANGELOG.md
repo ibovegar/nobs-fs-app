@@ -8,10 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Client-side routing via `react-router`. Each sidebar item is now its own route: Home (`/`),
+  Devices (`/devices`), Event log (`/events`), Settings (`/settings`). `App` owns the gamepad
+  hooks and renders the matched route inside the body; `main.tsx` wraps the app in
+  `BrowserRouter`.
+- `~/pages` — route view components: `Home` (the three product cards, formerly the whole body),
+  `Events` (the event log, moved off Home onto its own route), and `Devices` / `Settings`
+  placeholders (sharing a small `Placeholder` view).
 - `Sidebar` — a 72px icon rail (Home / Devices / Event log / Settings), each item an icon with a
-  label beneath it, using LineIcons. Transparent background, no border. Tracks a local `active`
-  selection (visual only — not yet wired to view switching/routing). App layout is now a column
-  with the header on top, and a sidebar + body row beneath it.
+  label beneath it, using LineIcons. Transparent background, no border. Items are `NavLink`s that
+  drive the active route (active state from `NavLink`'s `isActive`). App layout is a column with
+  the header on top, and a sidebar + body row beneath it.
 - LineIcons icon library via the official React SVG packages (`@lineiconshq/react-lineicons` +
   `@lineiconshq/free-icons`) — tree-shakeable, typed named icon imports. Added a thin `Icon`
   wrapper (`~/components`) over `Lineicons` so call sites import from `~/components` instead of the
@@ -24,6 +31,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   hardware exists; Autopilot keeps the real `2341:0657`.
 
 ### Changed
+- The event log now fills the full height of the `/events` view instead of a fixed 200px box.
+  `EventLog`'s `.log` flexes to fill its container, the `Events` page stretches its `Section` to
+  fill the body, and `Section` gained an optional `className` prop so a route can opt into that
+  growth.
+- The app shell is now bounded to the viewport (`height: 100vh` + `overflow: hidden`) and the body
+  scrolls internally (`overflow-y: auto`), so the full-height event log stays within the viewport
+  and scrolls in place instead of stretching the page.
+- Minor spacing/typography tweaks: `Section` label uses `--sp-4` vertical padding, the `Sidebar`
+  label is 11px, and the body drops its left padding.
 - `App` no longer contains the `handleEvent`/`addLog` logic; it now consumes `useEventLog` and
   just wires `log`, `isConnected`, and `buttons` into the layout.
 - `useGamepad` now takes a `DeviceConfig` (vid/pid/buttonCount) instead of hardcoding the

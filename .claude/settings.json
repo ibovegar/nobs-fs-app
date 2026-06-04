@@ -23,7 +23,10 @@
       "Bash(npm view *)",
       "WebFetch(domain:lineicons.com)",
       "Bash(npx tsc *)",
-      "Bash(echo \"EXIT: $?\")"
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(git commit -m 'feat: add Sidebar icon rail and useEventLog hook *)",
+      "Bash(git --no-pager diff src/App.tsx src/components/Section/Section.module.css src/App.module.css)",
+      "Bash(git commit -m 'feat: client-side routing with one route per sidebar item *)"
     ]
   }
 }

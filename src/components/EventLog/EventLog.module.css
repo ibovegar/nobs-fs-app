@@ -1,7 +1,7 @@
 .log {
-  height: 200px;
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
-  padding: var(--sp-1) 0;
   scrollbar-width: thin;
   scrollbar-color: var(--border-mid) transparent;
 }
