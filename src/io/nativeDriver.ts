@@ -1,4 +1,5 @@
 import type { DeviceConfig } from '~/panel'
+import { decodeJoystickReport } from './decodeReport'
 import type { DeviceDriver, SnapshotListener } from './types'
 
 // ── Native (Tauri) HID driver — SCAFFOLD ─────────────────────────────────────
@@ -11,9 +12,10 @@ import type { DeviceDriver, SnapshotListener } from './types'
 //   app.emit("hid://report",     { vid, pid, bytes: Vec<u8> })   // on each report
 //   app.emit("hid://connection", { vid, pid, connected: bool })  // on plug/unplug
 //
-// TODO(native): (1) once `@tauri-apps/api` is a dependency, swap the
+// Report decoding is shared with the web driver (`decodeJoystickReport`), so the
+// only work left on this side is the Rust backend.
+// TODO(native): once `@tauri-apps/api` is a dependency, swap the
 //   `window.__TAURI__` lookups below for its typed `invoke` / `listen`.
-//   (2) implement `decodeReport` for the firmware's HID input-report layout.
 
 interface TauriGlobal {
   core: { invoke(cmd: string, args?: Record<string, unknown>): Promise<unknown> }
@@ -24,14 +26,6 @@ interface TauriGlobal {
 
 const tauri = (): TauriGlobal | null =>
   (window as unknown as { __TAURI__?: TauriGlobal }).__TAURI__ ?? null
-
-/**
- * Decode a raw HID input report into per-button pressed flags.
- * TODO(native): implement to match the firmware report descriptor (button bits).
- */
-function decodeReport(_bytes: number[], buttonCount: number): boolean[] {
-  return Array.from({ length: buttonCount }, () => false)
-}
 
 export const nativeDriver: DeviceDriver = {
   name: 'native-tauri',
@@ -58,7 +52,8 @@ export const nativeDriver: DeviceDriver = {
       api.event.listen('hid://report', (e) => {
         const p = e.payload as { vid: number; pid: number; bytes: number[] }
         if (matches(p)) {
-          onSnapshot({ connected: true, pressed: decodeReport(p.bytes, device.buttonCount) })
+          const pressed = decodeJoystickReport(Uint8Array.from(p.bytes), device.buttonCount)
+          onSnapshot({ connected: true, pressed })
         }
       }),
     )

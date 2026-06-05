@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- WebHID driver (`webhidDriver`) — automatic device detection in Chromium without the Gamepad
+  API's "actuate to appear" requirement. Uses `navigator.hid`: opens already-granted devices on
+  load and reacts to `connect`/`disconnect`, so the panel is detected as soon as it's plugged in.
+  Requires a one-time permission grant via the new **Connect device** button on the Devices page
+  (`requestHidDevices`, a user gesture); the grant persists per-origin. `selectDriver` now prefers
+  it on the web (Chromium), falling back to the Gamepad API elsewhere.
+- `decodeJoystickReport` — decodes the Arduino Joystick library's HID input report (buttons packed
+  LSB-first, report-ID stripped) into `pressed[]`. Shared by the WebHID and native drivers.
+- Devices page (`/devices`) now lists every registered device (Autopilot, Approach, Panel) with
+  its VID:PID, a live connection indicator, and a per-device **Connect** button (replacing the
+  placeholder). Approach/Panel are listed even though they're still imaginary placeholders.
 - `src/io` input-driver layer that decouples *where raw button bits come from* from the press
   detection/counting logic. `DeviceDriver` interface emits `DeviceSnapshot`s; `gamepadDriver`
   (web/dev, Gamepad API) and `nativeDriver` (Tauri HID bridge — scaffold) implement it, and
@@ -49,6 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   hardware exists; Autopilot keeps the real `2341:0657`.
 
 ### Changed
+- Body content is now centred with a max width (1500px); Sidebar vertical padding tightened.
 - Renamed `useGamepad` → `useDevice` (and `GamepadState`/`GamepadEvent` → `DeviceState`/
   `DeviceEvent`); it now consumes a `DeviceDriver` from `~/io` rather than polling the Gamepad API
   directly. Web behaviour is identical.

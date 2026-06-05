@@ -78,9 +78,12 @@ src/
   App.module.css
   io/                    input drivers (raw device bits, env-specific)
     types.ts             DeviceDriver interface + DeviceSnapshot
-    gamepadDriver.ts     Gamepad API polling (web/dev)
-    nativeDriver.ts      Tauri HID bridge (native; scaffold)
+    decodeReport.ts      Arduino Joystick HID report → pressed[] (shared)
+    gamepadDriver.ts     Gamepad API polling (web/dev fallback; needs actuation)
+    webhidDriver.ts      WebHID auto-detect (Chromium; one-time permission grant)
+    nativeDriver.ts      Tauri HID bridge (native; scaffold — Rust side pending)
     selectDriver.ts      runtime env detection → active driver
+    webhid.d.ts          minimal WebHID typings (not in lib.dom)
     index.ts
   hooks/
     useDevice.ts         backend-agnostic: press detection, counts, events

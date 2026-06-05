@@ -21,7 +21,18 @@ export default function App() {
               path="/"
               element={<Home autopilot={autopilot} approach={approach} panel={panel} />}
             />
-            <Route path="/devices" element={<Devices />} />
+            <Route
+              path="/devices"
+              element={
+                <Devices
+                  connected={{
+                    autopilot: autopilot.isConnected,
+                    approach: approach.isConnected,
+                    panel: panel.isConnected,
+                  }}
+                />
+              }
+            />
             <Route path="/events" element={<Events autopilot={autopilot} />} />
             <Route path="/tools" element={<Tools buttons={autopilot.buttons} />} />
             <Route path="/settings" element={<Settings />} />

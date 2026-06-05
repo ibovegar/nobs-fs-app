@@ -1,0 +1,84 @@
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  padding: var(--sp-4);
+}
+
+.hint {
+  margin: 0;
+  max-width: 56ch;
+  color: var(--text-mid);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-card);
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  margin-right: auto;
+}
+
+.name {
+  color: var(--text-bright);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.id {
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+}
+
+.connect {
+  padding: var(--sp-2) var(--sp-4);
+  border: none;
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--bg);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.connect:hover {
+  background: var(--accent-light);
+}
+
+.granted {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.granted::before {
+  content: "✓";
+}

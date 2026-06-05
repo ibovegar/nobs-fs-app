@@ -1,2 +1,4 @@
+export { decodeJoystickReport } from './decodeReport'
 export { getDriver } from './selectDriver'
 export type { DeviceDriver, DeviceSnapshot, SnapshotListener } from './types'
+export { grantedFlags, onHidChange, requestHidDevices, webhidSupported } from './webhidDriver'
