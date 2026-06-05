@@ -1,0 +1,78 @@
+.back {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  align-self: flex-start;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-mid);
+  font: inherit;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.15s ease;
+
+  span {
+    margin-bottom: 1px;
+  }
+}
+
+.back:hover {
+  color: var(--text-bright);
+}
+
+.card {
+  align-self: flex-start;
+  padding: var(--sp-1);
+}
+
+.layout {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-5);
+  padding: var(--sp-4);
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-5);
+  min-width: 170px;
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--border-mid);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-mid);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.field:hover {
+  background: var(--bg-card-hi);
+  color: var(--text-bright);
+}
+
+.fieldActive,
+.fieldActive:hover {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+
+.value {
+  font-family: "Consolas", "Courier New", monospace;
+  font-variant-numeric: tabular-nums;
+}

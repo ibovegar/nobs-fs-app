@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router'
 import { Header, Sidebar } from '~/components'
 import { useEventLog, useGamepad } from '~/hooks'
-import { Devices, Events, Home, Settings } from '~/pages'
+import { Devices, Events, Home, Settings, Tools } from '~/pages'
 import { DEVICES } from '~/panel'
 import styles from './App.module.css'
 
@@ -23,6 +23,7 @@ export default function App() {
             />
             <Route path="/devices" element={<Devices />} />
             <Route path="/events" element={<Events autopilot={autopilot} />} />
+            <Route path="/tools" element={<Tools buttons={autopilot.buttons} />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
         </main>

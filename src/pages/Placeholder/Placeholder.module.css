@@ -1,3 +1,23 @@
+.back {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  align-self: flex-start;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-mid);
+  font: inherit;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.back:hover {
+  color: var(--text-bright);
+}
+
 .empty {
   display: flex;
   align-items: center;

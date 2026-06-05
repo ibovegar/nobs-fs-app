@@ -1,0 +1,16 @@
+.hsi {
+  display: flex;
+  justify-content: center;
+  padding: var(--sp-6);
+
+  horizontal-situation-indicator {
+    display: block;
+    width: 260px;
+    height: 260px;
+    --background-outer-color: transparent;
+    --background-color: transparent;
+    --heading-select-color: rgb(0 255 255);
+    --nav1-color: rgb(255 0 255);
+    --nav2-color: var(--accent);
+  }
+}

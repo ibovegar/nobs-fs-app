@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fboes/horizontal-situation-indicator": "^1.2.5",
     "@lineiconshq/free-icons": "^1.0.6",
     "@lineiconshq/react-lineicons": "^1.0.5",
     "react": "^19.2.6",

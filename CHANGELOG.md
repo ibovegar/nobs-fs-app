@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- `Hsi` component — a typed React wrapper around the `@fboes/horizontal-situation-indicator`
+  vanilla-JS web component, themed via CSS variables (transparent face, cyan heading-select,
+  magenta NAV1). Displayed on the Tools page.
+- Tools page field selector — four buttons to the right of the HSI (Heading, Heading bug, NAV1
+  course, NAV1 bearing) pick which field the autopilot's ENC1 encoder adjusts (5° per detent).
+  Each button shows the field's current value; pressing the encoder resets all four to 0°.
+- `ProductImage` now renders a row of navigational links (icon + text) below the product image:
+  **Tools** (`/tools`) and **Settings** (`/settings`), as `NavLink`s with hover and active states.
+- `~/pages/Tools` — a new self-contained `/tools` route view (borderless back button + "Coming
+  soon" section), reached from the Tools link on the product cards.
+- Borderless back button (arrow + "Back") at the top of the Tools / Settings views, navigating to
+  the previous route via `useNavigate(-1)`.
 - Client-side routing via `react-router`. Each sidebar item is now its own route: Home (`/`),
   Devices (`/devices`), Event log (`/events`), Settings (`/settings`). `App` owns the gamepad
   hooks and renders the matched route inside the body; `main.tsx` wraps the app in

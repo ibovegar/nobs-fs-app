@@ -26,7 +26,16 @@
       "Bash(echo \"EXIT: $?\")",
       "Bash(git commit -m 'feat: add Sidebar icon rail and useEventLog hook *)",
       "Bash(git --no-pager diff src/App.tsx src/components/Section/Section.module.css src/App.module.css)",
-      "Bash(git commit -m 'feat: client-side routing with one route per sidebar item *)"
+      "Bash(git commit -m 'feat: client-side routing with one route per sidebar item *)",
+      "Bash(node -e \"const i=require\\('@lineiconshq/free-icons'\\); const k=Object.keys\\(i\\); console.log\\(k.filter\\(n=>/Tool|Wrench|Gear|Hammer|Cog/i.test\\(n\\)\\).join\\('\\\\n'\\)\\)\")",
+      "Bash(node --input-type=module -e \"import * as i from '@lineiconshq/free-icons'; const k=Object.keys\\(i\\); console.log\\(k.filter\\(n=>/Tool|Wrench|Gear|Hammer|Cog|Slider/i.test\\(n\\)\\).join\\('\\\\n'\\)\\)\")",
+      "Bash(node --input-type=module -e \"import * as i from '@lineiconshq/free-icons'; process.stdout.write\\(Object.keys\\(i\\).filter\\(n=>/Tool|Wrench|Hammer|Slider|Cog|Gear/i.test\\(n\\)\\).join\\('\\\\n'\\)+'\\\\n'\\)\")",
+      "WebFetch(domain:www.npmjs.com)",
+      "Bash(node -e \"const p=require\\('./node_modules/@fboes/horizontal-situation-indicator/package.json'\\); console.log\\(JSON.stringify\\({main:p.main,module:p.module,exports:p.exports,types:p.types,type:p.type,files:p.files},null,2\\)\\)\")",
+      "Bash(cat tsconfig.json tsconfig.app.json)",
+      "Bash(node -e \"console.log\\(require\\('./node_modules/react/package.json'\\).version\\)\")",
+      "Bash(ls src/*.d.ts)",
+      "Bash(cat src/vite-env.d.ts)"
     ]
   }
 }

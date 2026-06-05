@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@fboes/horizontal-situation-indicator':
+        specifier: ^1.2.5
+        version: 1.2.5
       '@lineiconshq/free-icons':
         specifier: ^1.0.6
         version: 1.0.6
@@ -192,6 +195,9 @@ packages:
 
   '@emnapi/wasi-threads@1.2.1':
     resolution: {integrity: sha512-uTII7OYF+/Mes/MrcIOYp5yOtSMLBWSIoLPpcgwipoiKbli6k322tcoFsxoIIxPDqW01SQGAgko4EzZi2BNv2w==}
+
+  '@fboes/horizontal-situation-indicator@1.2.5':
+    resolution: {integrity: sha512-zinBe2VKj8gLRaP2OZwJkGU9qlLK9jzUDq45U0DUqAovwglvOlzHz28CDNZj76vx7RuDeQY2pjxYXwAh0e58tA==}
 
   '@jridgewell/gen-mapping@0.3.13':
     resolution: {integrity: sha512-2kkt/7niJ6MgEPxF0bYdQ6etZaA+fQvDcLKckhy1yIQOzaoKjBBjSj63/aLVjYE3qhRt5dvM+uUyfCg6UKCBbA==}
@@ -822,6 +828,8 @@ snapshots:
     dependencies:
       tslib: 2.8.1
     optional: true
+
+  '@fboes/horizontal-situation-indicator@1.2.5': {}
 
   '@jridgewell/gen-mapping@0.3.13':
     dependencies:

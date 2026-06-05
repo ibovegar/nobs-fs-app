@@ -30,7 +30,43 @@
   img {
     display: block;
     width: 180px;
+    margin-bottom: -30px;
     object-fit: contain;
     align-self: center;
   }
+}
+
+.nav {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--sp-4);
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: 8px;
+  color: var(--text-mid);
+  font-size: 13px;
+  text-decoration: none;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+
+  span {
+    margin-bottom: 1px;
+  }
+}
+
+.navLink:hover {
+  background: var(--bg-card-hi);
+  color: var(--text-bright);
+}
+
+.navLinkActive,
+.navLinkActive:hover {
+  background: var(--accent-dim);
+  color: var(--accent);
 }
