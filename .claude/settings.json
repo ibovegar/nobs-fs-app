@@ -35,7 +35,10 @@
       "Bash(cat tsconfig.json tsconfig.app.json)",
       "Bash(node -e \"console.log\\(require\\('./node_modules/react/package.json'\\).version\\)\")",
       "Bash(ls src/*.d.ts)",
-      "Bash(cat src/vite-env.d.ts)"
+      "Bash(cat src/vite-env.d.ts)",
+      "Bash(git reset *)",
+      "Bash(git commit *)",
+      "Bash(git rm *)"
     ]
   }
 }

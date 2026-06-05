@@ -29,8 +29,8 @@ fresh `[Unreleased]` above it.
 ### Path alias
 `~` maps to `src/`. Always use `~/` imports — never relative paths when the alias applies.
 ```ts
-import { useGamepad } from '~/hooks'       // correct
-import { useGamepad } from './hooks/useGamepad' // wrong
+import { useDevice } from '~/hooks'       // correct
+import { useDevice } from './hooks/useDevice' // wrong
 ```
 
 ### Barrel exports
@@ -76,8 +76,15 @@ src/
   main.tsx               entry — calls injectThemeCssVars()
   App.tsx                root layout (state + hook wiring)
   App.module.css
+  io/                    input drivers (raw device bits, env-specific)
+    types.ts             DeviceDriver interface + DeviceSnapshot
+    gamepadDriver.ts     Gamepad API polling (web/dev)
+    nativeDriver.ts      Tauri HID bridge (native; scaffold)
+    selectDriver.ts      runtime env detection → active driver
+    index.ts
   hooks/
-    useGamepad.ts        Gamepad API polling, press detection, counts
+    useDevice.ts         backend-agnostic: press detection, counts, events
+    useEventLog.ts       autopilot event log (wraps useDevice)
     index.ts
   components/
     index.ts             public barrel

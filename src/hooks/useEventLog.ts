@@ -1,14 +1,14 @@
 import { useCallback, useRef, useState } from 'react'
 import type { LogEntry } from '~/components'
 import { ccwButton, cwButton, DEVICES, decodeButton, ENCODER_LABELS } from '~/panel'
-import { type GamepadEvent, useGamepad } from './useGamepad'
+import { type DeviceEvent, useDevice } from './useDevice'
 
 const MAX_LOG = 60
 
 export interface EventLogState {
   log: LogEntry[]
   isConnected: boolean
-  buttons: ReturnType<typeof useGamepad>['buttons']
+  buttons: ReturnType<typeof useDevice>['buttons']
 }
 
 export function useEventLog(): EventLogState {
@@ -21,7 +21,7 @@ export function useEventLog(): EventLogState {
   }, [])
 
   const handleEvent = useCallback(
-    (ev: GamepadEvent) => {
+    (ev: DeviceEvent) => {
       const control = decodeButton(ev.id)
       if (control.kind === 'switch') {
         addLog({
@@ -47,7 +47,7 @@ export function useEventLog(): EventLogState {
     [addLog],
   )
 
-  const gp = useGamepad(DEVICES.autopilot, handleEvent)
+  const gp = useDevice(DEVICES.autopilot, handleEvent)
   resetCountsRef.current = gp.resetCounts
 
   return { log, isConnected: gp.isConnected, buttons: gp.buttons }

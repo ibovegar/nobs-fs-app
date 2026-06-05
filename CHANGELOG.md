@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- `src/io` input-driver layer that decouples *where raw button bits come from* from the press
+  detection/counting logic. `DeviceDriver` interface emits `DeviceSnapshot`s; `gamepadDriver`
+  (web/dev, Gamepad API) and `nativeDriver` (Tauri HID bridge — scaffold) implement it, and
+  `selectDriver` picks one at runtime (`__TAURI_INTERNALS__` → native, else gamepad). This lets the
+  app auto-detect the device in the native build without the Gamepad API's "actuate to appear"
+  requirement, while the web build keeps working unchanged.
 - `Hsi` component — a typed React wrapper around the `@fboes/horizontal-situation-indicator`
   vanilla-JS web component, themed via CSS variables (transparent face, cyan heading-select,
   magenta NAV1). Displayed on the Tools page.
@@ -43,6 +49,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   hardware exists; Autopilot keeps the real `2341:0657`.
 
 ### Changed
+- Renamed `useGamepad` → `useDevice` (and `GamepadState`/`GamepadEvent` → `DeviceState`/
+  `DeviceEvent`); it now consumes a `DeviceDriver` from `~/io` rather than polling the Gamepad API
+  directly. Web behaviour is identical.
 - The event log now fills the full height of the `/events` view instead of a fixed 200px box.
   `EventLog`'s `.log` flexes to fill its container, the `Events` page stretches its `Section` to
   fill the body, and `Section` gained an optional `className` prop so a route can opt into that

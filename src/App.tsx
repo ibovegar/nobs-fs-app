@@ -1,14 +1,14 @@
 import { Route, Routes } from 'react-router'
 import { Header, Sidebar } from '~/components'
-import { useEventLog, useGamepad } from '~/hooks'
+import { useDevice, useEventLog } from '~/hooks'
 import { Devices, Events, Home, Settings, Tools } from '~/pages'
 import { DEVICES } from '~/panel'
 import styles from './App.module.css'
 
 export default function App() {
   const autopilot = useEventLog()
-  const approach = useGamepad(DEVICES.approach)
-  const panel = useGamepad(DEVICES.panel)
+  const approach = useDevice(DEVICES.approach)
+  const panel = useDevice(DEVICES.panel)
 
   return (
     <div className={styles.app}>

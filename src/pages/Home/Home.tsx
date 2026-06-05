@@ -2,13 +2,13 @@ import approachImg from '~/assets/images/nobs_approach.svg'
 import autopilotImg from '~/assets/images/nobs_autopilot.png'
 import panelImg from '~/assets/images/nobs_panel.svg'
 import { Approach, Panel, PanelGrid, ProductCard, ProductImage, Section } from '~/components'
-import type { EventLogState, GamepadState } from '~/hooks'
+import type { DeviceState, EventLogState } from '~/hooks'
 import { DEVICES } from '~/panel'
 
 interface Props {
   autopilot: EventLogState
-  approach: GamepadState
-  panel: GamepadState
+  approach: DeviceState
+  panel: DeviceState
 }
 
 export function Home({ autopilot, approach, panel }: Props) {
