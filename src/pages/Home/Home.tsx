@@ -1,6 +1,4 @@
-import approachImg from '~/assets/images/nobs_approach.svg'
 import autopilotImg from '~/assets/images/nobs_autopilot.png'
-import panelImg from '~/assets/images/nobs_panel.svg'
 import { Approach, Panel, PanelGrid, ProductCard, ProductImage, Section } from '~/components'
 import type { DeviceState, EventLogState } from '~/hooks'
 import { DEVICES } from '~/panel'
@@ -28,7 +26,7 @@ export function Home({ autopilot, approach, panel }: Props) {
         <ProductCard>
           <ProductImage
             name={DEVICES.approach.name}
-            image={approachImg}
+            image={autopilotImg}
             isConnected={approach.isConnected}
           />
           <Approach buttons={approach.buttons} />
@@ -38,7 +36,7 @@ export function Home({ autopilot, approach, panel }: Props) {
         <ProductCard>
           <ProductImage
             name={DEVICES.panel.name}
-            image={panelImg}
+            image={autopilotImg}
             isConnected={panel.isConnected}
           />
           <Panel buttons={panel.buttons} />

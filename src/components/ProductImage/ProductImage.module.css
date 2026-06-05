@@ -29,10 +29,13 @@
 
   img {
     display: block;
-    width: 180px;
+    width: 450px;
     margin-bottom: -30px;
     object-fit: contain;
     align-self: center;
+    /* Recolor toward the sapphire theme accent: sepia+hue-rotate lands the
+       midtones on the blue hue, saturate/brightness keep it from going flat. */
+    filter: brightness(0.95) saturate(0.7) sepia(0.45) hue-rotate(185deg) saturate(1.4);
   }
 }
 

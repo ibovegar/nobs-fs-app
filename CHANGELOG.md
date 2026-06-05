@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Product image (`ProductImage`) now has a CSS `filter` that recolors it toward the sapphire theme
+  accent so it blends with the dark blue-grey UI instead of clashing with its original colors.
+
 ### Added
 - WebHID driver (`webhidDriver`) — automatic device detection in Chromium without the Gamepad
   API's "actuate to appear" requirement. Uses `navigator.hid`: opens already-granted devices on
