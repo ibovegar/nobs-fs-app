@@ -1,0 +1,11 @@
+.section {
+  /* Share the viewport height between the three device sections so the cards
+     (and the product images inside them) scale with window height. min-height
+     keeps them usable — the body scrolls when the viewport is too short — and
+     max-height stops them ballooning on tall monitors. */
+  flex: 1 1 0;
+  min-height: 220px;
+  max-height: 420px;
+  display: flex;
+  flex-direction: column;
+}

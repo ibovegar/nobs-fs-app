@@ -1,7 +1,8 @@
 .container {
   display: flex;
   flex-direction: column;
-  width: 480px;
+  flex: 0 1 clamp(300px, 34vw, 480px);
+  min-width: 0;
   padding: var(--sp-5);
   background: var(--bg-gradient-slate-dusk);
 }
@@ -26,16 +27,23 @@
   align-items: center;
   justify-self: stretch;
   flex: 1;
+  /* Let the image area shrink below the image's intrinsic size so the nav below
+     stays inside the card, and clip anything that would bleed onto it. */
+  min-height: 0;
+  overflow: hidden;
 
   img {
     display: block;
-    width: 450px;
-    margin-bottom: -30px;
+    /* Fill the available card cell, scaling by whichever axis is binding while
+       keeping aspect ratio — so the image follows the PanelCard's size. */
+    width: 100%;
+    height: 100%;
     object-fit: contain;
     align-self: center;
+    margin-bottom: -30px;
     /* Recolor toward the sapphire theme accent: sepia+hue-rotate lands the
        midtones on the blue hue, saturate/brightness keep it from going flat. */
-    filter: brightness(0.95) saturate(0.7) sepia(0.45) hue-rotate(185deg) saturate(1.4);
+    filter: brightness(0.96) saturate(0.75) sepia(0.38) hue-rotate(185deg) saturate(1.35);
   }
 }
 

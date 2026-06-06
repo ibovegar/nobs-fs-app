@@ -1,4 +1,7 @@
 .card {
   display: flex;
-  height: 320px;
+  /* Fill the height the Home section grants us so the card — and the product
+     image inside it — track the viewport instead of a fixed height. */
+  flex: 1;
+  min-height: 0;
 }

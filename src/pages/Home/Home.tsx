@@ -2,6 +2,7 @@ import autopilotImg from '~/assets/images/nobs_autopilot.png'
 import { Approach, Panel, PanelGrid, ProductCard, ProductImage, Section } from '~/components'
 import type { DeviceState, EventLogState } from '~/hooks'
 import { DEVICES } from '~/panel'
+import styles from './Home.module.css'
 
 interface Props {
   autopilot: EventLogState
@@ -12,7 +13,7 @@ interface Props {
 export function Home({ autopilot, approach, panel }: Props) {
   return (
     <>
-      <Section>
+      <Section className={styles.section}>
         <ProductCard>
           <ProductImage
             name={DEVICES.autopilot.name}
@@ -22,7 +23,7 @@ export function Home({ autopilot, approach, panel }: Props) {
           <PanelGrid buttons={autopilot.buttons} />
         </ProductCard>
       </Section>
-      <Section>
+      <Section className={styles.section}>
         <ProductCard>
           <ProductImage
             name={DEVICES.approach.name}
@@ -32,7 +33,7 @@ export function Home({ autopilot, approach, panel }: Props) {
           <Approach buttons={approach.buttons} />
         </ProductCard>
       </Section>
-      <Section>
+      <Section className={styles.section}>
         <ProductCard>
           <ProductImage
             name={DEVICES.panel.name}
