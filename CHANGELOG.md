@@ -7,9 +7,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `docs/desktop-build.md` — documents the Tauri desktop build: prerequisites, `pnpm tauri dev/build`
+  and their outputs, a step-by-step "cutting a new build" procedure (version bump → lint/build →
+  `pnpm tauri build` → collect artifacts → smoke-test), the app-icon generation procedure
+  (`pnpm tauri icon` from `app-icon.png`, and rasterizing the source from `favicon.svg`), key
+  `tauri.conf.json` settings, and troubleshooting.
+- Favicon: `index.html` now links `public/favicon.svg` as the browser tab icon.
+
 ### Changed
-- Product image (`ProductImage`) now has a CSS `filter` that recolors it toward the sapphire theme
-  accent so it blends with the dark blue-grey UI instead of clashing with its original colors.
+- Header now displays the `logo_2.svg` brand logo (24px tall) in place of the text "Nobs FS"
+  title (40px tall); removed the `.title`/`.titleMain`/`.titleSub` styles.
+
+### Added
+- Tauri v2 desktop shell (`src-tauri/`) — the app now builds to a native Windows executable and
+  installers (`.msi` + NSIS `-setup.exe`) via `pnpm tauri build`. `pnpm tauri dev` runs the desktop
+  app against the Vite dev server. Bundle identifier `com.nobs.fs`; standalone binary named
+  `Nobs FS.exe` (via `mainBinaryName`).
+- App icon — generated all `src-tauri/icons/` assets (Windows `.ico`, macOS `.icns`, PNGs, Store
+  logos) from the favicon emblem via `pnpm tauri icon`. The 1024×1024 source is kept at
+  `app-icon.png` (the default path `pnpm tauri icon` reads, so re-generating is a no-arg command).
+  The icon is baked into the exe, taskbar, and the installer's Start-menu/desktop shortcuts.
+- Native HID backend (`src-tauri/src/hid.rs`) — implements the Rust side the `nativeDriver` expected.
+  `hid_open`/`hid_close` Tauri commands spawn a per-device worker that reads the panel via the
+  `hidapi` crate and emits `hid://report` (report-ID byte stripped to match WebHID) and
+  `hid://connection` events, reconnecting automatically on replug. No knob-turn or permission grant
+  needed in the native build.
+
+### Changed
+- Default desktop window size is now 1500×900 (was 800×600).
+- Home device cards and product images now resize with the viewport on both axes. The three Home
+  sections share the available height (`flex: 1 1 0`, bounded by `min/max-height`) and each
+  `ProductCard` fills its section (`flex: 1`) instead of using a fixed height, so the cards grow and
+  shrink with window height and the body scrolls only when the viewport is too short. The product
+  image column uses a `clamp()`-based flex basis (`300px`–`34vw`–`480px`) and the image fills its cell
+  with `object-fit: contain`, so it follows the card on both axes. Removed the `margin-bottom: -30px`
+  crop hack (which painted the image over the nav) and clipped the image area with `overflow: hidden`,
+  fixing the Tools/Settings buttons being hidden when the window was short.
+- `nativeDriver` now uses the typed `@tauri-apps/api` (`invoke`/`listen`) instead of the
+  `window.__TAURI__` global, and is no longer a scaffold — it is backed by the Rust HID bridge above.
+- Product image (`ProductImage`) now has a subtle CSS `filter` that nudges it toward the sapphire
+  theme accent so it blends with the dark blue-grey UI instead of clashing with its original colors.
 
 ### Added
 - WebHID driver (`webhidDriver`) — automatic device detection in Chromium without the Gamepad
