@@ -33,8 +33,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `hidapi` crate and emits `hid://report` (report-ID byte stripped to match WebHID) and
   `hid://connection` events, reconnecting automatically on replug. No knob-turn or permission grant
   needed in the native build.
+- Header close button — an `×` icon on the right of the header closes the native window (and, as the
+  only window, the app). Rendered only in the desktop build, gated by the new `isNative()` helper
+  (`~/io`); hidden in the web app. Uses a dynamic `import('@tauri-apps/api/window')` so the Tauri
+  window API is code-split out of the web bundle. Window-close permission added in
+  `src-tauri/capabilities/default.json`.
+- `isNative()` (`src/io/env.ts`) — single source of truth for "running inside Tauri", reused by
+  `selectDriver` (replacing its private `isTauri`) and the header close button.
+
+### Fixed
+- White flash on native launch — the window is now created hidden (`visible: false`) and revealed
+  from `main.tsx` after the first paint (`core:window:allow-show`), and `index.html` paints the dark
+  `--bg` color inline before any JS loads, so WebView2's white initialization surface is never shown.
 
 ### Changed
+- Native desktop window is now frameless (`decorations: false`) — the OS title bar/toolbar is gone.
+  The header is marked `data-tauri-drag-region` so the window can still be moved by dragging it
+  (`core:window:allow-start-dragging`).
 - Default desktop window size is now 1500×900 (was 800×600).
 - Home device cards and product images now resize with the viewport on both axes. The three Home
   sections share the available height (`flex: 1 1 0`, bounded by `min/max-height`) and each

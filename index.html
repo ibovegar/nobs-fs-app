@@ -5,6 +5,16 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NobsFS Autopilot</title>
+    <!-- Paint the dark theme background before any JS loads, so WebView2's
+         initial surface isn't white on launch. Literal mirror of the `--bg`
+         token (palette.background.default); the CSS vars aren't injected until
+         main.tsx runs. -->
+    <style>
+      html,
+      body {
+        background: #171f24;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>

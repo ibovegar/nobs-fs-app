@@ -12,3 +12,23 @@
   width: auto;
   display: block;
 }
+
+.close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-2);
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-mid);
+  cursor: pointer;
+  transition:
+    background 0.12s ease,
+    color 0.12s ease;
+}
+
+.close:hover {
+  background: var(--danger-main);
+  color: var(--text-bright);
+}
