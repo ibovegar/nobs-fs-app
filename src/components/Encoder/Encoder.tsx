@@ -9,8 +9,6 @@ interface Props {
 }
 
 export function Encoder({ label, cw, ccw, push }: Props) {
-  const net = cw.count - ccw.count
-
   return (
     <>
       <div className={styles.header}>
@@ -26,22 +24,12 @@ export function Encoder({ label, cw, ccw, push }: Props) {
           ◀
         </div>
 
-        <div className={styles.counts}>
-          <span className={styles.countCcw}>{ccw.count}</span>
-          <span className={styles.sep}>·</span>
-          <span className={styles.countCw}>{cw.count}</span>
-        </div>
-
         <div
           key={`cw-${cw.lastPress}`}
           className={`${styles.arrow} ${styles.arrowCw}${cw.pressed ? ` ${styles.arrowLive}` : ''}${cw.lastPress > 0 ? ` ${styles.arrowPulsed}` : ''}`}
         >
           ▶
         </div>
-      </div>
-
-      <div className={`${styles.net}${net !== 0 ? ` ${styles.netActive}` : ''}`}>
-        {net > 0 ? `+${net}` : net === 0 ? '±0' : net}
       </div>
     </>
   )

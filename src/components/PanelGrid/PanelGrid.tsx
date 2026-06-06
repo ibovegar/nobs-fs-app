@@ -25,7 +25,7 @@ export function PanelGrid({ buttons }: Props) {
           const sw = buttons[switchButton(cell.index)]
           return (
             <PanelCard key={key} active={sw.pressed}>
-              <SwitchBtn index={cell.index} pressed={sw.pressed} count={sw.count} />
+              <SwitchBtn index={cell.index} pressed={sw.pressed} />
             </PanelCard>
           )
         }

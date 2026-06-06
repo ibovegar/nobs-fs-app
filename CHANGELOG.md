@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- `firmware/nobs-autopilot/nobs-autopilot.ino` — full Arduino Micro firmware for all 4 encoders
+  and 8 switches. Reports 20 HID buttons in the app's expected order (encoders first as
+  CW/CCW/push, then SW1–SW8). Encoder CW/CCW pulses are non-blocking (40 ms hold via `millis()`)
+  so all encoders and switches stay responsive.
+- `docs/mapping.md`: physical pin-assignment tables (Arduino Micro labels + AVR ports) for every
+  encoder and switch, linked to the firmware sketch; replaced the stale "1 encoder test setup"
+  section. Added a "Signal decoding (firmware behavior)" section (quadrature decode, pulse vs.
+  level, one report per loop) and a wiring convention note (internal pull-ups, encoder/switch
+  GND connections).
 - `docs/desktop-build.md` — documents the Tauri desktop build: prerequisites, `pnpm tauri dev/build`
   and their outputs, a step-by-step "cutting a new build" procedure (version bump → lint/build →
   `pnpm tauri build` → collect artifacts → smoke-test), the app-icon generation procedure
@@ -16,8 +25,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Favicon: `index.html` now links `public/favicon.svg` as the browser tab icon.
 
 ### Changed
+- Tools page now shows four HSIs — one per encoder (ENC1–ENC4) — in a 2×2 grid, each with its own
+  field selector and state. Extracted the per-encoder logic into a new `HsiTool` component; the
+  page no longer hardcodes a single ENC1-driven instrument.
+- Firmware: rewrote encoder rotation as a full quadrature decoder. Reads both A and B each loop and
+  accumulates only valid Gray-code transitions, emitting one CW/CCW step per detent (±4 counts).
+  Replaces single-A-edge detection, which sampled B at the wrong instant on CCW and produced false
+  CW steps plus dropped counts. Bounce nets to zero, so both directions are stable; rest-position
+  independent. CW/CCW orientation unchanged.
+- Firmware: disabled the Joystick library's auto-send (`begin(false)`) and now call `sendState()`
+  once per loop. Previously every `setButton()` sent its own USB report (~12 per loop), slowing the
+  loop enough that the quadrature decoder missed transitions and felt unresponsive.
+
+### Fixed
+- Firmware: rapid encoder rotation no longer drops counts. CW/CCW steps are now queued
+  (`pending[]`) and paced out as short press + low-gap pulses (`PULSE_ON_MS` / `PULSE_GAP_MS`)
+  instead of holding and re-arming one button, which merged fast steps into a single long press.
+- Firmware: ENC4 push moved off `PB0` (D17 = RX LED, held low → always-pressed) onto `PB2`
+  (D16 / MOSI). Requires moving ENC4's `S` wire to pin 16.
+- `PANEL_LAYOUT`: switch grid positions updated to match the physical hardware. SW4 now sits in
+  row 2 (the middle slot between the encoders); row 1 reads SW1 · SW2 · SW3 · SW5 · SW6 · SW7. Each
+  switch keeps its label and HID button index — only its on-screen position changes.
 - Header now displays the `logo_2.svg` brand logo (24px tall) in place of the text "Nobs FS"
   title (40px tall); removed the `.title`/`.titleMain`/`.titleSub` styles.
+
+### Removed
+- Press counters inside the panel grid items: the encoder CW/CCW counts and net display, and the
+  switch `count×` tally. Grid cells now show only live state (arrows, push/indicator dots, ON/OFF).
+  Removed the now-unused `count` prop from `SwitchBtn` and the associated CSS.
 
 ### Added
 - Tauri v2 desktop shell (`src-tauri/`) — the app now builds to a native Windows executable and

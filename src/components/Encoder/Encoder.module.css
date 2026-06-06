@@ -100,38 +100,3 @@
     text-shadow: none;
   }
 }
-
-.counts {
-  font-family: "Consolas", "Courier New", monospace;
-  font-size: 11px;
-  display: flex;
-  align-items: center;
-  gap: var(--sp-1);
-  min-width: 52px;
-  justify-content: center;
-}
-
-.countCcw {
-  color: var(--danger);
-}
-.countCw {
-  color: var(--accent);
-}
-.sep {
-  color: var(--text-dim);
-}
-
-.net {
-  font-family: "Consolas", "Courier New", monospace;
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text-dim);
-  letter-spacing: 0.04em;
-  line-height: 1;
-  min-height: 22px;
-}
-
-.netActive {
-  color: var(--accent);
-  text-shadow: 0 0 10px var(--accent-glow);
-}

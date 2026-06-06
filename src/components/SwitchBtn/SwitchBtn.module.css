@@ -36,10 +36,3 @@
 .stateOn {
   color: var(--accent);
 }
-
-.count {
-  font-family: "Consolas", "Courier New", monospace;
-  font-size: 9px;
-  color: var(--text-dim);
-  letter-spacing: 0.04em;
-}
