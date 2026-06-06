@@ -75,7 +75,11 @@
       "Bash(inkscape --version)",
       "Bash(pnpm dlx *)",
       "Bash(echo \"EXIT:$?\")",
-      "PowerShell($env:Path = \"$env:USERPROFILE\\\\.cargo\\\\bin;$env:Path\"; pnpm tauri icon icon-source.png)"
+      "PowerShell($env:Path = \"$env:USERPROFILE\\\\.cargo\\\\bin;$env:Path\"; pnpm tauri icon icon-source.png)",
+      "Bash(node -e \"const i=require\\('@lineiconshq/free-icons'\\); const k=Object.keys\\(i\\); console.log\\(k.filter\\(n=>/xmark|close|cross|times|^x/i.test\\(n\\)\\).join\\('\\\\n'\\)\\)\")",
+      "Bash(node --input-type=module -e \"import * as i from '@lineiconshq/free-icons'; const k=Object.keys\\(i\\); console.log\\('total',k.length\\); console.log\\(k.filter\\(n=>/xmark|close|cross|times|exit|power/i.test\\(n\\)\\).join\\('\\\\n'\\)\\)\")",
+      "Bash(node --input-type=module -e \"import * as i from '@lineiconshq/free-icons'; const k=Object.keys\\(i\\); const m=k.filter\\(n=>/xmark|close|cross|times|exit/i.test\\(n\\)\\); console.error\\(m.join\\('\\\\n'\\)\\)\")",
+      "PowerShell(pnpm lint; if \\($?\\) { $env:Path = \"$env:USERPROFILE\\\\.cargo\\\\bin;$env:Path\"; pnpm tauri build })"
     ],
     "additionalDirectories": [
       "c:\\Users\\Vegar Eeg\\workspace\\nobs-fs\\nobs-fs-app",
