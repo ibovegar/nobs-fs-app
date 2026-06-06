@@ -17,7 +17,10 @@ and the React app's `~/panel` constants.
 
 ## Firmware layout
 
-The Arduino sketch (`Joystick.setButton`) assigns indices in this order:
+Sketch: [`firmware/nobs-autopilot/nobs-autopilot.ino`](../firmware/nobs-autopilot/nobs-autopilot.ino)
+(Arduino Micro / ATmega32U4, MHeironimus `Joystick` library, report ID `0x05`).
+
+The sketch (`Joystick.setButton`) assigns indices in this order:
 **encoders first** (3 buttons each), **standalone switches after**.
 
 ```
@@ -57,6 +60,38 @@ SW    index = (NUM_ENCODERS × 3) + switch_index   →  4 × 3 + sw = 12 + sw
 
 ---
 
+## Signal decoding (firmware behavior)
+
+How the raw electrical signals become HID button presses:
+
+| Input | Signal | HID behavior |
+|---|---|---|
+| Encoder rotation | Quadrature A/B | Momentary **pulse** per detent — queued, ~6 ms on + ~4 ms gap |
+| Encoder push (S) | Single contact to GND | **Level** — pressed while held (LOW) |
+| Switch | Single contact to GND | **Level** — pressed while closed (LOW) |
+
+- **Quadrature decode.** Each loop reads both A and B and accumulates only valid
+  Gray-code transitions via a 16-entry direction table (`qdec`). One detent = one
+  full cycle = **4 counts** (`DETENT_STEPS`), so a CW/CCW step is emitted each time
+  the accumulator crosses ±4. Contact bounce that wiggles back and forth, or any
+  illegal two-bit jump, nets to zero — no false or jittery steps, in either
+  direction, and it does not depend on which phase the detent rests at.
+- **Queued pulses.** Each detent is emitted as a short press (`PULSE_ON_MS` ~6 ms)
+  followed by a forced low gap (`PULSE_GAP_MS` ~4 ms), paced out from a per-encoder
+  queue (`pending[]`). Earlier the button was held and re-armed, which merged into
+  one long press during fast rotation and dropped counts; queuing makes every detent
+  a distinct, countable press. Phases are short because WebHID delivers every report
+  (~1 ms USB poll). Non-blocking (`millis()` based).
+- **One report per loop.** The Joystick library's auto-send is disabled
+  (`Joystick.begin(false)`); all 20 buttons are written each loop and pushed in a
+  single `Joystick.sendState()`. Sending a report per `setButton()` (the default)
+  slowed the loop enough to miss quadrature transitions.
+
+> If a single physical detent ever registers as **two** steps, the encoder is
+> half-step (2 transitions per detent) — set `DETENT_STEPS = 2`.
+
+---
+
 ## App constants (`src/panel/panel.ts`)
 
 ```ts
@@ -73,15 +108,43 @@ export const switchButton = (sw:  number) => NUM_ENCODERS * BUTTONS_PER_ENCODER 
 
 ---
 
-## Current test setup (1 encoder, no switches)
+## Physical pin assignments (Arduino Micro)
 
-With only ENC1 connected on pins A0 (A), A1 (B), A2 (push):
+Wiring convention — every signal pin uses the MCU's internal pull-up
+(`INPUT_PULLUP`), so **no external resistors** are needed and a closed contact
+reads `LOW`:
 
-| Action | `buttons[n]` | Shown in UI |
+- **Encoders:** `A` and `B` → their MCU pins; `C` (common) → **GND**; `S` (push) →
+  its MCU pin; the extra `W` pin → **GND**.
+- **Switches:** pin 1 → its MCU pin; pin 2 → **GND**.
+
+The AVR port pin is shown in parentheses next to the Arduino label.
+
+### Encoders
+
+| Encoder | A | B | Push (S) | Buttons (CW / CCW / push) |
+|---|---|---|---|---|
+| ENC1 | A0 (PF7) | A1 (PF6) | A2 (PF5) | 0 / 1 / 2 |
+| ENC2 | A3 (PF4) | A4 (PF1) | A5 (PF0) | 3 / 4 / 5 |
+| ENC3 | D3 (PD0) | D2 (PD1) | D4 (PD4) | 6 / 7 / 8 |
+| ENC4 | D0 (PD2) | D1 (PD3) | D16 (PB2) | 9 / 10 / 11 |
+
+### Switches
+
+| Switch | Pin 1 → MCU | Button |
 |---|---|---|
-| Rotate CW | `buttons[0]` | ENC1 `▶` arrow pulses |
-| Rotate CCW | `buttons[1]` | ENC1 `◀` arrow pulses |
-| Press shaft | `buttons[2]` | ENC1 dot lights up |
+| SW1 | D12 (PD6) | 12 |
+| SW2 | D11 (PB7) | 13 |
+| SW3 | D10 (PB6) | 14 |
+| SW4 | D9 (PB5) | 15 |
+| SW5 | D8 (PB4) | 16 |
+| SW6 | D7 (PE6) | 17 |
+| SW7 | D6 (PD7) | 18 |
+| SW8 | D5 (PC6) | 19 |
+
+> Note: ENC4's push was moved off **PB0 (D17)** — that pin is the Micro's RX LED and
+> is held LOW by the LED circuit, so it reads as permanently pressed. It now uses
+> **PB2 (D16 / MOSI)**. For the same reason, avoid **PC7 (D13)** for inputs.
 
 ---
 

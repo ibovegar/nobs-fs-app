@@ -71,17 +71,17 @@ export function decodeButton(id: number): DecodedButton {
 export type PanelCell = { kind: 'switch'; index: number } | { kind: 'encoder'; index: number }
 
 export const PANEL_LAYOUT: PanelCell[] = [
-  // Row 1: all switches
+  // Row 1: all switches (SW4 sits in row 2; tail reads SW5 · SW6 · SW7)
   { kind: 'switch', index: 0 },
   { kind: 'switch', index: 1 },
   { kind: 'switch', index: 2 },
-  { kind: 'switch', index: 3 },
   { kind: 'switch', index: 4 },
   { kind: 'switch', index: 5 },
+  { kind: 'switch', index: 6 },
   // Row 2: enc · enc · sw · enc · enc · sw
   { kind: 'encoder', index: 0 },
   { kind: 'encoder', index: 1 },
-  { kind: 'switch', index: 6 },
+  { kind: 'switch', index: 3 },
   { kind: 'encoder', index: 2 },
   { kind: 'encoder', index: 3 },
   { kind: 'switch', index: 7 },
