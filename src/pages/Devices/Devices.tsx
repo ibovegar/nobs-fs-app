@@ -1,5 +1,6 @@
+import { CheckSolid } from '@lineiconshq/free-icons'
 import { useCallback, useEffect, useState } from 'react'
-import { ConnectionIndicator, Section } from '~/components'
+import { ConnectionIndicator, Icon, Section } from '~/components'
 import { grantedFlags, onHidChange, requestHidDevices, webhidSupported } from '~/io'
 import { DEVICES, type DeviceConfig } from '~/panel'
 import styles from './Devices.module.css'
@@ -57,7 +58,10 @@ export function Devices({ connected }: Props) {
                 <ConnectionIndicator isConnected={connected[key]} />
                 {supported &&
                   (granted[key] ? (
-                    <span className={styles.granted}>Access granted</span>
+                    <span className={styles.granted}>
+                      <Icon icon={CheckSolid} size={22} />
+                      Access granted
+                    </span>
                   ) : (
                     <button
                       type="button"

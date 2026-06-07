@@ -1,14 +1,19 @@
+import { useEffect } from 'react'
 import { Route, Routes } from 'react-router'
 import { Header, Sidebar } from '~/components'
 import { useDevice, useEventLog } from '~/hooks'
-import { Devices, Events, Home, Settings, Tools } from '~/pages'
+import { AutopilotSettings, Devices, Events, Home, Settings, Tools } from '~/pages'
 import { DEVICES } from '~/panel'
+import { watchSystemTheme } from '~/theme'
 import styles from './App.module.css'
 
 export default function App() {
   const autopilot = useEventLog()
   const approach = useDevice(DEVICES.approach)
   const panel = useDevice(DEVICES.panel)
+
+  // Repaint live when the OS theme flips and the user is on 'system'.
+  useEffect(() => watchSystemTheme(), [])
 
   return (
     <div className={styles.app}>
@@ -35,6 +40,7 @@ export default function App() {
             />
             <Route path="/events" element={<Events autopilot={autopilot} />} />
             <Route path="/tools" element={<Tools buttons={autopilot.buttons} />} />
+            <Route path="/autopilot/settings" element={<AutopilotSettings />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
         </main>

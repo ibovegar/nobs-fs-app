@@ -18,13 +18,13 @@ export function Tools({ buttons }: Props) {
         <Icon icon={ArrowLeftOutlined} size={24} />
         <span>Back</span>
       </button>
-      <Section label="HSI" className={styles.card}>
-        <div className={styles.grid}>
-          {ENCODER_LABELS.map((label, i) => (
-            <HsiTool key={label} label={label} encoder={i} buttons={buttons} />
-          ))}
-        </div>
-      </Section>
+      <div className={styles.grid}>
+        {ENCODER_LABELS.map((label, i) => (
+          <Section key={label} label={label} className={styles.card}>
+            <HsiTool encoder={i} buttons={buttons} />
+          </Section>
+        ))}
+      </div>
     </>
   )
 }

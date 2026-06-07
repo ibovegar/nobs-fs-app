@@ -8,16 +8,18 @@ interface Props {
   name: string
   image: string
   isConnected: boolean
+  // Per-device settings route. Omit for devices that have no settings page.
+  settingsTo?: string
 }
-
-const LINKS = [
-  { to: '/tools', label: 'Tools', icon: Hammer1Outlined },
-  { to: '/settings', label: 'Settings', icon: Gear1Outlined },
-] as const
 
 // TODO: Use typography here! and change the CSS names
 
-export function ProductImage({ name, image, isConnected }: Props) {
+export function ProductImage({ name, image, isConnected, settingsTo }: Props) {
+  const links = [
+    { to: '/tools', label: 'Tools', icon: Hammer1Outlined },
+    ...(settingsTo ? [{ to: settingsTo, label: 'Settings', icon: Gear1Outlined }] : []),
+  ]
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -28,7 +30,7 @@ export function ProductImage({ name, image, isConnected }: Props) {
         <img src={image} alt={name} className={styles.image} />
       </div>
       <nav className={styles.nav}>
-        {LINKS.map((link) => (
+        {links.map((link) => (
           <NavLink
             key={link.to}
             to={link.to}

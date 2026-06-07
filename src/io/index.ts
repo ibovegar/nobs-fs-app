@@ -1,5 +1,12 @@
 export { decodeJoystickReport } from './decodeReport'
 export { isNative } from './env'
+export {
+  configConnected,
+  connectConfigPort,
+  reconnectConfigPort,
+  sendAcceleration,
+  serialSupported,
+} from './panelConfig'
 export { getDriver } from './selectDriver'
 export type { DeviceDriver, DeviceSnapshot, SnapshotListener } from './types'
 export { grantedFlags, onHidChange, requestHidDevices, webhidSupported } from './webhidDriver'

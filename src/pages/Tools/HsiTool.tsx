@@ -25,12 +25,11 @@ const ZERO: Record<Field, number> = {
 const mod360 = (deg: number) => ((deg % 360) + 360) % 360
 
 interface Props {
-  label: string
   encoder: number
   buttons: ButtonState[]
 }
 
-export function HsiTool({ label, encoder, buttons }: Props) {
+export function HsiTool({ encoder, buttons }: Props) {
   const net = buttons[cwButton(encoder)].count - buttons[ccwButton(encoder)].count
   const pushes = buttons[pushButton(encoder)].count
 
@@ -63,7 +62,6 @@ export function HsiTool({ label, encoder, buttons }: Props) {
 
   return (
     <div className={styles.tool}>
-      <span className={styles.toolLabel}>{label}</span>
       <div className={styles.layout}>
         <Hsi
           heading={values.heading}

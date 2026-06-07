@@ -1,0 +1,154 @@
+.back {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  align-self: flex-start;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-mid);
+  font: inherit;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.15s ease;
+
+  span {
+    margin-bottom: 1px;
+  }
+}
+
+.back:hover {
+  color: var(--text-bright);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  padding: var(--sp-4);
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  max-width: 80ch;
+  padding: var(--sp-4);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-card);
+}
+
+.groupHead {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.title {
+  margin: 0;
+  color: var(--text-bright);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.hint {
+  margin: 0;
+  color: var(--text-mid);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 4.5ch 1fr 4ch auto;
+  align-items: center;
+  gap: var(--sp-4);
+}
+
+.rowLabel {
+  color: var(--text-mid);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.slider {
+  flex: 1;
+  height: 4px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.slider:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.value {
+  min-width: 4ch;
+  color: var(--text-bright);
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  font-size: 12px;
+}
+
+.muted {
+  color: var(--text-dim);
+}
+
+/*
+ * Per-row "Saved" tag. The base `.saved` is always rendered (hidden until the
+ * first save) so its grid column reserves a constant width — the slider must not
+ * resize when the tag appears. `.flash` reveals it and blinks on each save (the
+ * node is remounted via key, so the animation replays).
+ */
+.saved {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  visibility: hidden;
+}
+
+.flash {
+  visibility: visible;
+  animation: savedFlash 0.6s ease-in-out;
+}
+
+@keyframes savedFlash {
+  0%,
+  50%,
+  100% {
+    opacity: 1;
+  }
+  25%,
+  75% {
+    opacity: 0.15;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flash {
+    animation: none;
+  }
+}

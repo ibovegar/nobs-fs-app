@@ -1,0 +1,83 @@
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  padding: var(--sp-4);
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  max-width: 80ch;
+  padding: var(--sp-4);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-card);
+}
+
+.groupHead {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.title {
+  margin: 0;
+  color: var(--text-bright);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.hint {
+  margin: 0;
+  color: var(--text-mid);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.segmented {
+  display: flex;
+  gap: var(--sp-2);
+}
+
+.segment {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  max-width: 16ch;
+  padding: var(--sp-3) var(--sp-4);
+  border: 1px solid var(--border-mid);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text-mid);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.segment:hover {
+  border-color: var(--accent);
+  color: var(--text-bright);
+}
+
+.segmentActive {
+  border-color: var(--accent);
+  background: var(--bg-card-hi);
+  color: var(--text-bright);
+}
+
+.segmentLabel {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.segmentHint {
+  font-size: 12px;
+  color: var(--text-dim);
+}

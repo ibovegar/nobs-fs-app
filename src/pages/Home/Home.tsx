@@ -19,6 +19,7 @@ export function Home({ autopilot, approach, panel }: Props) {
             name={DEVICES.autopilot.name}
             image={autopilotImg}
             isConnected={autopilot.isConnected}
+            settingsTo="/autopilot/settings"
           />
           <PanelGrid buttons={autopilot.buttons} />
         </ProductCard>

@@ -9,6 +9,8 @@
     height: 260px;
     --background-outer-color: transparent;
     --background-color: transparent;
+    /* Compass rose ticks + labels — follow the theme so they stay visible in light mode. */
+    --foreground-color: var(--text-bright);
     --heading-select-color: rgb(0 255 255);
     --nav1-color: rgb(255 0 255);
     --nav2-color: var(--accent);

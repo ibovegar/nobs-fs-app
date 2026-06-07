@@ -32,45 +32,55 @@ export function useDevice(device: DeviceConfig, onEvent?: (ev: DeviceEvent) => v
   const onEventRef = useRef(onEvent)
   onEventRef.current = onEvent
 
+  // Authoritative button state for edge detection. Kept in a ref (not derived
+  // from setState's `prev`) so the updater stays pure — under StrictMode React
+  // double-invokes updaters, so emitting events from inside one fires them
+  // twice. We compute edges/events here and hand setState a ready-made value.
+  const buttonsRef = useRef(state.buttons)
+  const connectedRef = useRef(state.isConnected)
+
   useEffect(() => {
     const driver = getDriver()
     return driver.watch(device, ({ connected, pressed }) => {
       const now = Date.now()
-      setState((prev) => {
-        if (!connected) {
-          if (!prev.isConnected) return prev
-          return {
-            isConnected: false,
-            buttons: prev.buttons.map((b) => (b.pressed ? { ...b, pressed: false } : b)),
-          }
+      const prevButtons = buttonsRef.current
+
+      if (!connected) {
+        if (!connectedRef.current) return
+        connectedRef.current = false
+        const buttons = prevButtons.map((b) => (b.pressed ? { ...b, pressed: false } : b))
+        buttonsRef.current = buttons
+        setState({ isConnected: false, buttons })
+        return
+      }
+
+      let changed = !connectedRef.current
+      const buttons = prevButtons.map((b, i) => {
+        const isDown = pressed[i] ?? false
+        if (isDown === b.pressed) return b
+
+        changed = true
+        if (isDown) {
+          onEventRef.current?.({ id: i, time: now, type: 'press' })
+          return { pressed: true, lastPress: now, count: b.count + 1 }
         }
-
-        let changed = !prev.isConnected
-        const buttons = prev.buttons.map((b, i) => {
-          const isDown = pressed[i] ?? false
-          if (isDown === b.pressed) return b
-
-          changed = true
-          if (isDown) {
-            onEventRef.current?.({ id: i, time: now, type: 'press' })
-            return { pressed: true, lastPress: now, count: b.count + 1 }
-          }
-          onEventRef.current?.({ id: i, time: now, type: 'release' })
-          return { ...b, pressed: false }
-        })
-
-        return changed ? { isConnected: true, buttons } : prev
+        onEventRef.current?.({ id: i, time: now, type: 'release' })
+        return { ...b, pressed: false }
       })
+
+      if (!changed) return
+      connectedRef.current = true
+      buttonsRef.current = buttons
+      setState({ isConnected: true, buttons })
     })
   }, [device])
 
   const resetCounts = useCallback((indices: number[]) => {
-    setState((prev) => ({
-      ...prev,
-      buttons: prev.buttons.map((b, i) =>
-        indices.includes(i) ? { ...b, count: 0, lastPress: 0 } : b,
-      ),
-    }))
+    const buttons = buttonsRef.current.map((b, i) =>
+      indices.includes(i) ? { ...b, count: 0, lastPress: 0 } : b,
+    )
+    buttonsRef.current = buttons
+    setState((prev) => ({ ...prev, buttons }))
   }, [])
 
   return { ...state, resetCounts }

@@ -1,3 +1,4 @@
+export { AutopilotSettings } from './AutopilotSettings'
 export { Devices } from './Devices'
 export { Events } from './Events'
 export { Home } from './Home'

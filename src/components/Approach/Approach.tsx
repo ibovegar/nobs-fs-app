@@ -17,7 +17,7 @@ export function Approach({ buttons }: Props) {
         const b = buttons[i]
         return (
           <PanelCard key={id} active={b.pressed}>
-            <SwitchBtn index={i} pressed={b.pressed} count={b.count} />
+            <SwitchBtn index={i} pressed={b.pressed} />
           </PanelCard>
         )
       })}

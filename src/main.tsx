@@ -2,11 +2,11 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router'
 import { isNative } from '~/io'
-import { injectThemeCssVars } from '~/theme'
+import { applyStoredTheme } from '~/theme'
 import './index.css'
 import App from './App.tsx'
 
-injectThemeCssVars()
+applyStoredTheme()
 
 const rootElement = document.getElementById('root')
 if (!rootElement) throw new Error('Root element #root not found')
