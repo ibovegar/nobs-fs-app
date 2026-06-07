@@ -35,68 +35,50 @@
 .body {
   display: flex;
   align-items: center;
-  gap: var(--sp-2);
-}
-
-.arrow {
-  font-size: 16px;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
   justify-content: center;
-  border-radius: 4px;
-  color: var(--text-dim);
-  border: 1px solid transparent;
 }
 
-.arrowCw.arrowLive {
-  color: var(--accent);
-  background: var(--accent-dim);
-  border-color: var(--accent-dim);
-  text-shadow: 0 0 10px var(--accent-glow);
+/* ── Rotating knob ─────────────────────────────────────────────────────────── */
+
+.knob {
+  --knob-angle: 0deg;
+  position: relative;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  /* flat, minimal dial — thin ring, no skeuomorphic shading */
+  background: var(--bg-card);
+  border: 2px solid var(--border-mid);
+  transform: rotate(var(--knob-angle));
+  transition:
+    transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.15s;
 }
 
-.arrowCcw.arrowLive {
-  color: var(--danger);
-  background: var(--danger-dim);
-  border-color: var(--danger-dim);
-  text-shadow: 0 0 10px var(--danger-glow);
+/* single clean pointer dot near the rim */
+.indicator {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  margin-left: -3px;
+  border-radius: 50%;
+  background: var(--text-mid);
+  transition: background 0.15s;
 }
 
-.arrowCw.arrowPulsed {
-  animation: cwPulse 0.65s ease-out forwards;
+/* live (actively turning) — ring + pointer pick up the direction colour */
+.knobCw.knobLive {
+  border-color: var(--accent);
 }
-.arrowCcw.arrowPulsed {
-  animation: ccwPulse 0.65s ease-out forwards;
-}
-
-@keyframes cwPulse {
-  0% {
-    color: var(--accent);
-    background: var(--accent-dim);
-    border-color: var(--accent-dim);
-    text-shadow: 0 0 14px var(--accent-glow);
-  }
-  100% {
-    color: var(--text-dim);
-    background: transparent;
-    border-color: transparent;
-    text-shadow: none;
-  }
+.knobCw.knobLive .indicator {
+  background: var(--accent);
 }
 
-@keyframes ccwPulse {
-  0% {
-    color: var(--danger);
-    background: var(--danger-dim);
-    border-color: var(--danger-dim);
-    text-shadow: 0 0 14px var(--danger-glow);
-  }
-  100% {
-    color: var(--text-dim);
-    background: transparent;
-    border-color: transparent;
-    text-shadow: none;
-  }
+.knobCcw.knobLive {
+  border-color: var(--danger);
+}
+.knobCcw.knobLive .indicator {
+  background: var(--danger);
 }

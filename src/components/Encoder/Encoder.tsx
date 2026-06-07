@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import type { ButtonState } from '~/panel'
 import styles from './Encoder.module.css'
 
@@ -8,7 +9,16 @@ interface Props {
   push: ButtonState
 }
 
+/** Degrees the knob rotates per detent pulse. */
+const STEP_DEG = 30
+
 export function Encoder({ label, cw, ccw, push }: Props) {
+  const net = cw.count - ccw.count
+  const angle = net * STEP_DEG
+
+  const turning = cw.pressed || ccw.pressed
+  const dirClass = cw.pressed ? styles.knobCw : ccw.pressed ? styles.knobCcw : ''
+
   return (
     <>
       <div className={styles.header}>
@@ -18,17 +28,10 @@ export function Encoder({ label, cw, ccw, push }: Props) {
 
       <div className={styles.body}>
         <div
-          key={`ccw-${ccw.lastPress}`}
-          className={`${styles.arrow} ${styles.arrowCcw}${ccw.pressed ? ` ${styles.arrowLive}` : ''}${ccw.lastPress > 0 ? ` ${styles.arrowPulsed}` : ''}`}
+          className={`${styles.knob}${turning ? ` ${styles.knobLive}` : ''} ${dirClass}`}
+          style={{ '--knob-angle': `${angle}deg` } as CSSProperties}
         >
-          ◀
-        </div>
-
-        <div
-          key={`cw-${cw.lastPress}`}
-          className={`${styles.arrow} ${styles.arrowCw}${cw.pressed ? ` ${styles.arrowLive}` : ''}${cw.lastPress > 0 ? ` ${styles.arrowPulsed}` : ''}`}
-        >
-          ▶
+          <span className={styles.indicator} />
         </div>
       </div>
     </>

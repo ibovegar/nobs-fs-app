@@ -7,32 +7,38 @@
   color: var(--text-mid);
 }
 
-.indicator {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  border: 1.5px solid var(--text-dim);
-  background: transparent;
+/* ── Push button ───────────────────────────────────────────────────────────── */
+
+.button {
+  position: relative;
+  width: 60px;
+  height: 38px;
+  padding: 0;
+  border-radius: 8px;
+  cursor: default;
+  /* flat, minimal cap — thin border, no skeuomorphic shading */
+  background: var(--bg-card);
+  border: 2px solid var(--border-mid);
   transition:
-    background 0.1s,
-    border-color 0.1s,
-    box-shadow 0.1s;
+    background 0.12s,
+    border-color 0.12s;
 }
 
-.indicatorOn {
-  background: var(--accent);
+/* pressed: flat accent fill, no depth tricks */
+.buttonOn {
+  background: var(--accent-dim);
   border-color: var(--accent);
-  box-shadow: 0 0 8px var(--accent-glow);
 }
 
-.state {
+.cap {
   font-family: "Consolas", "Courier New", monospace;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.06em;
   color: var(--text-dim);
+  transition: color 0.12s;
 }
 
-.stateOn {
+.buttonOn .cap {
   color: var(--accent);
 }

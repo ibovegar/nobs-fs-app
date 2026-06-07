@@ -7,7 +7,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Switches now render as rectangular push buttons with a flat, minimal look — a thin-bordered cap
+  showing `ON`/`OFF` that fills with the accent colour when pressed; replaces the previous dot
+  indicator + ON/OFF text.
+- The encoder indicator is now a rotating knob with a flat, minimal look — a thin-ringed dial with a
+  single pointer dot whose angle tracks net rotation (`cw.count − ccw.count` at 30°/detent), so the
+  knob visibly turns to show its position. While turning, the ring and pointer pick up the direction
+  colour (accent for CW, danger for CCW); replaces the previous ◀/▶ arrow pair.
+
 ### Added
+- Light / dark / system theme switcher on the **Settings** page (sidebar). The choice persists in
+  `localStorage` (`nobs.themeMode`, default `dark`) and is applied on startup; `system` follows the
+  OS preference and repaints live when it changes. Added a light token set alongside the existing
+  dark one in `src/theme/cssVars.ts` (every component already reads `var(--token)`) and a
+  `src/theme/themeMode.ts` manager (`loadThemeMode`/`setThemeMode`/`applyStoredTheme`/`watchSystemTheme`).
+  In light mode the header bar keeps the dark theme's background colour, and the product-image
+  backdrop is a cool grey that fades darker (instead of near-white) so the panel image stands out
+  against the white cards.
+
+### Fixed
+- Event log showed every press/release twice (duplicate entries). `useDevice` emitted `onEvent`
+  callbacks from inside the `setState` updater, which React's `StrictMode` double-invokes; edge
+  detection now runs against a ref and events fire outside the updater, keeping it pure.
+- HSI compass rose ticks and labels were hard-coded white and vanished against the light theme's
+  white cards. They now follow the theme (`--foreground-color` bound to `--text-bright`), staying
+  white on dark and dark on light.
+- HSI structural strokes — the compass-rose degree tick marks, the inner deviation-scale dots, and
+  the fat inner ring — stayed white in light mode. The web component hard-codes them as
+  `stroke="#fff"`, which `--foreground-color` (a `fill`) couldn't reach; `Hsi` now injects a style
+  into the component's open shadow root binding every white stroke to `--foreground-color`, so they
+  go dark on the light theme and stay white on dark.
+
+### Changed
+- Devices page: the "Access granted" badge now uses the LineIcons `CheckSolid` icon instead of a
+  CSS `::before` `✓` glyph.
+- Autopilot settings page: the per-encoder "Saved" tag now uses the LineIcons `CheckSolid` icon
+  instead of a `✓` glyph; the tag is flex-aligned so the icon and text sit centered. It is always
+  rendered (hidden via `visibility` until the first save) so its grid column reserves a constant
+  width and the slider no longer resizes when the tag appears.
+- Split the single **Settings** page into two: the sidebar **Settings** page now holds app-level
+  appearance settings (the theme switcher), and the autopilot's **Encoder acceleration** settings
+  moved to a dedicated **Autopilot settings** page at `/autopilot/settings`, reached from the
+  autopilot card's *Settings* link on Home. `ProductImage` now takes an optional `settingsTo` prop
+  and only shows the *Settings* link for devices that have a settings page (autopilot only).
 - `LICENSE` — project is now licensed under the GNU Affero General Public License v3.0
   (`AGPL-3.0-only`); added matching `license` field to `package.json` and a License section to the
   README (which now describes the project instead of the Vite template).
@@ -15,7 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and 8 switches. Reports 20 HID buttons in the app's expected order (encoders first as
   CW/CCW/push, then SW1–SW8). Encoder CW/CCW pulses are non-blocking (40 ms hold via `millis()`)
   so all encoders and switches stay responsive.
-- Settings page: an **Encoder acceleration** sensitivity slider (0–100%) plus a **Back** button. The
+- Autopilot settings page: an **Encoder acceleration** sensitivity slider (0–100%) plus a **Back** button. The
   value is saved to `localStorage` and pushed to the panel over USB serial, where the firmware
   applies and persists it (EEPROM). Connection is automatic — no "Connect" button: native auto-
   detects the panel; on web the port is silently reused once granted, and the grant prompt only
