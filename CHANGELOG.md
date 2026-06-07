@@ -8,10 +8,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- `LICENSE` — project is now licensed under the GNU Affero General Public License v3.0
+  (`AGPL-3.0-only`); added matching `license` field to `package.json` and a License section to the
+  README (which now describes the project instead of the Vite template).
 - `firmware/nobs-autopilot/nobs-autopilot.ino` — full Arduino Micro firmware for all 4 encoders
   and 8 switches. Reports 20 HID buttons in the app's expected order (encoders first as
   CW/CCW/push, then SW1–SW8). Encoder CW/CCW pulses are non-blocking (40 ms hold via `millis()`)
   so all encoders and switches stay responsive.
+- Settings page: an **Encoder acceleration** sensitivity slider (0–100%) plus a **Back** button. The
+  value is saved to `localStorage` and pushed to the panel over USB serial, where the firmware
+  applies and persists it (EEPROM). Connection is automatic — no "Connect" button: native auto-
+  detects the panel; on web the port is silently reused once granted, and the grant prompt only
+  appears the first time the slider is moved (opened within that user gesture, as Web Serial
+  requires). Because the value lives in EEPROM, the panel keeps it across power cycles regardless.
+- Firmware: host-configurable acceleration sensitivity over the USB CDC serial port. Line protocol
+  `A<n>\n` (set 0–255, saved to EEPROM) / `A?\n` (query), replying `A=<n>\n`. Sensitivity scales the
+  acceleration curve; `0` = off (1:1), `255` = full. Defaults to full on a fresh chip (EEPROM `0xFF`).
+- Panel config channel to the firmware, environment-aware via `src/io/panelConfig.ts`
+  (`connectConfigPort`/`reconnectConfigPort`/`sendAcceleration`/`serialSupported`/`configConnected`,
+  exported from `~/io`). Web build: `configSerial.ts` (Web Serial; needs a one-time grant) + minimal
+  Web Serial typings `serial.d.ts`. Native build: `configNative.ts` → Rust commands
+  `panel_serial_present`/`panel_serial_send` (`src-tauri/src/serial.rs`, `serialport` crate) that
+  find the panel's CDC port by VID/PID and write to it — no grant needed.
 - `docs/mapping.md`: physical pin-assignment tables (Arduino Micro labels + AVR ports) for every
   encoder and switch, linked to the firmware sketch; replaced the stale "1 encoder test setup"
   section. Added a "Signal decoding (firmware behavior)" section (quadrature decode, pulse vs.
@@ -25,6 +43,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Favicon: `index.html` now links `public/favicon.svg` as the browser tab icon.
 
 ### Changed
+- Encoder acceleration is now configured **per encoder** instead of one value for all four. Settings
+  page shows four sliders (ENC1–ENC4), each saved independently to `localStorage`
+  (`nobs.accelSensitivity.<i>`, falling back to the old single value) and to the panel. Firmware
+  stores four sensitivities in EEPROM bytes 0–3, and the serial protocol gained an encoder index:
+  `A<i><n>\n` to set, `A<i>?\n` to query, reply `A<i>=<n>\n` (was `A<n>\n` / `A?\n`). Both transports
+  (`configSerial.ts`, `configNative.ts`) now take an encoder index; `sendAcceleration(index, value)`.
+- Settings page: a "✓ Saved" tag blinks on each row when that encoder's value is successfully
+  written to the panel, giving visible confirmation that the save landed (respects
+  `prefers-reduced-motion`).
+- Firmware: relaxed the acceleration spin-speed thresholds (`ACCEL_T1/T2/T3` 50/25/12 → 80/40/20 ms)
+  so a moderate turn — not just a hard flick — reaches the higher multipliers and saturates the
+  ~33°/s emit ceiling sooner. Makes the heading bug *feel* faster; it can't exceed the ceiling
+  (that's MSFS's per-frame button sampling), and overshoot stays bounded by `STEP_QUEUE_MAX`.
+- Firmware: lengthened encoder CW/CCW pulses from ~2 ms to ~15 ms on + ~15 ms gap and shrank the
+  step queue clamp (`STEP_QUEUE_MAX` 64 → 8). The old sub-frame pulses were sized for the app's
+  ~1 ms USB polling and were dropped by MSFS, which only samples gamepad state ~once per frame
+  (~16–33 ms) — so fast spins barely moved the heading bug even though the Tools page counted every
+  step. Pulses now span ~1 frame at 60 fps so each press registers, giving a ~33 presses/s ceiling
+  (≈33°/s on the heading bug, the practical MSFS limit) and keeping a fast flick's tail to ~0.25 s.
+  If the sim runs below 60 fps and steps drop again, raise `PULSE_ON_MS`/`PULSE_GAP_MS` toward 20 ms.
 - Tools page now shows four HSIs — one per encoder (ENC1–ENC4) — in a 2×2 grid, each with its own
   field selector and state. Extracted the per-encoder logic into a new `HsiTool` component; the
   page no longer hardcodes a single ENC1-driven instrument.
@@ -37,7 +75,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   once per loop. Previously every `setButton()` sent its own USB report (~12 per loop), slowing the
   loop enough that the quadrature decoder missed transitions and felt unresponsive.
 
+- Firmware: rotational acceleration. Presses emitted per detent now scale with spin speed
+  (`ACCEL_T*`/`ACCEL_M*`, ×1 slow up to ×10 on a fast flick), so a sim control bound to the encoder
+  (e.g. the MSFS heading bug) races on a quick spin instead of crawling one unit per detent; slow
+  turns stay 1:1 for precision. Pulse timing shortened to ~2 ms on / ~2 ms gap (~250 steps/s ceiling).
+
 ### Fixed
+- Panel config (encoder-acceleration slider) had no effect even though the status read "Saved to
+  panel". The Micro's USB-CDC OUT endpoint isn't ready the instant the host opens the port, so a
+  write fired immediately after open is silently dropped by the device. Added a settle delay after
+  opening, before any write, in both transports: web (`src/io/configSerial.ts`, 250 ms after the
+  one-time `open()`) and native (`src-tauri/src/serial.rs`, 150 ms — it opens/writes/closes per
+  call, so every write was a dropped "first write after open").
+- `Approach` / `Panel` components no longer pass the removed `count` prop to `SwitchBtn` (was a
+  leftover from dropping the in-grid counters; it broke the type-check / build).
 - Firmware: rapid encoder rotation no longer drops counts. CW/CCW steps are now queued
   (`pending[]`) and paced out as short press + low-gap pulses (`PULSE_ON_MS` / `PULSE_GAP_MS`)
   instead of holding and re-arming one button, which merged fast steps into a single long press.
