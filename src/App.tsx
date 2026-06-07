@@ -1,6 +1,6 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Route, Routes } from 'react-router'
-import { Header, Sidebar } from '~/components'
+import { Header, markWelcomeSeen, Sidebar, Welcome, welcomeSeen } from '~/components'
 import { useDevice, useEventLog } from '~/hooks'
 import { AutopilotSettings, Devices, Events, Home, Settings, Tools } from '~/pages'
 import { DEVICES } from '~/panel'
@@ -12,11 +12,19 @@ export default function App() {
   const approach = useDevice(DEVICES.approach)
   const panel = useDevice(DEVICES.panel)
 
+  // First-run welcome screen — shown until the user dismisses it once.
+  const [showWelcome, setShowWelcome] = useState(() => !welcomeSeen())
+  const dismissWelcome = () => {
+    markWelcomeSeen()
+    setShowWelcome(false)
+  }
+
   // Repaint live when the OS theme flips and the user is on 'system'.
   useEffect(() => watchSystemTheme(), [])
 
   return (
     <div className={styles.app}>
+      {showWelcome && <Welcome onDismiss={dismissWelcome} />}
       <Header />
       <div className={styles.layout}>
         <Sidebar />

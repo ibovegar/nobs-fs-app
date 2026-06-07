@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- First-run **welcome screen** with getting-started steps (plug in the panel → open Devices →
+  fly). It shows different instructions per environment: the desktop app auto-detects the panel,
+  while the browser explains the one-time Connect/permission grant (or actuating a control on
+  browsers without WebHID). Dismissal persists in `localStorage` (`nobs.welcomeSeen`) so it only
+  appears once; new `Welcome` component with `welcomeSeen`/`markWelcomeSeen` helpers.
+
 ### Changed
 - Switches now render as rectangular push buttons with a flat, minimal look — a thin-bordered cap
   showing `ON`/`OFF` that fills with the accent colour when pressed; replaces the previous dot
