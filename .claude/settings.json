@@ -90,7 +90,8 @@
       "Bash(pnpm -v)",
       "Bash(python -c \"import yaml,sys; d=yaml.safe_load\\(open\\('.github/workflows/release.yml'\\)\\); print\\('OK keys:', list\\(d.keys\\(\\)\\)\\); print\\('job:', list\\(d['jobs']['release'].keys\\(\\)\\)\\); print\\('steps:', len\\(d['jobs']['release']['steps']\\)\\)\")",
       "Bash(python3 -c \"import yaml; d=yaml.safe_load\\(open\\('.github/workflows/release.yml'\\)\\); print\\('OK', list\\(d.keys\\(\\)\\)\\)\")",
-      "Bash(node -e \"let y;try{y=require\\('yaml'\\)}catch{try{y=require\\('js-yaml'\\)}catch{console.log\\('no yaml lib'\\);process.exit\\(0\\)}}; const fs=require\\('fs'\\); const t=fs.readFileSync\\('.github/workflows/release.yml','utf8'\\); const d=\\(y.parse?y.parse\\(t\\):y.load\\(t\\)\\); console.log\\('OK keys:',Object.keys\\(d\\)\\); console.log\\('steps:',d.jobs.release.steps.length\\);\")"
+      "Bash(node -e \"let y;try{y=require\\('yaml'\\)}catch{try{y=require\\('js-yaml'\\)}catch{console.log\\('no yaml lib'\\);process.exit\\(0\\)}}; const fs=require\\('fs'\\); const t=fs.readFileSync\\('.github/workflows/release.yml','utf8'\\); const d=\\(y.parse?y.parse\\(t\\):y.load\\(t\\)\\); console.log\\('OK keys:',Object.keys\\(d\\)\\); console.log\\('steps:',d.jobs.release.steps.length\\);\")",
+      "Bash(git merge *)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Vegar Eeg\\workspace\\nobs-fs\\nobs-fs-app",
