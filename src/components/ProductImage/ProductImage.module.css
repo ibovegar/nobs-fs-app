@@ -36,14 +36,15 @@
     display: block;
     /* Fill the available card cell, scaling by whichever axis is binding while
        keeping aspect ratio — so the image follows the PanelCard's size. */
-    width: 100%;
-    height: 100%;
+    width: 72%;
+    height: 72%;
     object-fit: contain;
     align-self: center;
     margin-bottom: -30px;
     /* Recolor toward the sapphire theme accent: sepia+hue-rotate lands the
        midtones on the blue hue, saturate/brightness keep it from going flat. */
-    filter: brightness(0.96) saturate(0.75) sepia(0.38) hue-rotate(185deg) saturate(1.35);
+    filter: brightness(var(--product-image-brightness)) saturate(0.77) sepia(0.38)
+      hue-rotate(185deg) saturate(1.35);
   }
 }
 

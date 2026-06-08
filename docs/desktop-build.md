@@ -67,6 +67,48 @@ the Rust backend, then bundles. Outputs land in `src-tauri/target/release/`:
 
 ---
 
+## Releasing via GitHub Actions
+
+[`.github/workflows/release.yml`](../.github/workflows/release.yml) builds the Windows installers on a
+`windows-latest` runner and uploads them to a GitHub Release, so you don't build or upload by hand.
+The runner already has MSVC and WebView2, so there are no extra system deps; it mirrors the local
+`pnpm tauri build` flow with a Rust + pnpm cache on top.
+
+The workflow renames the installers before uploading, so the **Release assets** get clean,
+download-friendly names (the local build output keeps Tauri's default `Nobs FS_<version>_...` names):
+
+| Local build artifact | Published asset |
+|---|---|
+| `bundle/nsis/Nobs FS_<version>_x64-setup.exe` | `nobsapp_v<version>_setup.exe` |
+| `bundle/msi/Nobs FS_<version>_x64_en-US.msi` | `nobsapp_v<version>.msi` |
+
+`productName` stays `Nobs FS`, so the app, window title, and shortcuts keep the nice display name —
+only the downloadable filenames are simplified.
+
+**To cut a release:**
+
+1. Bump `version` in both `package.json` and `src-tauri/tauri.conf.json`, and update `CHANGELOG.md`.
+2. Commit, then tag and push:
+   ```bash
+   git tag v0.2.0
+   git push origin v0.2.0
+   ```
+3. The workflow builds and creates a **draft** release `Nobs FS v0.2.0` with
+   `nobsapp_v0.2.0_setup.exe` and `nobsapp_v0.2.0.msi` attached. Review it on the Releases page and
+   hit **Publish**.
+
+You can also run it manually from **Actions → Release → Run workflow** and type the tag in the input
+box (it's created if it doesn't exist yet).
+
+Notes:
+- Uses the built-in `GITHUB_TOKEN` — no secrets to configure.
+- Releases are **draft** by default (`draft: true` on the `Create draft release` step); set it to
+  `false` to publish automatically on tag push.
+- The installers are **unsigned**, so Windows SmartScreen may warn on first run ("More info → Run
+  anyway"). Removing that warning needs a code-signing certificate — out of scope here.
+
+---
+
 ## Creating the app icon
 
 Tauri generates **every** icon size and format from a single square source image — you never

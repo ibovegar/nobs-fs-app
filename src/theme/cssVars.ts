@@ -31,6 +31,7 @@ interface ThemeTokens {
   dangerMain: string
   green: string
   greenDim: string
+  productImageBrightness: string // brightness() applied to the product image filter
 }
 
 // Dark theme — derived from the rich palette so the values stay in one place.
@@ -55,6 +56,7 @@ const darkTokens: ThemeTokens = {
   dangerMain: p.secondary.main,
   green: p.status.success,
   greenDim: p.status.successDim,
+  productImageBrightness: '1.12',
 }
 
 // Light theme — inverted backgrounds/text, accent darkened a touch for contrast on white.
@@ -81,6 +83,8 @@ const lightTokens: ThemeTokens = {
   dangerMain: p.secondary.main,
   green: p.status.success,
   greenDim: p.status.successDim,
+  // Lift the product image so it stays bright against the light backdrop.
+  productImageBrightness: '1.6',
 }
 
 function buildCssVars(t: ThemeTokens): Record<string, string> {
@@ -121,6 +125,9 @@ function buildCssVars(t: ThemeTokens): Record<string, string> {
     /* Status */
     '--green': t.green,
     '--green-dim': t.greenDim,
+
+    /* Product image */
+    '--product-image-brightness': t.productImageBrightness,
 
     /* Spacing — 4px base scale */
     ...Object.fromEntries(Object.entries(spacing).map(([k, v]) => [`--sp-${k}`, v])),

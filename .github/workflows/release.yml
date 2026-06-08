@@ -1,0 +1,93 @@
+name: Release
+
+# Builds the Windows desktop app and publishes the installers as GitHub Release
+# assets. Mirrors the local `pnpm tauri build` flow documented in
+# docs/desktop-build.md, run on a windows-latest runner (MSVC + WebView2 are
+# preinstalled there, so no extra system deps are needed).
+#
+# Triggers:
+#   - push a tag like `v0.1.0`            → release for that tag
+#   - run manually (Actions → Release)    → enter the tag in the input box
+#
+# Bump `version` in both package.json and src-tauri/tauri.conf.json before
+# tagging so the installer filenames and release match.
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g. v0.1.0). Created if it does not exist.'
+        required: true
+
+jobs:
+  release:
+    runs-on: windows-latest
+    permissions:
+      contents: write # required for tauri-action to create the release
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install Rust (stable, MSVC)
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust build
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+
+      - name: Install frontend dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Build only — no tagName, so tauri-action compiles the installers but does
+      # NOT create the release. We rename the artifacts below, then publish them
+      # ourselves so the downloads get clean, human-friendly names.
+      - name: Build installers
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Tauri names artifacts "Nobs FS_<ver>_x64_en-US.msi" / "..._x64-setup.exe"
+      # (the space becomes a dot in the download URL). Rename to nobsapp_<tag>.* so
+      # the Release assets read cleanly. productName stays "Nobs FS" for shortcuts.
+      - name: Rename installers
+        id: rename
+        shell: pwsh
+        run: |
+          $tag = '${{ inputs.tag || github.ref_name }}'
+          $bundle = 'src-tauri/target/release/bundle'
+          $msi = Get-ChildItem "$bundle/msi/*.msi" | Select-Object -First 1
+          $nsis = Get-ChildItem "$bundle/nsis/*-setup.exe" | Select-Object -First 1
+          $msiOut = "$bundle/msi/nobsapp_${tag}.msi"
+          $nsisOut = "$bundle/nsis/nobsapp_${tag}_setup.exe"
+          Move-Item $msi.FullName $msiOut -Force
+          Move-Item $nsis.FullName $nsisOut -Force
+          "msi=$msiOut" >> $env:GITHUB_OUTPUT
+          "nsis=$nsisOut" >> $env:GITHUB_OUTPUT
+
+      - name: Create draft release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag || github.ref_name }}
+          name: 'Nobs FS ${{ inputs.tag || github.ref_name }}'
+          body: 'Download the `_setup.exe` (NSIS installer, recommended) or `.msi` below to install.'
+          draft: true
+          prerelease: false
+          files: |
+            ${{ steps.rename.outputs.msi }}
+            ${{ steps.rename.outputs.nsis }}

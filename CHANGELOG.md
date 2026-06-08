@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Hardware **bill of materials** (`docs/bill-of-materials.md`) — full component list (switches,
+  encoders, electronics, knobs/caps, fasteners, enclosure plates) with part numbers and quantities.
+- GitHub Actions release workflow (`.github/workflows/release.yml`) — on a `v*` tag push (or manual
+  dispatch with a tag), builds the Windows app on `windows-latest` and publishes the `.msi` +
+  NSIS `-setup.exe` as a draft GitHub Release via `tauri-apps/tauri-action`. Uses the built-in
+  `GITHUB_TOKEN`; caches Rust (`swatinem/rust-cache`) and pnpm. Documented in `docs/desktop-build.md`.
 - First-run **welcome screen** with getting-started steps (plug in the panel → open Devices →
   fly). It shows different instructions per environment: the desktop app auto-detects the panel,
   while the browser explains the one-time Connect/permission grant (or actuating a control on
@@ -15,13 +21,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   appears once; new `Welcome` component with `welcomeSeen`/`markWelcomeSeen` helpers.
 
 ### Changed
-- Switches now render as rectangular push buttons with a flat, minimal look — a thin-bordered cap
-  showing `ON`/`OFF` that fills with the accent colour when pressed; replaces the previous dot
-  indicator + ON/OFF text.
-- The encoder indicator is now a rotating knob with a flat, minimal look — a thin-ringed dial with a
-  single pointer dot whose angle tracks net rotation (`cw.count − ccw.count` at 30°/detent), so the
-  knob visibly turns to show its position. While turning, the ring and pointer pick up the direction
-  colour (accent for CW, danger for CCW); replaces the previous ◀/▶ arrow pair.
+- README now has a **Download (Windows)** section linking to the latest GitHub Release and explaining
+  the `_setup.exe` (NSIS) vs `.msi` choice, the SmartScreen warning, and WebView2.
+- Release workflow now renames the installers before publishing so the GitHub Release assets have
+  clean names (`nobsapp_v<version>_setup.exe`, `nobsapp_v<version>.msi`) instead of Tauri's default
+  `Nobs FS_<version>_x64-setup.exe`. `tauri-action` builds only; `softprops/action-gh-release`
+  publishes the renamed files. `productName` stays `Nobs FS` so shortcuts keep the display name.
+- Rewrote `README.md` from a bare stub into a real project overview: what the app does and the
+  screens it shows, the full HID button-mapping table, the runtime input-driver matrix
+  (native / WebHID / Gamepad), project layout, and pointers to `docs/desktop-build.md` and
+  `CLAUDE.md`.
+- Dressed up the knob and switch visuals: the knob now has a soft top-lit dome, a machined inner
+  ring, a center hub, and an outward glow while turning; the switch gains a matching domed cap and a
+  status LED that reuses the knob's dot motif and lights up (with glow) when pressed.
+- Switches now render as rectangular push buttons — a cap showing `ON`/`OFF` plus a status LED that
+  fills with the accent colour when pressed; replaces the previous dot indicator + ON/OFF text.
+- The encoder indicator is now a rotating knob — a dial with a single pointer dot whose angle tracks
+  net rotation (`cw.count − ccw.count` at 30°/detent), so the knob visibly turns to show its
+  position. While turning, the ring and pointer pick up the direction colour (accent for CW, danger
+  for CCW); replaces the previous ◀/▶ arrow pair.
 
 ### Added
 - Light / dark / system theme switcher on the **Settings** page (sidebar). The choice persists in
@@ -199,6 +217,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `window.__TAURI__` global, and is no longer a scaffold — it is backed by the Rust HID bridge above.
 - Product image (`ProductImage`) now has a subtle CSS `filter` that nudges it toward the sapphire
   theme accent so it blends with the dark blue-grey UI instead of clashing with its original colors.
+  Its `brightness()` is driven by a new per-theme `--product-image-brightness` token so the image is
+  lifted brighter in light mode (1.6) and in dark mode (1.12).
 
 ### Added
 - WebHID driver (`webhidDriver`) — automatic device detection in Chromium without the Gamepad
