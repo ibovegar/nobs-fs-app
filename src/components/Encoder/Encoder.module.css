@@ -42,43 +42,81 @@
 
 .knob {
   --knob-angle: 0deg;
+  --knob-ring: var(--border-mid);
   position: relative;
-  width: 52px;
-  height: 52px;
+  width: 54px;
+  height: 54px;
   border-radius: 50%;
-  /* flat, minimal dial — thin ring, no skeuomorphic shading */
-  background: var(--bg-card);
-  border: 2px solid var(--border-mid);
+  /* soft domed dial — light catches near the top, fading into the card */
+  background: radial-gradient(circle at 50% 35%, var(--bg-card-hi) 0%, var(--bg-card) 72%);
+  border: 2px solid var(--knob-ring);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.07),
+    0 2px 6px rgba(0, 0, 0, 0.28);
   transform: rotate(var(--knob-angle));
   transition:
     transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 0.15s;
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+
+/* faint machined inner ring for a precision-instrument feel */
+.knob::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  opacity: 0.6;
+}
+
+/* center hub — the axle the dial turns around */
+.knob::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  border-radius: 50%;
+  background: var(--border-mid);
 }
 
 /* single clean pointer dot near the rim */
 .indicator {
   position: absolute;
-  top: 6px;
+  top: 7px;
   left: 50%;
-  width: 6px;
-  height: 6px;
-  margin-left: -3px;
+  width: 7px;
+  height: 7px;
+  margin-left: -3.5px;
   border-radius: 50%;
   background: var(--text-mid);
-  transition: background 0.15s;
+  transition:
+    background 0.15s,
+    box-shadow 0.15s;
 }
 
-/* live (actively turning) — ring + pointer pick up the direction colour */
+/* live (actively turning) — ring glows + pointer lights up in the direction colour */
 .knobCw.knobLive {
-  border-color: var(--accent);
+  --knob-ring: var(--accent);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.07),
+    0 0 14px var(--accent-glow);
 }
 .knobCw.knobLive .indicator {
   background: var(--accent);
+  box-shadow: 0 0 8px var(--accent-glow);
 }
 
 .knobCcw.knobLive {
-  border-color: var(--danger);
+  --knob-ring: var(--danger);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.07),
+    0 0 14px var(--danger-glow);
 }
 .knobCcw.knobLive .indicator {
   background: var(--danger);
+  box-shadow: 0 0 8px var(--danger-glow);
 }

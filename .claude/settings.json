@@ -86,7 +86,11 @@
       "PowerShell(pnpm exec tsc -b)",
       "Bash(node --input-type=module -e \"import * as i from '@lineiconshq/free-icons'; const k=Object.keys\\(i\\); console.log\\(k.filter\\(n=>/check|tick/i.test\\(n\\)\\).join\\('\\\\n'\\)\\)\")",
       "Bash(node --input-type=module -e \"import\\('@lineiconshq/free-icons'\\).then\\(i=>{const k=Object.keys\\(i\\).filter\\(n=>/check|tick/i.test\\(n\\)\\); process.stderr.write\\(k.join\\('\\\\n'\\)+'\\\\n'\\)}\\)\")",
-      "Read(//tmp/**)"
+      "Read(//tmp/**)",
+      "Bash(pnpm -v)",
+      "Bash(python -c \"import yaml,sys; d=yaml.safe_load\\(open\\('.github/workflows/release.yml'\\)\\); print\\('OK keys:', list\\(d.keys\\(\\)\\)\\); print\\('job:', list\\(d['jobs']['release'].keys\\(\\)\\)\\); print\\('steps:', len\\(d['jobs']['release']['steps']\\)\\)\")",
+      "Bash(python3 -c \"import yaml; d=yaml.safe_load\\(open\\('.github/workflows/release.yml'\\)\\); print\\('OK', list\\(d.keys\\(\\)\\)\\)\")",
+      "Bash(node -e \"let y;try{y=require\\('yaml'\\)}catch{try{y=require\\('js-yaml'\\)}catch{console.log\\('no yaml lib'\\);process.exit\\(0\\)}}; const fs=require\\('fs'\\); const t=fs.readFileSync\\('.github/workflows/release.yml','utf8'\\); const d=\\(y.parse?y.parse\\(t\\):y.load\\(t\\)\\); console.log\\('OK keys:',Object.keys\\(d\\)\\); console.log\\('steps:',d.jobs.release.steps.length\\);\")"
     ],
     "additionalDirectories": [
       "c:\\Users\\Vegar Eeg\\workspace\\nobs-fs\\nobs-fs-app",

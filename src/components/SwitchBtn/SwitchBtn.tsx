@@ -15,6 +15,7 @@ export function SwitchBtn({ index, pressed }: Props) {
         tabIndex={-1}
         className={`${styles.button}${pressed ? ` ${styles.buttonOn}` : ''}`}
       >
+        <span className={styles.led} />
         <span className={styles.cap}>{pressed ? 'ON' : 'OFF'}</span>
       </button>
     </>
