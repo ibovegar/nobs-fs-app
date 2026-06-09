@@ -52,6 +52,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   against the white cards.
 
 ### Fixed
+- Buttons and encoders were misread in the desktop app (every input shifted by 8 / "way off"),
+  while the browser was correct. The native HID bridge (`src-tauri/src/hid.rs`) stripped the first
+  byte of each report assuming hidapi prepends a report-ID byte — but the Arduino Joystick library
+  uses report ID 0 (unnumbered reports), so hidapi returns the raw button bytes with no prefix.
+  It now emits the buffer as-is, matching WebHID's `inputreport` payload.
+- Devices page no longer shows the WebHID "Connect" / grant-access button in the desktop app. The
+  native Tauri HID bridge enumerates devices itself, so no per-device permission is needed — but the
+  page gated the grant UI on `webhidSupported()`, which is true inside the WebView2 shell too. It now
+  gates on `!isNative() && webhidSupported()` and shows an "auto-detected, no setup needed" hint when
+  native. The grant flow is unchanged in the browser.
 - Event log showed every press/release twice (duplicate entries). `useDevice` emitted `onEvent`
   callbacks from inside the `setState` updater, which React's `StrictMode` double-invokes; edge
   detection now runs against a ref and events fire outside the updater, keeping it pure.

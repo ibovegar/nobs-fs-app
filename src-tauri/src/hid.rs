@@ -92,9 +92,12 @@ fn watch_device(app: AppHandle, vid: u16, pid: u16, stop: Arc<AtomicBool>) {
                     match device.read_timeout(&mut buf, 100) {
                         Ok(0) => {} // timeout, no new report
                         Ok(n) => {
-                            // Strip the leading HID report-ID byte so the payload
-                            // matches WebHID's `inputreport` (which excludes it).
-                            let bytes = buf[1..n].to_vec();
+                            // The Arduino Joystick library uses report ID 0 (unnumbered
+                            // reports), so hidapi returns the raw button bytes with no
+                            // leading report-ID byte — matching WebHID's `inputreport`,
+                            // which also excludes it. Emit the buffer as-is; stripping a
+                            // byte here would shift every button by 8.
+                            let bytes = buf[..n].to_vec();
                             let _ = app.emit("hid://report", ReportPayload { vid, pid, bytes });
                         }
                         Err(_) => break, // read failed — treat as unplugged

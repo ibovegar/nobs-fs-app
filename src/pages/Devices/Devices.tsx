@@ -1,7 +1,7 @@
 import { CheckSolid } from '@lineiconshq/free-icons'
 import { useCallback, useEffect, useState } from 'react'
 import { ConnectionIndicator, Icon, Section } from '~/components'
-import { grantedFlags, onHidChange, requestHidDevices, webhidSupported } from '~/io'
+import { grantedFlags, isNative, onHidChange, requestHidDevices, webhidSupported } from '~/io'
 import { DEVICES, type DeviceConfig } from '~/panel'
 import styles from './Devices.module.css'
 
@@ -15,7 +15,9 @@ interface Props {
 }
 
 export function Devices({ connected }: Props) {
-  const supported = webhidSupported()
+  // The native shell uses the Tauri HID bridge, which enumerates devices itself
+  // — no per-device permission grant. WebHID's one-time grant is web-only.
+  const needsGrant = !isNative() && webhidSupported()
   const [granted, setGranted] = useState<Record<DeviceKey, boolean>>(NONE)
 
   const refresh = useCallback(async () => {
@@ -26,10 +28,10 @@ export function Devices({ connected }: Props) {
   }, [])
 
   useEffect(() => {
-    if (!supported) return
+    if (!needsGrant) return
     refresh()
     return onHidChange(refresh)
-  }, [supported, refresh])
+  }, [needsGrant, refresh])
 
   const connect = async (device: DeviceConfig) => {
     await requestHidDevices([device])
@@ -40,9 +42,11 @@ export function Devices({ connected }: Props) {
     <Section label="Devices">
       <div className={styles.body}>
         <p className={styles.hint}>
-          {supported
-            ? "Grant one-time access to a device; it's then detected automatically whenever it's plugged in."
-            : 'Automatic detection needs a Chromium browser (Chrome or Edge). Otherwise a device is detected once you actuate one of its controls.'}
+          {isNative()
+            ? 'Devices are detected automatically whenever they’re plugged in — no setup needed.'
+            : needsGrant
+              ? "Grant one-time access to a device; it's then detected automatically whenever it's plugged in."
+              : 'Automatic detection needs a Chromium browser (Chrome or Edge). Otherwise a device is detected once you actuate one of its controls.'}
         </p>
         <ul className={styles.list}>
           {DEVICE_KEYS.map((key) => {
@@ -56,7 +60,7 @@ export function Devices({ connected }: Props) {
                   </span>
                 </div>
                 <ConnectionIndicator isConnected={connected[key]} />
-                {supported &&
+                {needsGrant &&
                   (granted[key] ? (
                     <span className={styles.granted}>
                       <Icon icon={CheckSolid} size={22} />
