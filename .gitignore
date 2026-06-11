@@ -27,3 +27,9 @@ dist-ssr
 # Also covered by src-tauri/.gitignore; duplicated at root as a safety net.
 /src-tauri/target
 /src-tauri/gen/schemas
+
+# Playwright (screenshot generation) — keep the PNGs in docs/, drop the run artifacts.
+/test-results
+/playwright-report
+/blob-report
+/playwright/.cache

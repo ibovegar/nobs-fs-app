@@ -36,6 +36,8 @@ automatically.
 - **Devices** (`/devices`) — connection state of each registered panel.
 - **Settings** (`/settings`) — light / dark / system theme.
 
+<img src="docs/screenshot-home.png" alt="Home page showing the live panel mimic" width="49%"> <img src="docs/screenshot-autopilot-settings.png" alt="Autopilot settings page with per-encoder acceleration sliders" width="49%">
+
 ## Hardware
 
 The flagship panel, **Nobs Autopilot**, is an Arduino Micro acting as a USB HID gamepad:
@@ -74,6 +76,7 @@ pnpm tauri dev  # native desktop window with hot reload
 pnpm lint       # Biome check
 pnpm format     # Biome auto-fix
 pnpm build      # type-check + production web build
+pnpm screenshots # regenerate the README screenshots (Playwright)
 ```
 
 ### How input is wired
