@@ -12,7 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   dev server and `tests/screenshots.spec.ts` captures the Home and Autopilot-settings pages (dark
   mode, welcome overlay suppressed, rounded corners baked in as transparency) into
   `docs/screenshot-home.png` and `docs/screenshot-autopilot-settings.png`, shown side by side in the
-  README under "What it shows". Run artifacts are git-ignored.
+  README under "What it shows". Run artifacts are git-ignored. `playwright.config.ts` is included in
+  `tsconfig.node.json` so it type-checks with Node types (no `process` warning).
 - Hardware **bill of materials** (`docs/bill-of-materials.md`) — full component list (switches,
   encoders, electronics, knobs/caps, fasteners, enclosure plates) with part numbers and quantities.
 - GitHub Actions release workflow (`.github/workflows/release.yml`) — on a `v*` tag push (or manual
