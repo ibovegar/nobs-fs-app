@@ -1,15 +1,8 @@
 .grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   grid-template-rows: 1fr;
   gap: 1px;
   flex: 1;
   background: var(--border);
-}
-
-@media (max-width: 720px) {
-  .grid {
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-  }
 }

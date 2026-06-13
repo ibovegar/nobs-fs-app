@@ -9,7 +9,7 @@ and the React app's `~/panel` constants.
 
 | Component | Count | Inputs per unit |
 |---|---|---|
-| Bourns PEC11 rotary encoder | 4 | CW pulse, CCW pulse, push button |
+| Rotary encoder | 4 | CW pulse, CCW pulse, push button |
 | Standalone momentary switch | 8 | press / release |
 | **Total HID buttons** | | **20** |
 
@@ -18,7 +18,7 @@ and the React app's `~/panel` constants.
 ## Firmware layout
 
 Sketch: [`firmware/nobs-autopilot/nobs-autopilot.ino`](../firmware/nobs-autopilot/nobs-autopilot.ino)
-(Arduino Micro / ATmega32U4, MHeironimus `Joystick` library, report ID `0x05`).
+(Arduino board, MHeironimus `Joystick` library, report ID `0x05`).
 
 The sketch (`Joystick.setButton`) assigns indices in this order:
 **encoders first** (3 buttons each), **standalone switches after**.
@@ -129,7 +129,7 @@ Line protocol (115200 baud; the CDC rate is nominal). `i` is the encoder index `
   uses `configNative.ts` → Rust commands `panel_serial_present` / `panel_serial_send`
   (`src-tauri/src/serial.rs`, the `serialport` crate), which find the panel's CDC port
   by VID/PID and write to it — no grant needed. Both send `A<i><n>\n` and add a settle
-  delay after opening the port (the Micro's CDC drops a write fired the instant it opens).
+  delay after opening the port (the board's CDC drops a write fired the instant it opens).
   The Settings page stores each encoder's value as a percent in `localStorage`
   (`nobs.accelSensitivity.<i>`). Connection is automatic (no button): native auto-detects;
   web silently reuses an already-granted port and only opens the grant prompt the first
@@ -153,7 +153,7 @@ export const switchButton = (sw:  number) => NUM_ENCODERS * BUTTONS_PER_ENCODER 
 
 ---
 
-## Physical pin assignments (Arduino Micro)
+## Physical pin assignments (Arduino board)
 
 Wiring convention — every signal pin uses the MCU's internal pull-up
 (`INPUT_PULLUP`), so **no external resistors** are needed and a closed contact
@@ -163,7 +163,7 @@ reads `LOW`:
   its MCU pin; the extra `W` pin → **GND**.
 - **Switches:** pin 1 → its MCU pin; pin 2 → **GND**.
 
-The AVR port pin is shown in parentheses next to the Arduino label.
+The microcontroller port pin is shown in parentheses next to the Arduino label.
 
 ### Encoders
 
@@ -187,7 +187,7 @@ The AVR port pin is shown in parentheses next to the Arduino label.
 | SW7 | D6 (PD7) | 18 |
 | SW8 | D5 (PC6) | 19 |
 
-> Note: ENC4's push was moved off **PB0 (D17)** — that pin is the Micro's RX LED and
+> Note: ENC4's push was moved off **PB0 (D17)** — that pin is the board's RX LED and
 > is held LOW by the LED circuit, so it reads as permanently pressed. It now uses
 > **PB2 (D16 / MOSI)**. For the same reason, avoid **PC7 (D13)** for inputs.
 

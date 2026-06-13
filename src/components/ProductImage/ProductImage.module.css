@@ -31,20 +31,67 @@
      stays inside the card, and clip anything that would bleed onto it. */
   min-height: 0;
   overflow: hidden;
+}
 
+/* Click target for enlarging the image; hosts the hover magnify overlay. */
+.zoomButton {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: zoom-in;
+}
+
+.zoomOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  margin-top: var(--sp-4);
+  border-radius: 12px;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.28);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  pointer-events: none;
+}
+
+.zoomButton:hover .zoomOverlay,
+.zoomButton:focus-visible .zoomOverlay {
+  opacity: 1;
+}
+
+.zoomChip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+  color: var(--text-bright);
+}
+
+.imageContainer {
   img {
     display: block;
     /* Fill the available card cell, scaling by whichever axis is binding while
        keeping aspect ratio — so the image follows the PanelCard's size. */
-    width: 72%;
-    height: 72%;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
     align-self: center;
     margin-bottom: -30px;
-    /* Recolor toward the sapphire theme accent: sepia+hue-rotate lands the
+    /* Subtle recolor toward the sapphire theme accent: sepia+hue-rotate lands the
        midtones on the blue hue, saturate/brightness keep it from going flat. */
-    filter: brightness(var(--product-image-brightness)) saturate(0.77) sepia(0.38)
-      hue-rotate(185deg) saturate(1.35);
+    filter: brightness(var(--product-image-brightness)) saturate(0.9) sepia(0.15) hue-rotate(185deg)
+      saturate(1.12);
   }
 }
 

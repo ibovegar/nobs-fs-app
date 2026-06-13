@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Product images on the Home page are now zoomable: hovering shows a magnify overlay, and clicking
+  opens a fullscreen lightbox of the image. Close via the ✕ button, clicking the backdrop, or
+  Escape. New reusable `ImageLightbox` component; `ProductImage` renders it on click.
 - **Playwright** screenshot generation (`pnpm screenshots`): `playwright.config.ts` boots the Vite
   dev server and `tests/screenshots.spec.ts` captures the Home and Autopilot-settings pages (dark
   mode, welcome overlay suppressed, rounded corners baked in as transparency) into
@@ -27,6 +30,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   appears once; new `Welcome` component with `welcomeSeen`/`markWelcomeSeen` helpers.
 
 ### Changed
+- **Nobs Approach** controls now render as their real hardware shapes instead of six identical push
+  buttons: a **Flaps** lever, a **Gear** lever, and a push-pull **Parking brake** knob. New `Lever`
+  and `PushPullKnob` components (bare-fragment content, wrapped by `PanelCard`); the Approach grid is
+  now 3 cells wide. Each control's readout reflects its real position: the **flaps lever has five
+  detents** (LEVEL 1 → LEVEL 5) matching the sim — the momentary up/down buttons each shift the
+  lever one notch (Approach accumulates the detent from button-press counts) and the lever renders
+  an engraved tick per stage; the **gear lever** is a 2-position UP/DOWN switch (no centre); the **parking brake**
+  push-pull knob reads ON when pulled out, OFF otherwise. The generic `Lever` is driven by a
+  `stages`/`value` pair, with the handle's slot travel computed from a `--frac` CSS variable, and a
+  `shape` prop gives the flaps a flat wide paddle and the gear a longer grip.
+- **Nobs Panel** now renders **8 bat toggle switches in two rows of four** instead of six push
+  buttons. The rightmost switch in each row is a 3-position (ON-OFF-ON) toggle; the other six are
+  2-position (ON-ON) toggles. New `ToggleSwitch` component (bat handle on a chrome nut) — the bat
+  points straight up, flips straight down, or collapses to a centred knob on the nut, matching the
+  position readout below (UP/DOWN for ON-ON, UP/CENTER/DOWN for ON-OFF-ON) and glowing accent when
+  engaged. The Nobs Panel device button count is now 10 (six ON-ON × 1 button + two ON-OFF-ON × 2
+  buttons).
+- `README.md` rewritten in a friendlier, hobbyist-oriented voice and reframed around the **native
+  desktop app** as the primary target (the browser/`pnpm dev` path is for development).
+- Docs under `docs/` stay technical; updated only to refer to hardware generically ("Arduino board"
+  / "rotary encoder") instead of specific part names (Arduino Micro, ATmega32U4, Bourns PEC11,
+  ESP32). `docs/connect.md` is now scoped explicitly to the Web Gamepad (development) path, noting
+  the native build reads the panel via the HID driver. Pin assignments and VID/PID unchanged.
 - README now has a **Download (Windows)** section linking to the latest GitHub Release and explaining
   the `_setup.exe` (NSIS) vs `.msi` choice, the SmartScreen warning, and WebView2.
 - Release workflow now renames the installers before publishing so the GitHub Release assets have
@@ -231,10 +257,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   fixing the Tools/Settings buttons being hidden when the window was short.
 - `nativeDriver` now uses the typed `@tauri-apps/api` (`invoke`/`listen`) instead of the
   `window.__TAURI__` global, and is no longer a scaffold — it is backed by the Rust HID bridge above.
-- Product image (`ProductImage`) now has a subtle CSS `filter` that nudges it toward the sapphire
-  theme accent so it blends with the dark blue-grey UI instead of clashing with its original colors.
-  Its `brightness()` is driven by a new per-theme `--product-image-brightness` token so the image is
-  lifted brighter in light mode (1.6) and in dark mode (1.12).
+- Approach and Panel cards on the Home page now use their own product images (`nobs_approach.png`,
+  `nobs_panel.png`) instead of reusing the autopilot image.
+- Product image (`ProductImage`) is now larger (fills its cell on both axes) while still scaling
+  responsively with the card via `object-fit: contain`.
+- Product image (`ProductImage`) has a subtle CSS `filter` that nudges it toward the sapphire theme
+  accent so it blends with the UI. Its `brightness()` is driven by a per-theme
+  `--product-image-brightness` token (light 1.6, dark 1.12).
 
 ### Added
 - WebHID driver (`webhidDriver`) — automatic device detection in Chromium without the Gamepad

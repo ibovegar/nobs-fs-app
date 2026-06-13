@@ -94,7 +94,11 @@
       "Bash(git merge *)",
       "PowerShell(pnpm exec playwright install chromium)",
       "PowerShell(pnpm screenshots)",
-      "PowerShell(pnpm format)"
+      "PowerShell(pnpm format)",
+      "PowerShell(pnpm exec tsc -b --force)",
+      "Bash(pnpm tsc *)",
+      "Bash(node -e \"const i=require\\('@lineiconshq/free-icons'\\); const k=Object.keys\\(i\\); console.log\\(k.filter\\(n=>/magnif|search|zoom|expand|maximi|glass|plus/i.test\\(n\\)\\).join\\('\\\\n'\\)\\)\")",
+      "Bash(node -e \"const i=require\\('@lineiconshq/free-icons'\\); const k=Object.keys\\(i\\); console.log\\('total',k.length\\); console.log\\(k.filter\\(n=>/Search|Zoom|Magnif|Expand|Maxim/i.test\\(n\\)\\).slice\\(0,40\\).join\\('\\\\n'\\)\\)\")"
     ],
     "additionalDirectories": [
       "c:\\Users\\Vegar Eeg\\workspace\\nobs-fs\\nobs-fs-app",

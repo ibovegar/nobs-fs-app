@@ -30,9 +30,11 @@ export interface DeviceConfig {
 export const DEVICES = {
   // Real hardware — vid/pid must match the firmware build.opt (0x2341 / 0x0657).
   autopilot: { name: 'Nobs Autopilot', vid: '2341', pid: '0657', buttonCount: BUTTON_COUNT },
-  // Imaginary identities — placeholders until the hardware exists. 6 switches each.
+  // Imaginary identities — placeholders until the hardware exists.
+  // Approach: 3 controls × 2 buttons. Panel: 6 ON-ON toggles (1 button) + 2
+  // ON-OFF-ON toggles (2 buttons) = 10.
   approach: { name: 'Nobs Approach', vid: 'f110', pid: '0a01', buttonCount: 6 },
-  panel: { name: 'Nobs Panel', vid: 'f110', pid: '0a02', buttonCount: 6 },
+  panel: { name: 'Nobs Panel', vid: 'f110', pid: '0a02', buttonCount: 10 },
 } satisfies Record<string, DeviceConfig>
 
 /** HID button index for an encoder's clockwise pulse. */
