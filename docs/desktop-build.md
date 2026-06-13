@@ -100,9 +100,9 @@ only the downloadable filenames are simplified.
    git tag v0.2.0
    git push origin v0.2.0
    ```
-5. The workflow builds and creates a **draft** release `Nobs FS v0.2.0` with
-   `nobsapp_v0.2.0_setup.exe` and `nobsapp_v0.2.0.msi` attached. Review it on the Releases page and
-   hit **Publish**.
+5. The workflow builds and **publishes** the release `Nobs FS v0.2.0` with
+   `nobsapp_v0.2.0_setup.exe` and `nobsapp_v0.2.0.msi` attached. It's public as soon as the run
+   finishes — no manual publish step.
 
 You can also run it manually from **Actions → Release → Run workflow** and type the tag in the input
 box (it's created if it doesn't exist yet).
@@ -142,8 +142,10 @@ The build version and the git tag are **decoupled** — bumping the tag alone is
 
 Notes:
 - Uses the built-in `GITHUB_TOKEN` — no secrets to configure.
-- Releases are **draft** by default (`draft: true` on the `Create draft release` step); set it to
-  `false` to publish automatically on tag push.
+- Releases are **published automatically** on tag push (`draft: false` on the `Create release`
+  step), so they're immediately visible to everyone. Draft releases, by contrast, are only visible
+  to users with push access — if you'd rather review before going public, set `draft: true` and hit
+  **Publish** on the Releases page after each run.
 - The installers are **unsigned**, so Windows SmartScreen may warn on first run ("More info → Run
   anyway"). Removing that warning needs a code-signing certificate — out of scope here.
 

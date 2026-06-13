@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-06-13
+
+### Changed
+- Release workflow now **publishes** the GitHub Release automatically on tag push (`draft: false`)
+  instead of leaving it as a draft, so releases are immediately visible to everyone — draft releases
+  were only visible to users with push access. Docs updated to match.
+
 ## [0.2.0] - 2026-06-13
 
 ### Changed
