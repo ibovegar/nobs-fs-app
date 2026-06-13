@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-06-13
+
+### Changed
+- `docs/desktop-build.md` release section clarified: a new **Versioning: what actually matters**
+  subsection explains that `src-tauri/tauri.conf.json` `version` is what gets baked into the build
+  (the git tag only names the release/assets and `package.json` doesn't affect the installer), plus
+  explicit notes that you don't build locally for a release and that app icons need no action unless
+  the artwork changed. The **Building the executable** section now opens with a callout that it
+  covers the local build only and is not part of the release flow.
+
 ### Added
 - Product images on the Home page are now zoomable: hovering shows a magnify overlay, and clicking
   opens a fullscreen lightbox of the image. Close via the ✕ button, clicking the backdrop, or

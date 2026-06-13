@@ -7,8 +7,6 @@ auto-detected with no knob-turn and no browser permission grant.
 
 Everything Tauri-related lives under [`src-tauri/`](../src-tauri).
 
----
-
 ## Prerequisites (one-time)
 
 | Tool | Why | Install |
@@ -24,9 +22,13 @@ Everything Tauri-related lives under [`src-tauri/`](../src-tauri).
 The JS side is already wired up: `@tauri-apps/cli` (dev dep), `@tauri-apps/api` (dep), and the
 `tauri` script in `package.json`.
 
----
-
 ## Building the executable
+
+> **This section is the local build only** — for developing against the desktop shell or producing
+> a one-off exe on your own machine. **You do not run any of this to cut a release**; the GitHub
+> Actions pipeline builds and publishes the installers for you (see
+> [Releasing via GitHub Actions](#releasing-via-github-actions)). Local artifacts are never used by
+> that pipeline.
 
 ```powershell
 pnpm tauri dev      # run the desktop app against the Vite dev server (hot reload)
@@ -65,8 +67,6 @@ the Rust backend, then bundles. Outputs land in `src-tauri/target/release/`:
 > the installer filenames change (they include the version), so the old installers are left behind —
 > delete them if you don't want stale copies lying around.
 
----
-
 ## Releasing via GitHub Actions
 
 [`.github/workflows/release.yml`](../.github/workflows/release.yml) builds the Windows installers on a
@@ -87,18 +87,58 @@ only the downloadable filenames are simplified.
 
 **To cut a release:**
 
-1. Bump `version` in both `package.json` and `src-tauri/tauri.conf.json`, and update `CHANGELOG.md`.
-2. Commit, then tag and push:
+1. Bump `version` in both `package.json` and `src-tauri/tauri.conf.json` to the same value. See
+   [Versioning: what actually matters](#versioning-what-actually-matters) below for why the
+   `tauri.conf.json` bump is non-optional.
+2. Update `CHANGELOG.md`: rename the `## [Unreleased]` heading to the new version and date (e.g.
+   `## [0.2.0] - 2026-06-13`), then add a fresh empty `## [Unreleased]` heading above it for future
+   changes. The entries you accumulated under `[Unreleased]` *are* this version's changelog — you're
+   just retitling the section, not moving text around.
+3. Commit and push that.
+4. Tag and push:
    ```bash
    git tag v0.2.0
    git push origin v0.2.0
    ```
-3. The workflow builds and creates a **draft** release `Nobs FS v0.2.0` with
+5. The workflow builds and creates a **draft** release `Nobs FS v0.2.0` with
    `nobsapp_v0.2.0_setup.exe` and `nobsapp_v0.2.0.msi` attached. Review it on the Releases page and
    hit **Publish**.
 
 You can also run it manually from **Actions → Release → Run workflow** and type the tag in the input
 box (it's created if it doesn't exist yet).
+
+**You do not build locally for a release.** The `windows-latest` runner runs the same
+`pnpm tauri build` flow, compiles the installers, and uploads them itself — its artifacts are the
+ones published, and any local `target/release/` output is never used by the pipeline. A local
+`pnpm tauri build` is only for smoke-testing the exe on your own machine before tagging. What *is*
+worth running locally first (it's faster than waiting on CI to fail): `pnpm lint` and `pnpm build`,
+to catch frontend errors before the runner spends minutes compiling the Rust crates.
+
+**App icons need nothing at release time.** The files in [`src-tauri/icons/`](../src-tauri/icons)
+are committed, and the runner's `pnpm tauri build` bakes whatever's committed into the exe and
+installers. You only touch icons when you change the artwork — and that's the separate, earlier
+[Creating the app icon](#creating-the-app-icon) step: regenerate, then **commit
+`src-tauri/icons/`** so the runner builds with the new set. If you didn't change the icon since the
+last commit (the normal case), skip it entirely.
+
+### Versioning: what actually matters
+
+The build version and the git tag are **decoupled** — bumping the tag alone is not enough:
+
+- **`src-tauri/tauri.conf.json` `version` is the one baked into the build.** `tauri-action` runs a
+  plain `tauri build`, and Tauri stamps *this* value into the exe's file-version metadata, the MSI
+  `ProductVersion` (what shows in *Add/Remove Programs*), and the default bundle filenames. **This
+  bump is non-optional.**
+- **The git tag only names things.** It feeds the release title (`Nobs FS v0.2.0`) and the renamed
+  asset filenames (`nobsapp_v0.2.0.*`) — see the *Rename installers* / *Create draft release* steps
+  in [`release.yml`](../.github/workflows/release.yml). It is never read back into the build.
+
+  So if you tag `v0.2.0` but forget to bump `tauri.conf.json`, you ship a release *named* "Nobs FS
+  v0.2.0" with assets *named* `nobsapp_v0.2.0.*` that actually install version **0.1.0** internally.
+  That silent mismatch is exactly what this bump prevents.
+- **`package.json` `version` does not affect the installer** as long as `tauri.conf.json` sets an
+  explicit `version` (Tauri only falls back to `package.json` when the config omits it). Bump it
+  anyway to keep the two in sync and to anchor the `CHANGELOG.md` update.
 
 Notes:
 - Uses the built-in `GITHUB_TOKEN` — no secrets to configure.
@@ -106,8 +146,6 @@ Notes:
   `false` to publish automatically on tag push.
 - The installers are **unsigned**, so Windows SmartScreen may warn on first run ("More info → Run
   anyway"). Removing that warning needs a code-signing certificate — out of scope here.
-
----
 
 ## Creating the app icon
 
@@ -142,8 +180,6 @@ pnpm dlx sharp-cli --input public/favicon.svg --output app-icon.png --density 29
 
 To use a different brand asset instead, just drop a square PNG (≥512px, ideally 1024×1024) at
 `app-icon.png` and run the two `pnpm tauri ...` commands above.
-
----
 
 ## Key configuration
 
