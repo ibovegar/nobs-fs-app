@@ -130,7 +130,7 @@ The build version and the git tag are **decoupled** — bumping the tag alone is
   `ProductVersion` (what shows in *Add/Remove Programs*), and the default bundle filenames. **This
   bump is non-optional.**
 - **The git tag only names things.** It feeds the release title (`Nobs FS v0.2.0`) and the renamed
-  asset filenames (`nobsapp_v0.2.0.*`) — see the *Rename installers* / *Create draft release* steps
+  asset filenames (`nobsapp_v0.2.0.*`) — see the *Rename installers* / *Create release* steps
   in [`release.yml`](../.github/workflows/release.yml). It is never read back into the build.
 
   So if you tag `v0.2.0` but forget to bump `tauri.conf.json`, you ship a release *named* "Nobs FS
@@ -146,6 +146,15 @@ Notes:
   step), so they're immediately visible to everyone. Draft releases, by contrast, are only visible
   to users with push access — if you'd rather review before going public, set `draft: true` and hit
   **Publish** on the Releases page after each run.
+- **Hidden-draft gotcha (pre-`v0.2.1` releases).** Until `v0.2.1`, the workflow used `draft: true`,
+  so those releases were built but left as drafts — invisible to anyone without push access, which
+  looks like "the release didn't publish." Flipping to `draft: false` only affects *new* tags; it
+  does **not** un-draft existing ones. Any old draft (e.g. `v0.2.0`) must be **published or deleted
+  by hand** on the GitHub Releases page.
+- **Release source branch.** Tags can be cut from any branch, and the build runs against whatever
+  tree the tag points at. Early releases (`v0.2.0`, `v0.2.1`) were tagged from `docs/app-screenshots`.
+  If you standardize on `main` as the release source, merge release-affecting changes (like the
+  `draft: false` fix) into `main` before tagging there.
 - The installers are **unsigned**, so Windows SmartScreen may warn on first run ("More info → Run
   anyway"). Removing that warning needs a code-signing certificate — out of scope here.
 

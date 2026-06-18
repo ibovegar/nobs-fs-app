@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- `docs/desktop-build.md`: documented the hidden-draft gotcha for pre-`v0.2.1` releases (old drafts
+  must be published/deleted by hand; `draft: false` only affects new tags) and noted the release
+  source branch. Fixed a stale `Create draft release` step reference.
+
 ## [0.2.1] - 2026-06-13
 
 ### Changed
