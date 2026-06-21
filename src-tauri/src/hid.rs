@@ -84,6 +84,23 @@ fn watch_device(app: AppHandle, vid: u16, pid: u16, stop: Arc<AtomicBool>) {
                 // Flip the UI to "connected" right away; real buttons follow.
                 let _ = app.emit("hid://report", ReportPayload { vid, pid, bytes: vec![] });
 
+                // Pull the current state immediately via GET_REPORT(Feature) so the
+                // resting switch positions show the moment we connect, rather than
+                // waiting for the device's heartbeat or a user actuation. The panel
+                // firmware answers this (see _onGetFeature); devices/firmware that
+                // don't simply error here, and the read loop/heartbeat below covers
+                // the sync. hidapi returns the report with a leading report-ID byte
+                // (0 for this unnumbered report); drop it so the payload matches the
+                // input reports' raw button bytes (see the report-ID note below).
+                let mut feat = [0u8; 64];
+                feat[0] = 0;
+                if let Ok(n) = device.get_feature_report(&mut feat) {
+                    if n > 1 {
+                        let bytes = feat[1..n].to_vec();
+                        let _ = app.emit("hid://report", ReportPayload { vid, pid, bytes });
+                    }
+                }
+
                 let mut buf = [0u8; 64];
                 loop {
                     if stop.load(Ordering::Relaxed) {

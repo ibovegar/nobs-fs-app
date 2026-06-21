@@ -7,7 +7,58 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-06-21
+
+### Added
+- Multi-instance device support: run more than one of the same module (panel/autopilot/approach).
+  The Devices page gains a +/- counter per product (up to `MAX_INSTANCES`); each extra module is
+  watched by its own self-contained `DeviceCard` and rendered on Home. Counts persist across
+  reloads (`useInstanceCounts`, localStorage), and single-device users still watch just one of each.
+- Both HID drivers now pull the device's current state on open via a Feature report
+  (`get_feature_report` in the native bridge, `receiveFeatureReport` in the WebHID driver), so the
+  real switch positions appear immediately on connect instead of only after the first actuation.
+  The device firmware reports on change, so without this the app couldn't know any switch's resting
+  position until something moved — making the first toggle look like it flipped the other switches
+  too. Requires firmware that exposes the Feature report (the Nobs Panel firmware now does); the
+  read is best-effort and falls back to the report stream for firmware that doesn't.
+- Nobs Panel toggle-switch actuations (UP/DOWN/CENTER) now appear in the Event Log alongside the
+  Autopilot's switch/encoder events, via a new `usePanelEventLog` hook. The Events page merges both
+  devices' logs into one chronological list.
+
+### Fixed
+- `useDevice` now debounces raw button edges (30ms): cheap mechanical switches can chatter for a
+  few ms when actuated, which previously read as several rapid presses — duplicate Event Log
+  entries and inflated press counts — for a single actuation.
+- Nobs Panel grid layout corrected to match the physical panel: row 1 is now SW2 · SW4 · SW6 · SW8
+  and row 2 is SW1 · SW3 · SW5 · SW7 (previously SW1–4 / SW5–8 in order).
+- `ToggleSwitch` now animates like a real bat toggle: the shaft is pinned at the pivot nut and
+  flips `scaleY(1)`→`scaleY(-1)` between the UP and DOWN positions, collapsing through the nut at
+  the midpoint (the foreshortened look of a bat tilting toward you) while the ball tip slides
+  straight down the centre — a purely vertical sweep with no sideways swing, no seam, and no
+  rigid-block slide. The ball stays glued to the shaft tip because both share the same easing.
+  Replaces several earlier attempts (180° rotation that read as a circular swing; a small-angle
+  tilt that read as horizontal; a rigid bar that slid as one block; a two-stub shaft with a visible
+  seam at the nut).
+- Reloading the app no longer makes the first toggle flash every Nobs Panel card. The WebHID driver
+  announces `connected` with an empty `pressed` array before the first input report arrives, and
+  `useDevice` was adopting that neutral placeholder as the resting baseline — so the device's real
+  first report (every already-closed ON-ON terminal) read as a burst of presses, flashing all cards.
+  `useDevice` now ignores empty snapshots for edge detection and only adopts a baseline from the
+  first report that actually carries button data, silently (no events, no `lastPress`/`count` bump).
+  The edge-detection logic (baseline handling, debounce, press counting) was extracted into a pure,
+  unit-testable `reduceSnapshot` (`deviceSync.ts`); `useDevice` is now a thin wrapper over it.
+- Nobs Panel toggle-switch cards no longer sit permanently lit with the accent background — since
+  ON-ON switches always have one terminal closed, `active` was true for every card all the time.
+  `PanelCard` now supports a `flashKey` prop that triggers a brief one-shot background flash, and
+  `Panel` drives it from each switch's `lastPress` so the card flashes on actuation instead.
+
 ### Changed
+- `ToggleSwitch` handle restyled to a solid, matte metal look — like a real bat toggle. Dropped the
+  accent glow, the bright highlights, and the ever-present accent tint (ON-ON switches are always
+  engaged, so their handles were permanently lit). The shaft is now a satin-gunmetal rod (shaded
+  across its width, which also stays consistent through the flip animation) and the knob a satin
+  ball; engaged state now reads from the position and the accent-coloured readout text rather than a
+  glowing handle.
 - `docs/desktop-build.md`: documented the hidden-draft gotcha for pre-`v0.2.1` releases (old drafts
   must be published/deleted by hand; `draft: false` only affects new tags) and noted the release
   source branch. Fixed a stale `Create draft release` step reference.

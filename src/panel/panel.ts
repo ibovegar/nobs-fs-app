@@ -19,23 +19,87 @@ export const ENCODER_LABELS = ['ENC1', 'ENC2', 'ENC3', 'ENC4'] as const
 
 // ── Device registry ──────────────────────────────────────────────────────────
 // Every Nobs product is its own USB HID gamepad. The Gamepad API exposes the USB
-// identity as "... (Vendor: <vid> Product: <pid>)"; `useGamepad` matches on those.
+// identity as "... (Vendor: <vid> Product: <pid>)"; the drivers match on those.
+//
+// Multiple physical modules of the same type are supported: each product reserves a
+// contiguous block of PIDs, one per instance. Instance 1 keeps the bare product name
+// and the block's base PID; instances 2+ get the next PID and a numbered name. A
+// board is moved onto a given instance's PID/name with the firmware's SET_ID command
+// (see nobs-fs-panel/docs/board-identity.md). Every Nobs box shares Espressif's
+// vendor ID (0x303A); the per-instance vid/pid here must match the firmware.
+export type DeviceKind = 'autopilot' | 'approach' | 'panel'
+
 export interface DeviceConfig {
+  /** Stable per-instance id, e.g. "panel-2". */
+  key: string
+  kind: DeviceKind
+  /** 1-based module number within the product. */
+  instance: number
   name: string
   vid: string
   pid: string
   buttonCount: number
 }
 
+/** Max physical modules of each product the app tracks (size of each PID block). */
+export const MAX_INSTANCES = 4
+
+interface Product {
+  kind: DeviceKind
+  name: string
+  vid: string
+  /** PID of instance 1; instance n uses pidBase + (n - 1). */
+  pidBase: number
+  buttonCount: number
+}
+
+// PID blocks: panel 80F0–80F3, autopilot 80F4–80F7, approach 80F8–80FB.
+const PRODUCTS: Record<DeviceKind, Product> = {
+  panel: { kind: 'panel', name: 'Nobs Panel', vid: '303a', pidBase: 0x80f0, buttonCount: 16 },
+  autopilot: {
+    kind: 'autopilot',
+    name: 'Nobs Autopilot',
+    vid: '303a',
+    pidBase: 0x80f4,
+    buttonCount: BUTTON_COUNT,
+  },
+  approach: {
+    kind: 'approach',
+    name: 'Nobs Approach',
+    vid: '303a',
+    pidBase: 0x80f8,
+    buttonCount: 6,
+  },
+}
+
+function instanceConfig(kind: DeviceKind, instance: number): DeviceConfig {
+  const p = PRODUCTS[kind]
+  return {
+    key: `${kind}-${instance}`,
+    kind,
+    instance,
+    name: instance === 1 ? p.name : `${p.name} ${instance}`,
+    vid: p.vid,
+    pid: (p.pidBase + instance - 1).toString(16).padStart(4, '0'),
+    buttonCount: p.buttonCount,
+  }
+}
+
+/** The display name of a product kind (instance 1's name). */
+export const productName = (kind: DeviceKind) => PRODUCTS[kind].name
+
+/** Instances 1..count of a product kind (count clamped to [1, MAX_INSTANCES]). */
+export const instancesOf = (kind: DeviceKind, count: number): DeviceConfig[] =>
+  Array.from({ length: Math.max(1, Math.min(MAX_INSTANCES, count)) }, (_, i) =>
+    instanceConfig(kind, i + 1),
+  )
+
+/** Primary (first) instance of each product — single-device references. */
 export const DEVICES = {
-  // Real hardware — vid/pid must match the firmware build.opt (0x2341 / 0x0657).
-  autopilot: { name: 'Nobs Autopilot', vid: '2341', pid: '0657', buttonCount: BUTTON_COUNT },
-  // Imaginary identities — placeholders until the hardware exists.
-  // Approach: 3 controls × 2 buttons. Panel: 6 ON-ON toggles (1 button) + 2
-  // ON-OFF-ON toggles (2 buttons) = 10.
-  approach: { name: 'Nobs Approach', vid: 'f110', pid: '0a01', buttonCount: 6 },
-  panel: { name: 'Nobs Panel', vid: 'f110', pid: '0a02', buttonCount: 10 },
-} satisfies Record<string, DeviceConfig>
+  autopilot: instanceConfig('autopilot', 1),
+  approach: instanceConfig('approach', 1),
+  panel: instanceConfig('panel', 1),
+} satisfies Record<DeviceKind, DeviceConfig>
 
 /** HID button index for an encoder's clockwise pulse. */
 export const cwButton = (enc: number) => enc * BUTTONS_PER_ENCODER
@@ -88,3 +152,46 @@ export const PANEL_LAYOUT: PanelCell[] = [
   { kind: 'encoder', index: 3 },
   { kind: 'switch', index: 7 },
 ]
+
+// ── Nobs Panel product — toggle-switch mapping ───────────────────────────────
+// The Nobs Panel is 8 toggle switches. Each is wired through both of its outer
+// terminals, so it occupies a button PAIR: pin 1 (the "up" terminal, button 2i)
+// and pin 3 (the "down" terminal, button 2i+1). SW1–SW6 are 2-position (ON-ON):
+// exactly one terminal is closed at a time. SW7–SW8 are 3-position (ON-OFF-ON):
+// the centre position closes neither. See nobs-fs-panel/docs/arduino-esp-32-wiring.md.
+export const NOBS_PANEL_SWITCH_COUNT = 8
+
+export type PanelSwitchKind = 'on-on' | 'on-off-on'
+export interface PanelSwitch {
+  index: number // 0-based switch number
+  label: string // 'SW1'..'SW8'
+  kind: PanelSwitchKind
+  up: number // button index of pin 1 terminal (2i)
+  down: number // button index of pin 3 terminal (2i+1)
+}
+
+export const PANEL_SWITCHES: PanelSwitch[] = Array.from(
+  { length: NOBS_PANEL_SWITCH_COUNT },
+  (_, i) => ({
+    index: i,
+    label: `SW${i + 1}`,
+    kind: i >= 6 ? 'on-off-on' : 'on-on', // only SW7/SW8 have a centre rest
+    up: i * 2,
+    down: i * 2 + 1,
+  }),
+)
+
+// Physical front-panel order, by switch index: row 1 reads SW2 · SW4 · SW6 · SW8,
+// row 2 reads SW1 · SW3 · SW5 · SW7 (the 4-column grid wraps rows via CSS).
+export const PANEL_SWITCH_ROWS: number[][] = [
+  [1, 3, 5, 7],
+  [0, 2, 4, 6],
+]
+
+export type PanelButtonEvent = { switchIndex: number; terminal: 'up' | 'down' }
+
+/** Decode a Nobs Panel HID button index into its switch + which terminal it is. */
+export const decodePanelButton = (id: number): PanelButtonEvent => ({
+  switchIndex: Math.floor(id / 2),
+  terminal: id % 2 === 0 ? 'up' : 'down',
+})

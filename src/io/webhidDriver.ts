@@ -53,6 +53,23 @@ async function openFor(session: Session) {
   session.onInput = onInput
   // Mark connected immediately; buttons arrive on the first report.
   session.onSnapshot({ connected: true, pressed: [] })
+
+  // Pull the current state right away via the Feature report so resting switch
+  // positions appear on open instead of on the first actuation. Firmware that
+  // doesn't expose it throws here, and the device's heartbeat then covers the
+  // sync. For this unnumbered report WebHID returns just the report bytes.
+  try {
+    const fr = await dev.receiveFeatureReport(0)
+    const bytes = new Uint8Array(fr.buffer, fr.byteOffset, fr.byteLength)
+    if (bytes.length > 0) {
+      session.onSnapshot({
+        connected: true,
+        pressed: decodeJoystickReport(bytes, session.device.buttonCount),
+      })
+    }
+  } catch {
+    // Feature report unsupported (older firmware) — fall back to inputreport.
+  }
 }
 
 function closeFor(session: Session) {

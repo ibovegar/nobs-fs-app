@@ -1,7 +1,7 @@
 import styles from './EventLog.module.css'
 
 export interface LogEntry {
-  key: number
+  key: string
   ts: number
   text: string
   kind: 'cw' | 'ccw' | 'press' | 'release'

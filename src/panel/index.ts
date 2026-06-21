@@ -1,4 +1,13 @@
-export type { ButtonState, DecodedButton, DeviceConfig, PanelCell } from './panel'
+export type {
+  ButtonState,
+  DecodedButton,
+  DeviceConfig,
+  DeviceKind,
+  PanelButtonEvent,
+  PanelCell,
+  PanelSwitch,
+  PanelSwitchKind,
+} from './panel'
 export {
   BUTTON_COUNT,
   BUTTONS_PER_ENCODER,
@@ -6,10 +15,17 @@ export {
   cwButton,
   DEVICES,
   decodeButton,
+  decodePanelButton,
   ENCODER_LABELS,
+  instancesOf,
+  MAX_INSTANCES,
+  NOBS_PANEL_SWITCH_COUNT,
   NUM_ENCODERS,
   NUM_SWITCHES,
   PANEL_LAYOUT,
+  PANEL_SWITCH_ROWS,
+  PANEL_SWITCHES,
+  productName,
   pushButton,
   switchButton,
 } from './panel'

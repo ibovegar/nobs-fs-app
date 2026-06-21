@@ -1,9 +1,8 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useRef } from 'react'
 import type { LogEntry } from '~/components'
 import { ccwButton, cwButton, DEVICES, decodeButton, ENCODER_LABELS } from '~/panel'
 import { type DeviceEvent, useDevice } from './useDevice'
-
-const MAX_LOG = 60
+import { useEventBuffer } from './useEventBuffer'
 
 export interface EventLogState {
   log: LogEntry[]
@@ -12,13 +11,8 @@ export interface EventLogState {
 }
 
 export function useEventLog(): EventLogState {
-  const [log, setLog] = useState<LogEntry[]>([])
-  const seq = useRef(0)
+  const { log, addLog } = useEventBuffer('autopilot')
   const resetCountsRef = useRef<(indices: number[]) => void>(() => {})
-
-  const addLog = useCallback((entry: Omit<LogEntry, 'key'>) => {
-    setLog((prev) => [{ ...entry, key: seq.current++ }, ...prev].slice(0, MAX_LOG))
-  }, [])
 
   const handleEvent = useCallback(
     (ev: DeviceEvent) => {

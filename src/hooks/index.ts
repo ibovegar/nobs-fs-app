@@ -1,4 +1,8 @@
 export type { DeviceEvent, DeviceState } from './useDevice'
 export { useDevice } from './useDevice'
+export type { EventBuffer } from './useEventBuffer'
+export { useEventBuffer } from './useEventBuffer'
 export type { EventLogState } from './useEventLog'
 export { useEventLog } from './useEventLog'
+export { setInstanceCount, useInstanceCounts } from './useInstanceCounts'
+export { usePanelEventLog } from './usePanelEventLog'

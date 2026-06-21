@@ -25,6 +25,7 @@ interface HIDDevice extends EventTarget {
   readonly productName: string
   open(): Promise<void>
   close(): Promise<void>
+  receiveFeatureReport(reportId: number): Promise<DataView>
   addEventListener(
     type: 'inputreport',
     listener: (this: HIDDevice, ev: HIDInputReportEvent) => void,

@@ -12,3 +12,16 @@
 .active {
   background: var(--bg-card-hi);
 }
+
+.flash {
+  animation: flash 0.4s ease-out;
+}
+
+@keyframes flash {
+  from {
+    background: var(--bg-card-hi);
+  }
+  to {
+    background: var(--bg-card);
+  }
+}

@@ -8,8 +8,11 @@
 }
 
 /* ── Bat toggle ──────────────────────────────────────────────────────────────
-   A rounded bezel with a chrome pivot nut; the bat lever tilts up / centre /
-   down. ON-ON switches use only up + down; ON-OFF-ON adds the centre rest. */
+   A rounded bezel with a chrome pivot nut and a fixed shaft stub centred on
+   it; a knob slides straight up/down to indicate position (vertical motion
+   only — no rotation, which swings the tip sideways, and no rigid shaft
+   sliding as one block). ON-ON switches use only up + down; ON-OFF-ON adds
+   the centre rest. */
 
 .switch {
   position: relative;
@@ -36,72 +39,69 @@
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-/* the bat lever — its base sits on the nut centre and it extends upward; it
-   flips straight down for DOWN and collapses onto the nut for CENTER. */
-.bat {
+/* the bat shaft — pinned at the nut (its pivot) and reaching up to the knob.
+   Flipping scaleY(1)→scaleY(-1) swings it from the UP tip down to the DOWN tip,
+   collapsing through the nut at the midpoint (foreshortened, the way a real bat
+   tilts toward you) rather than swinging sideways. Because the knob slides with
+   the SAME easing, the ball stays glued to the shaft's tip the whole way — and
+   pinning one end at the nut means there is no seam. */
+.shaft {
   position: absolute;
   left: 50%;
-  bottom: 50%;
+  bottom: 50%; /* bottom edge sits on the nut centre — the pivot */
   width: 12px;
-  height: 30px;
+  height: 21px; /* reaches from the nut up to the knob's UP position */
   margin-left: -6px;
-  border-radius: 6px 6px 5px 5px;
+  border-radius: 6px;
   transform-origin: 50% 100%;
+  transform: scaleY(0.24); /* CENTER: collapsed to a stub on the nut */
+  /* solid satin-metal rod: shaded across the width for a rounded cross-section.
+     A horizontal gradient also stays put through the scaleY flip (vertical
+     scaling doesn't distort it). */
   background: linear-gradient(
-    180deg,
-    var(--text-mid) 0%,
-    var(--border-mid) 70%,
-    var(--text-dim) 100%
+    90deg,
+    var(--border-mid) 0%,
+    var(--text-dim) 50%,
+    var(--border-mid) 100%
   );
-  border: 1px solid var(--border-mid);
-  box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.2),
-    0 2px 4px rgba(0, 0, 0, 0.4);
-  transition:
-    transform 0.16s cubic-bezier(0.34, 1.3, 0.64, 1),
-    height 0.16s,
-    background 0.12s,
-    border-color 0.12s,
-    box-shadow 0.15s;
+  border: 1px solid var(--bg-darker);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  transition: transform 0.16s cubic-bezier(0.34, 1.3, 0.64, 1);
+}
+.shaft.up {
+  transform: scaleY(1); /* extend up to the knob */
+}
+.shaft.down {
+  transform: scaleY(-1); /* flip down to the knob, pivoting on the nut */
 }
 
-/* up: bat points straight up; down: flipped straight down; center: ball on nut */
-.up {
-  transform: rotate(0deg);
-}
-.down {
-  transform: rotate(180deg);
-}
-.center {
-  height: 5px;
-}
-
-/* ball tip */
-.bat::after {
-  content: "";
+/* the knob (ball tip) — slides straight up/down between the nut (CENTER) and
+   near the housing's top/bottom edge, staying at the shaft's free tip. */
+.knob {
   position: absolute;
-  top: -6px;
   left: 50%;
+  top: 33px;
   width: 16px;
   height: 16px;
   margin-left: -8px;
+  margin-top: -8px;
   border-radius: 50%;
-  background: radial-gradient(circle at 50% 32%, var(--text) 0%, var(--border-mid) 75%);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  /* solid satin-metal ball: one soft off-centre light, darkening to the rim —
+     a physical knob, not a glossy highlight. */
+  background: radial-gradient(
+    circle at 40% 34%,
+    var(--text-mid) 0%,
+    var(--border-mid) 62%,
+    var(--bg-darker) 100%
+  );
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  transition: top 0.16s cubic-bezier(0.34, 1.3, 0.64, 1);
 }
-
-/* engaged: accent-tinted bat + glowing tip */
-.on {
-  background: linear-gradient(180deg, var(--accent) 0%, var(--accent-dark) 100%);
-  border-color: var(--accent);
-  box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.25),
-    0 0 12px var(--accent-glow);
+.knob.up {
+  top: 12px;
 }
-
-.on::after {
-  background: radial-gradient(circle at 50% 32%, var(--accent) 0%, var(--accent-dark) 80%);
-  box-shadow: 0 0 8px var(--accent-glow);
+.knob.down {
+  top: 54px;
 }
 
 .state {

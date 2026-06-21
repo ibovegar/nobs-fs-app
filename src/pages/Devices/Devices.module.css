@@ -7,10 +7,70 @@
 
 .hint {
   margin: 0;
-  max-width: 56ch;
   color: var(--text-mid);
   font-size: 13px;
   line-height: 1.5;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.groupHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+}
+
+.groupTitle {
+  color: var(--text-bright);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.counter {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.countNum {
+  min-width: 1.5ch;
+  text-align: center;
+  color: var(--text-mid);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.countBtn {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-card);
+  color: var(--text-bright);
+  font: inherit;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.countBtn:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.countBtn:disabled {
+  opacity: 0.4;
+  cursor: default;
 }
 
 .list {

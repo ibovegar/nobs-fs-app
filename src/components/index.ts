@@ -1,5 +1,6 @@
 export { Approach } from './Approach'
 export { ConnectionIndicator } from './ConnectionIndicator'
+export { DeviceCard } from './DeviceCard'
 export type { LogEntry } from './EventLog'
 export { EventLog } from './EventLog'
 export { Header } from './Header'
