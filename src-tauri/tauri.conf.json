@@ -2,7 +2,7 @@
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "Nobs FS",
   "mainBinaryName": "Nobs FS",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "identifier": "com.nobs.fs",
   "build": {
     "frontendDist": "../dist",
@@ -14,8 +14,8 @@
     "windows": [
       {
         "title": "Nobs FS",
-        "width": 1500,
-        "height": 900,
+        "width": 2000,
+        "height": 1260,
         "resizable": true,
         "fullscreen": false,
         "decorations": false,
