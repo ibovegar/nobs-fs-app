@@ -1,16 +1,20 @@
 import { ArrowLeftOutlined } from '@lineiconshq/free-icons'
-import { useNavigate } from 'react-router'
-import { Icon, Section } from '~/components'
-import { type ButtonState, ENCODER_LABELS } from '~/panel'
+import { useNavigate, useParams } from 'react-router'
+import { Icon, PanelPhoto, Section } from '~/components'
+import { type ButtonState, type DeviceKind, ENCODER_LABELS, productName } from '~/panel'
 import { HsiTool } from './HsiTool'
 import styles from './Tools.module.css'
 
 interface Props {
-  buttons: ButtonState[]
+  autopilotButtons: ButtonState[]
+  panelButtons: ButtonState[]
 }
 
-export function Tools({ buttons }: Props) {
+// One tools view per device kind, selected by the :kind route param. Each
+// device card links to its own /tools/<kind>.
+export function Tools({ autopilotButtons, panelButtons }: Props) {
   const navigate = useNavigate()
+  const { kind } = useParams<{ kind: DeviceKind }>()
 
   return (
     <>
@@ -18,13 +22,28 @@ export function Tools({ buttons }: Props) {
         <Icon icon={ArrowLeftOutlined} size={24} />
         <span>Back</span>
       </button>
-      <div className={styles.grid}>
-        {ENCODER_LABELS.map((label, i) => (
-          <Section key={label} label={label} className={styles.card}>
-            <HsiTool encoder={i} buttons={buttons} />
-          </Section>
-        ))}
-      </div>
+
+      {kind === 'autopilot' && (
+        <div className={styles.grid}>
+          {ENCODER_LABELS.map((label, i) => (
+            <Section key={label} label={label} className={styles.card}>
+              <HsiTool encoder={i} buttons={autopilotButtons} />
+            </Section>
+          ))}
+        </div>
+      )}
+
+      {kind === 'panel' && (
+        <Section label={productName('panel')} className={styles.photoCard}>
+          <PanelPhoto buttons={panelButtons} />
+        </Section>
+      )}
+
+      {kind === 'approach' && (
+        <Section label={productName('approach')}>
+          <div className={styles.empty}>No tools yet</div>
+        </Section>
+      )}
     </>
   )
 }

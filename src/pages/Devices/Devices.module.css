@@ -116,8 +116,8 @@
   padding: var(--sp-2) var(--sp-4);
   border: none;
   border-radius: 8px;
-  background: var(--accent);
-  color: var(--bg);
+  background: var(--accent-main);
+  color: #fff;
   font: inherit;
   font-size: 13px;
   font-weight: 600;
@@ -126,7 +126,8 @@
 }
 
 .connect:hover {
-  background: var(--accent-light);
+  background: var(--accent);
+  color: var(--bg);
 }
 
 .granted {

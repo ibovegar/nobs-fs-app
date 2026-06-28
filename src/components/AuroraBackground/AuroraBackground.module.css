@@ -1,0 +1,178 @@
+.aurora {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  /* Slowly cycle every blob's hue together for the colour-shifting effect. */
+  animation: hue 150s linear infinite;
+}
+
+.blob {
+  position: absolute;
+  width: 65vmax;
+  height: 65vmax;
+  border-radius: 50%;
+  /* Heavy blur + soft-light blend turns the blobs into a faint glowing wash
+     that respects the dark background's luminance, instead of screen's flat
+     brightening which made the blobs stand out as visible patches. */
+  filter: blur(130px);
+  opacity: 0.14;
+  mix-blend-mode: soft-light;
+  will-change: transform;
+}
+
+/* Colours pulled from (or close to) the app's own cool blue-grey background
+   family — accent-dark/bg-card-hi match those theme tokens, the other two are
+   muted greys with a faint blue/teal tint — rather than saturated accent
+   colours, so the wash reads as part of the background instead of distinct
+   coloured shapes.
+
+   Each gradient fades to its OWN colour at alpha 0 (not the `transparent`
+   keyword, which is rgba(0,0,0,0) — interpolating toward that drags the RGB
+   toward black on the way out, producing a muddy ring). It also interpolates
+   `in oklch` (perceptually uniform) rather than the sRGB default, and follows
+   the standard 12-stop "easing-gradients" ease-out alpha curve instead of one
+   straight 0%-to-100% fade — a linear sRGB alpha ramp spends most of its
+   visible range in a narrow inner band, which reads as a hard-edged disc with
+   a long dead, barely-there tail rather than a smooth glow. */
+.blob1 {
+  top: 18%;
+  left: -8%;
+  background: radial-gradient(
+    in oklch circle,
+    rgba(21, 42, 138, 1) 0%,
+    rgba(21, 42, 138, 0.738) 19%,
+    rgba(21, 42, 138, 0.541) 34%,
+    rgba(21, 42, 138, 0.382) 47%,
+    rgba(21, 42, 138, 0.278) 56.5%,
+    rgba(21, 42, 138, 0.194) 65%,
+    rgba(21, 42, 138, 0.126) 73%,
+    rgba(21, 42, 138, 0.075) 80.2%,
+    rgba(21, 42, 138, 0.042) 86.1%,
+    rgba(21, 42, 138, 0.021) 91%,
+    rgba(21, 42, 138, 0.008) 95.2%,
+    rgba(21, 42, 138, 0) 100%
+  );
+  animation: drift1 85s ease-in-out infinite;
+}
+
+.blob2 {
+  top: 50%;
+  left: 55%;
+  background: radial-gradient(
+    in oklch circle,
+    rgba(26, 42, 88, 1) 0%,
+    rgba(26, 42, 88, 0.738) 19%,
+    rgba(26, 42, 88, 0.541) 34%,
+    rgba(26, 42, 88, 0.382) 47%,
+    rgba(26, 42, 88, 0.278) 56.5%,
+    rgba(26, 42, 88, 0.194) 65%,
+    rgba(26, 42, 88, 0.126) 73%,
+    rgba(26, 42, 88, 0.075) 80.2%,
+    rgba(26, 42, 88, 0.042) 86.1%,
+    rgba(26, 42, 88, 0.021) 91%,
+    rgba(26, 42, 88, 0.008) 95.2%,
+    rgba(26, 42, 88, 0) 100%
+  );
+  animation: drift2 105s ease-in-out infinite;
+}
+
+.blob3 {
+  top: 65%;
+  left: 10%;
+  background: radial-gradient(
+    in oklch circle,
+    rgba(42, 61, 58, 1) 0%,
+    rgba(42, 61, 58, 0.738) 19%,
+    rgba(42, 61, 58, 0.541) 34%,
+    rgba(42, 61, 58, 0.382) 47%,
+    rgba(42, 61, 58, 0.278) 56.5%,
+    rgba(42, 61, 58, 0.194) 65%,
+    rgba(42, 61, 58, 0.126) 73%,
+    rgba(42, 61, 58, 0.075) 80.2%,
+    rgba(42, 61, 58, 0.042) 86.1%,
+    rgba(42, 61, 58, 0.021) 91%,
+    rgba(42, 61, 58, 0.008) 95.2%,
+    rgba(42, 61, 58, 0) 100%
+  );
+  animation: drift3 95s ease-in-out infinite;
+}
+
+.blob4 {
+  top: 32%;
+  left: 35%;
+  background: radial-gradient(
+    in oklch circle,
+    rgba(60, 71, 81, 1) 0%,
+    rgba(60, 71, 81, 0.738) 19%,
+    rgba(60, 71, 81, 0.541) 34%,
+    rgba(60, 71, 81, 0.382) 47%,
+    rgba(60, 71, 81, 0.278) 56.5%,
+    rgba(60, 71, 81, 0.194) 65%,
+    rgba(60, 71, 81, 0.126) 73%,
+    rgba(60, 71, 81, 0.075) 80.2%,
+    rgba(60, 71, 81, 0.042) 86.1%,
+    rgba(60, 71, 81, 0.021) 91%,
+    rgba(60, 71, 81, 0.008) 95.2%,
+    rgba(60, 71, 81, 0) 100%
+  );
+  animation: drift4 75s ease-in-out infinite;
+}
+
+@keyframes drift1 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(22vw, 18vh) scale(1.25);
+  }
+}
+
+@keyframes drift2 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1.1);
+  }
+  50% {
+    transform: translate(-26vw, 12vh) scale(0.9);
+  }
+}
+
+@keyframes drift3 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(18vw, -20vh) scale(1.2);
+  }
+}
+
+@keyframes drift4 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1.05);
+  }
+  50% {
+    transform: translate(-16vw, 22vh) scale(0.85);
+  }
+}
+
+@keyframes hue {
+  from {
+    filter: hue-rotate(0deg);
+  }
+  to {
+    filter: hue-rotate(360deg);
+  }
+}
+
+/* Respect users who ask for less motion: keep the colours, drop the movement. */
+@media (prefers-reduced-motion: reduce) {
+  .aurora,
+  .blob {
+    animation: none;
+  }
+}

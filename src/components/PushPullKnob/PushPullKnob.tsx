@@ -9,7 +9,7 @@ interface Props {
 }
 
 export function PushPullKnob({ label, pulled, pushed }: Props) {
-  const pos = pulled ? styles.pull : pushed ? styles.push : styles.center
+  const pos = pulled ? styles.pull : pushed ? styles.push : ''
   // Pulled out = brake set (ON); pushed in or neutral = released (OFF).
   const on = pulled
   const state = on ? 'ON' : 'OFF'

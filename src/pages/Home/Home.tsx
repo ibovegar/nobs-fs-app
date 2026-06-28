@@ -10,7 +10,7 @@ import {
   ProductImage,
   Section,
 } from '~/components'
-import { type DeviceState, type EventLogState, useInstanceCounts } from '~/hooks'
+import { type EventLogState, useInstanceCounts } from '~/hooks'
 import { DEVICES, type DeviceKind, instancesOf } from '~/panel'
 import styles from './Home.module.css'
 
@@ -22,7 +22,7 @@ const IMAGES: Record<DeviceKind, string> = {
 
 interface Props {
   autopilot: EventLogState
-  approach: DeviceState
+  approach: EventLogState
   panel: EventLogState
 }
 
@@ -53,6 +53,7 @@ export function Home({ autopilot, approach, panel }: Props) {
             name={DEVICES.autopilot.name}
             image={autopilotImg}
             isConnected={autopilot.isConnected}
+            toolsTo="/tools/autopilot"
             settingsTo="/autopilot/settings"
           />
           <PanelGrid buttons={autopilot.buttons} />
@@ -66,6 +67,8 @@ export function Home({ autopilot, approach, panel }: Props) {
             name={DEVICES.approach.name}
             image={approachImg}
             isConnected={approach.isConnected}
+            toolsTo="/tools/approach"
+            settingsTo="/approach/settings"
           />
           <Approach buttons={approach.buttons} />
         </ProductCard>
@@ -78,6 +81,8 @@ export function Home({ autopilot, approach, panel }: Props) {
             name={DEVICES.panel.name}
             image={panelImg}
             isConnected={panel.isConnected}
+            toolsTo="/tools/panel"
+            settingsTo="/panel/settings"
           />
           <Panel buttons={panel.buttons} />
         </ProductCard>

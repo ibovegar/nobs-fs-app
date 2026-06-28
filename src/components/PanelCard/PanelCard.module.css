@@ -1,4 +1,8 @@
 .card {
+  position: relative;
+  /* Form a stacking context so the flash overlay (z-index: -1) paints above the
+     card's own background but below the content. */
+  isolation: isolate;
   background: var(--bg-card);
   padding: var(--sp-4) var(--sp-3);
   display: flex;
@@ -7,13 +11,24 @@
   justify-content: center;
   gap: var(--sp-3);
   transition: background 0.12s;
+  /* Control labels and readouts are status text, not selectable content. */
+  cursor: default;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .active {
   background: var(--bg-card-hi);
 }
 
+/* One-shot flash: a remounted overlay (keyed by flashId in PanelCard) that
+   fades from the highlight colour back to transparent, so every actuation
+   replays the animation from the start. */
 .flash {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
   animation: flash 0.4s ease-out;
 }
 
@@ -22,6 +37,6 @@
     background: var(--bg-card-hi);
   }
   to {
-    background: var(--bg-card);
+    background: transparent;
   }
 }

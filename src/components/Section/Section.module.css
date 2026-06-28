@@ -1,5 +1,9 @@
 .section {
-  background: var(--bg-panel);
+  /* Slightly transparent (rather than solid var(--bg-panel)) so the aurora
+     backdrop bleeds through a little instead of stopping dead at the card
+     edge. color-mix() (rather than hardcoding the dark theme's RGB) keeps
+     this tied to --bg-panel so it still tracks the active theme. */
+  background: color-mix(in srgb, var(--bg-panel) 90%, transparent);
   border-radius: 6px;
   overflow: hidden;
 }

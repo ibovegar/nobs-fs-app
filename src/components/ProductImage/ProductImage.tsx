@@ -10,17 +10,19 @@ interface Props {
   name: string
   image: string
   isConnected: boolean
+  // Per-device tools route, e.g. "/tools/panel". Omit to hide the Tools link.
+  toolsTo?: string
   // Per-device settings route. Omit for devices that have no settings page.
   settingsTo?: string
 }
 
 // TODO: Use typography here! and change the CSS names
 
-export function ProductImage({ name, image, isConnected, settingsTo }: Props) {
+export function ProductImage({ name, image, isConnected, toolsTo, settingsTo }: Props) {
   const [zoomed, setZoomed] = useState(false)
 
   const links = [
-    { to: '/tools', label: 'Tools', icon: Hammer1Outlined },
+    ...(toolsTo ? [{ to: toolsTo, label: 'Tools', icon: Hammer1Outlined }] : []),
     ...(settingsTo ? [{ to: settingsTo, label: 'Settings', icon: Gear1Outlined }] : []),
   ]
 

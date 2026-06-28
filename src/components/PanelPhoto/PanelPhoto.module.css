@@ -1,0 +1,14 @@
+.frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3040 / 1082;
+  overflow: hidden;
+}
+
+.layer {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}

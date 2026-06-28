@@ -1,3 +1,4 @@
+export { useApproachEventLog } from './useApproachEventLog'
 export type { DeviceEvent, DeviceState } from './useDevice'
 export { useDevice } from './useDevice'
 export type { EventBuffer } from './useEventBuffer'

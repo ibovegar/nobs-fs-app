@@ -5,20 +5,24 @@ import styles from './Events.module.css'
 
 interface Props {
   autopilot: EventLogState
+  approach: EventLogState
   panel: EventLogState
 }
 
-export function Events({ autopilot, panel }: Props) {
-  // Each device's log entries carry source-namespaced keys, so the two streams
+export function Events({ autopilot, approach, panel }: Props) {
+  // Each device's log entries carry source-namespaced keys, so the streams
   // merge into one newest-first list by timestamp without collision.
   const log = useMemo(
-    () => [...autopilot.log, ...panel.log].sort((a, b) => b.ts - a.ts),
-    [autopilot.log, panel.log],
+    () => [...autopilot.log, ...approach.log, ...panel.log].sort((a, b) => b.ts - a.ts),
+    [autopilot.log, approach.log, panel.log],
   )
 
   return (
     <Section label="EVENT LOG" className={styles.fill}>
-      <EventLog log={log} isConnected={autopilot.isConnected || panel.isConnected} />
+      <EventLog
+        log={log}
+        isConnected={autopilot.isConnected || approach.isConnected || panel.isConnected}
+      />
     </Section>
   )
 }

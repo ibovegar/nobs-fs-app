@@ -1,9 +1,15 @@
 import { useEffect, useState } from 'react'
 import { Route, Routes } from 'react-router'
-import { Header, markWelcomeSeen, Sidebar, Welcome, welcomeSeen } from '~/components'
-import { useDevice, useEventLog, usePanelEventLog } from '~/hooks'
-import { AutopilotSettings, Devices, Events, Home, Settings, Tools } from '~/pages'
-import { DEVICES } from '~/panel'
+import {
+  AuroraBackground,
+  Header,
+  markWelcomeSeen,
+  Sidebar,
+  Welcome,
+  welcomeSeen,
+} from '~/components'
+import { useApproachEventLog, useEventLog, usePanelEventLog } from '~/hooks'
+import { AutopilotSettings, DeviceSettings, Devices, Events, Home, Settings, Tools } from '~/pages'
 import { watchSystemTheme } from '~/theme'
 import styles from './App.module.css'
 
@@ -13,7 +19,7 @@ export default function App() {
   // ever opening the same device twice. Extra instances (module 2+) are watched
   // by their own Home cards.
   const autopilot = useEventLog()
-  const approach = useDevice(DEVICES.approach)
+  const approach = useApproachEventLog()
   const panel = usePanelEventLog()
 
   // First-run welcome screen — shown until the user dismisses it once.
@@ -28,6 +34,7 @@ export default function App() {
 
   return (
     <div className={styles.app}>
+      <AuroraBackground />
       {showWelcome && <Welcome onDismiss={dismissWelcome} />}
       <Header />
       <div className={styles.layout}>
@@ -50,9 +57,20 @@ export default function App() {
                 />
               }
             />
-            <Route path="/events" element={<Events autopilot={autopilot} panel={panel} />} />
-            <Route path="/tools" element={<Tools buttons={autopilot.buttons} />} />
+            <Route
+              path="/events"
+              element={<Events autopilot={autopilot} approach={approach} panel={panel} />}
+            />
+            <Route
+              path="/tools/:kind"
+              element={<Tools autopilotButtons={autopilot.buttons} panelButtons={panel.buttons} />}
+            />
             <Route path="/autopilot/settings" element={<AutopilotSettings />} />
+            <Route
+              path="/approach/settings"
+              element={<DeviceSettings title="Approach settings" />}
+            />
+            <Route path="/panel/settings" element={<DeviceSettings title="Panel settings" />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
         </main>

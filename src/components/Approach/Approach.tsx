@@ -20,10 +20,10 @@ interface Props {
 export function Approach({ buttons }: Props) {
   const flapsUpCount = buttons[0].count
   const flapsDnCount = buttons[1].count
-  const gearUp = buttons[2].pressed
   const gearDn = buttons[3].pressed
-  const brakeOut = buttons[4].pressed
-  const brakeIn = buttons[5].pressed
+  // Brake terminals are wired inverted: button 4 reads pushed-in, button 5 pulled-out.
+  const brakeOut = buttons[5].pressed
+  const brakeIn = buttons[4].pressed
 
   // The flaps lever is momentary but holds a position: each up press retracts one
   // notch (toward LEVEL 1), each down press extends one (toward LEVEL 5). We track
@@ -41,9 +41,22 @@ export function Approach({ buttons }: Props) {
     }
   }, [flapsUpCount, flapsDnCount])
 
+  // These controls are maintained (gear always rests up or down, etc.), so a
+  // persistent `active` background would stay lit forever. Flash the card on
+  // actuation instead — same approach as the Panel's toggle switches.
   return (
     <div className={styles.grid}>
-      <PanelCard active={flaps > 0}>
+      <PanelCard flashKey={Math.max(buttons[2].lastPress, buttons[3].lastPress)}>
+        <Lever
+          label="GEAR"
+          shape="long"
+          stages={2}
+          value={gearDn ? 1 : 0}
+          active={gearDn}
+          readout={gearDn ? 'DOWN' : 'UP'}
+        />
+      </PanelCard>
+      <PanelCard flashKey={Math.max(buttons[0].lastPress, buttons[1].lastPress)}>
         <Lever
           label="FLAPS"
           shape="wide"
@@ -53,17 +66,7 @@ export function Approach({ buttons }: Props) {
           readout={FLAP_LABELS[flaps]}
         />
       </PanelCard>
-      <PanelCard active={gearUp || gearDn}>
-        <Lever
-          label="GEAR"
-          shape="long"
-          stages={2}
-          value={gearDn ? 1 : 0}
-          active={gearUp || gearDn}
-          readout={gearDn ? 'DOWN' : 'UP'}
-        />
-      </PanelCard>
-      <PanelCard active={brakeOut}>
+      <PanelCard flashKey={Math.max(buttons[4].lastPress, buttons[5].lastPress)}>
         <PushPullKnob label="PARK BRK" pulled={brakeOut} pushed={brakeIn} />
       </PanelCard>
     </div>
