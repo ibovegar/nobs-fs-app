@@ -1,26 +1,26 @@
 # nobs-fs-app
 
-**Nobs FS** is a set of DIY flight-sim panels you build yourself on an Arduino — real knobs,
+**Nobs FS** is a set of DIY flight-sim panels you build yourself on an Arduino: real knobs,
 switches and push buttons for flying in Microsoft Flight Simulator. This app is the companion that
 shows you what your panel is doing in real time: turn a knob or flip a switch and watch it light up
 on screen.
 
 Each panel plugs in over USB and pretends to be an ordinary game controller, so there's nothing
-extra to install on the sim side — no plugins, no fiddly config. The app reads the raw button
+extra to install on the sim side: no plugins, no fiddly config. The app reads the raw button
 presses and turns them back into the things you actually did: knob turns, button pushes, switch
 flips.
 
 The **native desktop app** (Windows) is the main event: install it, open it, and it finds your
-panel on its own — no setup, nothing to click. That's the one to use for actually flying.
+panel on its own, no setup, nothing to click. That's the one to use for actually flying.
 
 The same code also runs in the browser via `pnpm dev`, but that's really just for development. It
-works as a fallback — Chrome/Edge auto-connect after a one-time permission grant, other browsers
-need you to nudge a control first to expose the device — but the desktop app is the real target.
+works as a fallback: Chrome/Edge auto-connect after a one-time permission grant, while other browsers
+need you to nudge a control first to expose the device. Still, the desktop app is the real target.
 
 ## Download (Windows)
 
 Grab the latest desktop build from the **[Releases page](../../releases/latest)**. Under the
-release's **Assets**, you'll see two installers — either one works, they install the exact same app:
+release's **Assets**, you'll see two installers; either one works, they install the exact same app:
 
 | File | What it is | Pick this if… |
 |---|---|---|
@@ -29,18 +29,18 @@ release's **Assets**, you'll see two installers — either one works, they insta
 
 Both create Start-menu and desktop shortcuts. Heads up: the installers aren't code-signed (that
 costs money), so the first time you run one Windows may pop up a blue "Windows protected your PC"
-box. That's expected — click **More info → Run anyway**. The app's renderer (WebView2) already
+box. That's expected: click **More info → Run anyway**. The app's renderer (WebView2) already
 ships with Windows 11; on older Windows the installer grabs it for you.
 
 ## What it shows
 
-- **Home** (`/`) — a live picture of your panel: knobs that turn, switches that flip, plus a press
+- **Home** (`/`): a live picture of your panel: knobs that turn, switches that flip, plus a press
   count for each control and whether the panel is connected.
-- **Events** (`/events`) — a running log of everything the autopilot panel sends, newest at the top.
-- **Tools** (`/tools`) — four navigation dials (HSIs), one per knob, that you steer by turning the
+- **Events** (`/events`): a running log of everything the autopilot panel sends, newest at the top.
+- **Tools** (`/tools`): four navigation dials (HSIs), one per knob, that you steer by turning the
   knobs.
-- **Devices** (`/devices`) — which panels are plugged in right now.
-- **Settings** (`/settings`) — light / dark / match-my-system theme.
+- **Devices** (`/devices`): which panels are plugged in right now.
+- **Settings** (`/settings`): light / dark / match-my-system theme.
 
 <img src="docs/screenshot-home.png" alt="Home page showing the live panel mimic" width="49%"> <img src="docs/screenshot-autopilot-settings.png" alt="Autopilot settings page with per-encoder acceleration sliders" width="49%">
 
@@ -48,12 +48,12 @@ ships with Windows 11; on older Windows the installer grabs it for you.
 
 The main panel, **Nobs Autopilot**, is an Arduino board wired up to look like a USB game controller:
 
-- 4 rotary encoders — the detented knobs; each one also pushes in like a button
+- 4 rotary encoders, the detented knobs; each one also pushes in like a button
 - 8 ON-ON momentary toggle switches
 - It identifies itself with VID `0x2341`, PID `0x0657` (think of those as the panel's "name tag"
   so the app can pick it out from any other controllers you have plugged in)
 
-Building your own? The full wiring and the firmware live in [`docs/mapping.md`](docs/mapping.md) —
+Building your own? The full wiring and the firmware live in [`docs/mapping.md`](docs/mapping.md):
 every pin, every button number, in tables you can follow along with.
 
 ### How the buttons are numbered
@@ -71,16 +71,16 @@ switches follow:
 
 So buttons `0–11` are the four knobs and `12–19` are switches SW1–SW8. If you ever need to change
 this, it all lives in one place: [`src/panel/panel.ts`](src/panel/panel.ts). (Two more panels,
-**Nobs Approach** and **Nobs Panel**, are sketched in there too — placeholders for hardware that
+**Nobs Approach** and **Nobs Panel**, are sketched in there too, as placeholders for hardware that
 doesn't exist yet.)
 
 > Why the knobs feel "paced": the sim only checks the controller about once per video frame, so the
 > firmware holds each knob click long enough to be noticed. In practice that caps a fast spin at
-> roughly 33 steps a second — plenty for real flying.
+> roughly 33 steps a second, plenty for real flying.
 
 ## Working on the app itself
 
-Just want to fly? Grab the installer above — you don't need any of this. This part is for poking at
+Just want to fly? Grab the installer above; you don't need any of this. This part is for poking at
 the code. You'll need [pnpm](https://pnpm.io) installed.
 
 ```sh
@@ -100,7 +100,7 @@ it's running:
 
 | Where it's running | How it connects |
 |---|---|
-| Desktop app | Finds the panel by itself — nothing to click |
+| Desktop app | Finds the panel by itself, nothing to click |
 | Chrome / Edge | Auto-connects after you click "allow" once |
 | Other browsers | You flip a switch or turn a knob once, then it appears |
 
@@ -131,6 +131,6 @@ made are all in **[docs/desktop-build.md](docs/desktop-build.md)**.
 Copyright (C) 2026 Vegar Eeg.
 
 This project is licensed under the **GNU Affero General Public License v3.0** (AGPL-3.0-only). In
-plain terms: use it, change it, share it, even sell it — but if you hand it out or run a changed
+plain terms: use it, change it, share it, even sell it, but if you hand it out or run a changed
 version as an online service, you have to share your source under this same license too. The full
 legal text is in [LICENSE](LICENSE).

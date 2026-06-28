@@ -22,12 +22,12 @@ fresh `[Unreleased]` above it.
 - CSS Modules for all component styles
 - No UI library
 - Biome for lint + format (`pnpm lint` to check, `pnpm format` to auto-fix). Style: single
-  quotes, no semicolons, 2-space indent, 100 col — enforced by `biome.json`.
+  quotes, no semicolons, 2-space indent, 100 col, enforced by `biome.json`.
 
 ## Conventions
 
 ### Path alias
-`~` maps to `src/`. Always use `~/` imports — never relative paths when the alias applies.
+`~` maps to `src/`. Always use `~/` imports; never relative paths when the alias applies.
 ```ts
 import { useDevice } from '~/hooks'       // correct
 import { useDevice } from './hooks/useDevice' // wrong
@@ -48,7 +48,7 @@ One `ComponentName.module.css` per component. No global styles for component-spe
 
 ### Component composition pattern
 - **Shell component** (`PanelCard`) owns: `background: var(--bg-card)`, padding, flex layout, active state.
-- **Content components** (`Encoder`, `SwitchBtn`) return a bare `<>fragment</>` — no card wrapper, no layout knowledge.
+- **Content components** (`Encoder`, `SwitchBtn`) return a bare `<>fragment</>`: no card wrapper, no layout knowledge.
 - **Orchestrator** (`PanelGrid`) wraps each cell in `<PanelCard>` and decides the `active` value.
 
 ```tsx
@@ -65,7 +65,7 @@ export function SwitchBtn(...) {
 
 ## Theme
 
-Colors live in `src/theme/palette.ts`. `injectThemeCssVars()` (called in `main.tsx`) writes them to CSS custom properties on `<html>`. All component CSS uses `var(--token)` — never hardcoded hex values.
+Colors live in `src/theme/palette.ts`. `injectThemeCssVars()` (called in `main.tsx`) writes them to CSS custom properties on `<html>`. All component CSS uses `var(--token)`, never hardcoded hex values.
 
 Key tokens: `--bg`, `--bg-panel`, `--bg-card`, `--bg-card-hi`, `--accent`, `--accent-light`, `--danger`, `--green`, `--text`, `--text-bright`, `--text-mid`, `--text-dim`, `--border`, `--border-mid`.
 
@@ -73,7 +73,7 @@ Key tokens: `--bg`, `--bg-panel`, `--bg-card`, `--bg-card-hi`, `--accent`, `--ac
 
 ```
 src/
-  main.tsx               entry — calls injectThemeCssVars()
+  main.tsx               entry; calls injectThemeCssVars()
   App.tsx                root layout (state + hook wiring)
   App.module.css
   io/                    input drivers (raw device bits, env-specific)
@@ -81,7 +81,7 @@ src/
     decodeReport.ts      Arduino Joystick HID report → pressed[] (shared)
     gamepadDriver.ts     Gamepad API polling (web/dev fallback; needs actuation)
     webhidDriver.ts      WebHID auto-detect (Chromium; one-time permission grant)
-    nativeDriver.ts      Tauri HID bridge (native; scaffold — Rust side pending)
+    nativeDriver.ts      Tauri HID bridge (native; scaffold, Rust side pending)
     selectDriver.ts      runtime env detection → active driver
     webhid.d.ts          minimal WebHID typings (not in lib.dom)
     index.ts

@@ -98,11 +98,34 @@
       "PowerShell(pnpm exec tsc -b --force)",
       "Bash(pnpm tsc *)",
       "Bash(node -e \"const i=require\\('@lineiconshq/free-icons'\\); const k=Object.keys\\(i\\); console.log\\(k.filter\\(n=>/magnif|search|zoom|expand|maximi|glass|plus/i.test\\(n\\)\\).join\\('\\\\n'\\)\\)\")",
-      "Bash(node -e \"const i=require\\('@lineiconshq/free-icons'\\); const k=Object.keys\\(i\\); console.log\\('total',k.length\\); console.log\\(k.filter\\(n=>/Search|Zoom|Magnif|Expand|Maxim/i.test\\(n\\)\\).slice\\(0,40\\).join\\('\\\\n'\\)\\)\")"
+      "Bash(node -e \"const i=require\\('@lineiconshq/free-icons'\\); const k=Object.keys\\(i\\); console.log\\('total',k.length\\); console.log\\(k.filter\\(n=>/Search|Zoom|Magnif|Expand|Maxim/i.test\\(n\\)\\).slice\\(0,40\\).join\\('\\\\n'\\)\\)\")",
+      "Bash(python3 -c \"import PIL; print\\('ok'\\)\")",
+      "Bash(python -c \"import PIL; print\\('ok'\\)\")",
+      "Bash(python -c ' *)",
+      "Bash(node \"C:\\\\Users\\\\VEGARE~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Vegar-Eeg-workspace-nobs-fs-nobs-fs-app\\\\61abbf09-d8c9-4802-a657-fee34556f201\\\\scratchpad\\\\shot.js\")",
+      "Bash(node .scratch_shot.cjs)",
+      "Bash(node -e \"const pw=require\\('@playwright/test'\\); console.log\\(Object.keys\\(pw\\)\\)\")",
+      "Bash(node .scratch_shot2.cjs)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5174/)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173/)",
+      "Bash(node .scratch_shot4.cjs)",
+      "Bash(xargs grep -l \"user-select\\\\|:root\\\\|body\\\\|button {\")",
+      "WebFetch(domain:klinisk.demo.aidn.no)",
+      "Bash(node .scratch_aurora.cjs)",
+      "Bash(node .scratch_aurora2.cjs)",
+      "Bash(cd \"c:\\\\Users\\\\Vegar Eeg\\\\workspace\\\\nobs-fs\\\\nobs-fs-app\" && rm -f .scratch_aurora.cjs .scratch_aurora2.cjs .scratch_ring.cjs .scratch_shot*.cjs && git status --short | grep scratch; echo done)",
+      "Bash(curl -s -A \"Mozilla/5.0\" https://klinisk.demo.aidn.no/)",
+      "Bash(curl -s -A \"Mozilla/5.0\" https://klinisk.demo.aidn.no/assets/root-Dzqnc6v4.css)",
+      "Bash(curl -s -A \"Mozilla/5.0\" https://klinisk.demo.aidn.no/assets/root-Dzqnc6v4.css -o /tmp/aidn_root.css)",
+      "Bash(curl -s -A \"Mozilla/5.0\" https://klinisk.demo.aidn.no/assets/AuthPageLayout-BYACVDtw.css -o /tmp/aidn_auth.css)",
+      "Bash(cd \"c:\\\\Users\\\\Vegar Eeg\\\\workspace\\\\nobs-fs\\\\nobs-fs-app\" && rm -f .scratch_aidn*.cjs && git status --short | grep scratch; echo done)",
+      "Bash(node .scratch_aurora_full2.cjs)",
+      "Bash(pnpm screenshots *)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Vegar Eeg\\workspace\\nobs-fs\\nobs-fs-app",
-      "c:\\Users\\Vegar Eeg\\AppData\\Local\\Temp"
+      "c:\\Users\\Vegar Eeg\\AppData\\Local\\Temp",
+      "C:\\Users\\Vegar Eeg\\workspace\\nobs-fs\\nobs-fs-app"
     ]
   }
 }

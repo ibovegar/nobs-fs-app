@@ -1,6 +1,6 @@
 # Connecting the Autopilot Panel (Web Gamepad path)
 
-This describes the **web** input path, used when running the app in a browser (`pnpm dev`) — the
+This describes the **web** input path, used when running the app in a browser (`pnpm dev`): the
 development target. The shipping app is the native desktop build, which reads the panel directly
 via the HID driver (`src-tauri/src/hid.rs`) and ignores everything below.
 
@@ -17,7 +17,7 @@ Browser              →  navigator.getGamepads()[0].buttons[n].pressed
 useGamepad.ts        →  polls every ~16ms via requestAnimationFrame
 ```
 
-> **First-press quirk:** The browser won't expose the gamepad until the user has pressed at least one button — this is a browser security policy to prevent fingerprinting. After that first interaction it works continuously. This is why the UI shows "AWAITING DEVICE" until you press a button or turn a knob.
+> **First-press quirk:** The browser won't expose the gamepad until the user has pressed at least one button, due to a browser security policy to prevent fingerprinting. After that first interaction it works continuously. This is why the UI shows "AWAITING DEVICE" until you press a button or turn a knob.
 
 ## Identifying the correct controller
 
@@ -27,7 +27,7 @@ If you have multiple controllers connected (Xbox pad, joystick, etc.) the app mu
 "Nobs Autopilot USB HID Gamepad (Vendor: 2341 Product: 0657)"
 ```
 
-### Step 1 — find your panel's id
+### Step 1: find your panel's id
 
 Open the browser console while the panel is plugged in and run:
 
@@ -37,7 +37,7 @@ navigator.getGamepads()
 
 Each entry shows its full `id`. Find the one that belongs to the panel.
 
-### Step 2 — VID/PID (Arduino board defaults)
+### Step 2: VID/PID (Arduino board defaults)
 
 The firmware sets a custom identity via `build.opt`:
 
@@ -48,7 +48,7 @@ pid=0x0657
 
 The browser will see the device as: `"... (Vendor: 2341 Product: 0657)"`.
 
-### Step 3 — filter by VID/PID in the app (already implemented)
+### Step 3: filter by VID/PID in the app (already implemented)
 
 `useGamepad.ts` already filters by `DEVICE_VID` / `DEVICE_PID` from `~/panel`:
 

@@ -3,8 +3,6 @@
 Documents the relationship between physical hardware, Arduino firmware button indices,
 and the React app's `~/panel` constants.
 
----
-
 ## Physical hardware
 
 | Component | Count | Inputs per unit |
@@ -12,8 +10,6 @@ and the React app's `~/panel` constants.
 | Rotary encoder | 4 | CW pulse, CCW pulse, push button |
 | Standalone momentary switch | 8 | press / release |
 | **Total HID buttons** | | **20** |
-
----
 
 ## Firmware layout
 
@@ -58,23 +54,21 @@ push  index = encoder_index × 3 + 2
 SW    index = (NUM_ENCODERS × 3) + switch_index   →  4 × 3 + sw = 12 + sw
 ```
 
----
-
 ## Signal decoding (firmware behavior)
 
 How the raw electrical signals become HID button presses:
 
 | Input | Signal | HID behavior |
 |---|---|---|
-| Encoder rotation | Quadrature A/B | Momentary **pulse(s)** per detent — queued, ~15 ms on + ~15 ms gap (sized for MSFS frame sampling), count scaled by spin speed |
-| Encoder push (S) | Single contact to GND | **Level** — pressed while held (LOW) |
-| Switch | Single contact to GND | **Level** — pressed while closed (LOW) |
+| Encoder rotation | Quadrature A/B | Momentary **pulse(s)** per detent: queued, ~15 ms on + ~15 ms gap (sized for MSFS frame sampling), count scaled by spin speed |
+| Encoder push (S) | Single contact to GND | **Level**: pressed while held (LOW) |
+| Switch | Single contact to GND | **Level**: pressed while closed (LOW) |
 
 - **Quadrature decode.** Each loop reads both A and B and accumulates only valid
   Gray-code transitions via a 16-entry direction table (`qdec`). One detent = one
   full cycle = **4 counts** (`DETENT_STEPS`), so a CW/CCW step is emitted each time
   the accumulator crosses ±4. Contact bounce that wiggles back and forth, or any
-  illegal two-bit jump, nets to zero — no false or jittery steps, in either
+  illegal two-bit jump, nets to zero, so there are no false or jittery steps, in either
   direction, and it does not depend on which phase the detent rests at.
 - **Queued pulses.** Each press is emitted as a pulse (`PULSE_ON_MS` ~15 ms)
   followed by a forced low gap (`PULSE_GAP_MS` ~15 ms), paced out from a per-encoder
@@ -83,14 +77,14 @@ How the raw electrical signals become HID button presses:
   distinct and countable. Non-blocking (`millis()` based). **Pulse length targets
   MSFS, not the app:** the app reads every ~1 ms USB report and would count even a
   2 ms pulse, but MSFS only samples gamepad state ~once per frame (~16–33 ms), so a
-  sub-frame pulse can fall between two samples and never register — which made the
+  sub-frame pulse can fall between two samples and never register, which made the
   heading bug barely respond. Holding each press (and its gap) for ~1 frame at 60 fps
-  makes MSFS see it, giving a ~33 presses/s ceiling — the practical limit, since MSFS
+  makes MSFS see it, giving a ~33 presses/s ceiling: the practical limit, since MSFS
   counts each press as 1° (so max heading-bug rate ≈ 33°/s). If the sim runs below
   60 fps or stutters, steps can start dropping again; raise `PULSE_ON_MS`/`PULSE_GAP_MS`
   back toward 20 ms. The queue clamp (`STEP_QUEUE_MAX = 8`) keeps a fast flick's tail
   to ~0.25 s.
-- **Rotational acceleration.** Presses emitted *per detent* scale with spin speed —
+- **Rotational acceleration.** Presses emitted *per detent* scale with spin speed:
   the time since the previous detent (`ACCEL_T*` thresholds → `ACCEL_M*` multipliers,
   ×1 when slow up to ×10 on a fast flick). A deliberate turn stays 1:1 for single-unit
   precision; a quick spin multiplies, so a sim control bound to the button (e.g. the
@@ -102,14 +96,12 @@ How the raw electrical signals become HID button presses:
   slowed the loop enough to miss quadrature transitions.
 
 > If a single physical detent ever registers as **two** steps, the encoder is
-> half-step (2 transitions per detent) — set `DETENT_STEPS = 2`.
-
----
+> half-step (2 transitions per detent); set `DETENT_STEPS = 2`.
 
 ## Host configuration (serial)
 
-The app's **Settings** page tunes the encoder acceleration *sensitivity* — one value
-**per encoder** — and sends it to the firmware over the Arduino's USB CDC serial port
+The app's **Settings** page tunes the encoder acceleration *sensitivity*, one value
+**per encoder**, and sends it to the firmware over the Arduino's USB CDC serial port
 (separate from the HID input path). The firmware persists each in EEPROM (bytes 0–3,
 one per encoder), so they survive power cycles.
 
@@ -125,17 +117,15 @@ Line protocol (115200 baud; the CDC rate is nominal). `i` is the encoder index `
   A fresh chip's EEPROM reads `0xFF` (= 255), so the default is full acceleration on
   every knob.
 - App side: `src/io/panelConfig.ts` picks the transport per environment. **Web** uses
-  `configSerial.ts` (Web Serial — Chromium only; one-time port grant). **Native (Tauri)**
+  `configSerial.ts` (Web Serial, Chromium only; one-time port grant). **Native (Tauri)**
   uses `configNative.ts` → Rust commands `panel_serial_present` / `panel_serial_send`
   (`src-tauri/src/serial.rs`, the `serialport` crate), which find the panel's CDC port
-  by VID/PID and write to it — no grant needed. Both send `A<i><n>\n` and add a settle
+  by VID/PID and write to it, no grant needed. Both send `A<i><n>\n` and add a settle
   delay after opening the port (the board's CDC drops a write fired the instant it opens).
   The Settings page stores each encoder's value as a percent in `localStorage`
   (`nobs.accelSensitivity.<i>`). Connection is automatic (no button): native auto-detects;
   web silently reuses an already-granted port and only opens the grant prompt the first
   time a slider is moved (within that user gesture, as Web Serial requires).
-
----
 
 ## App constants (`src/panel/panel.ts`)
 
@@ -151,11 +141,9 @@ export const pushButton   = (enc: number) => enc * BUTTONS_PER_ENCODER + 2
 export const switchButton = (sw:  number) => NUM_ENCODERS * BUTTONS_PER_ENCODER + sw
 ```
 
----
-
 ## Physical pin assignments (Arduino board)
 
-Wiring convention — every signal pin uses the MCU's internal pull-up
+Wiring convention: every signal pin uses the MCU's internal pull-up
 (`INPUT_PULLUP`), so **no external resistors** are needed and a closed contact
 reads `LOW`:
 
@@ -187,11 +175,9 @@ The microcontroller port pin is shown in parentheses next to the Arduino label.
 | SW7 | D6 (PD7) | 18 |
 | SW8 | D5 (PC6) | 19 |
 
-> Note: ENC4's push was moved off **PB0 (D17)** — that pin is the board's RX LED and
+> Note: ENC4's push was moved off **PB0 (D17)**: that pin is the board's RX LED and
 > is held LOW by the LED circuit, so it reads as permanently pressed. It now uses
 > **PB2 (D16 / MOSI)**. For the same reason, avoid **PC7 (D13)** for inputs.
-
----
 
 ## Decoding in the app (`decodeButton`)
 
