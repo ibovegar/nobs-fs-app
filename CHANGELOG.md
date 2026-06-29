@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-06-29
+
 ### Added
 - Animated "aurora" backdrop: large blurred colour blobs that slowly drift and cycle hue behind the
   app, giving a barely-there moving cloud wash. Tuned to blend with the app's own cool blue-grey
