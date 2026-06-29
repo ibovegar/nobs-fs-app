@@ -21,6 +21,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   drops its + / × controls natively (it just lists what's present, or "Not detected") and shows an
   updated hint. The web build keeps the manual +/× model, since WebHID still needs a per-device grant.
 
+### Fixed
+- Product images no longer look soft/blurry when the window is small. They're large photos drawn into
+  small card cells, and on 1x displays that heavy downscale went mushy; a mild unsharp-mask SVG filter
+  (`#nobs-img-sharpen` in index.html, kernel sums to 1 so brightness is preserved) restores crisp
+  edges without haloing, and is gentle enough to leave the already-sharp large/2x case untouched.
+
 ## [0.4.0] - 2026-06-29
 
 ### Added
