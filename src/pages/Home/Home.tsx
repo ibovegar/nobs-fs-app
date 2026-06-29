@@ -48,7 +48,8 @@ export function Home({ autopilot, approach, panel }: Props) {
   const instances = useInstances()
   // Name of each product's primary card — the lowest tracked instance, which may not
   // be instance 1 once a user removes it (e.g. only a left-mount "Nobs Panel 2" left).
-  const primaryName = (kind: DeviceKind) => deviceFor(kind, instances[kind][0]).name
+  const primaryName = (kind: DeviceKind) =>
+    deviceFor(kind, instances[kind][0], instances[kind].length).name
 
   return (
     <>

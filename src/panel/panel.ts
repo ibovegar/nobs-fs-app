@@ -72,13 +72,18 @@ const PRODUCTS: Record<DeviceKind, Product> = {
   },
 }
 
-function instanceConfig(kind: DeviceKind, instance: number): DeviceConfig {
+// `trackedCount` is how many instances of this product the user currently tracks, not
+// the instance's own slot number. With two or more tracked, instance 1 keeps the bare
+// product name and instances 2+ get a number, same as ever. But a lone instance always
+// reads as the bare name no matter which PID slot it's set to, so the sole survivor
+// after removing instance 1 is "Nobs Panel" again, not stuck as "Nobs Panel 2".
+function instanceConfig(kind: DeviceKind, instance: number, trackedCount = 1): DeviceConfig {
   const p = PRODUCTS[kind]
   return {
     key: `${kind}-${instance}`,
     kind,
     instance,
-    name: instance === 1 ? p.name : `${p.name} ${instance}`,
+    name: trackedCount <= 1 || instance === 1 ? p.name : `${p.name} ${instance}`,
     vid: p.vid,
     pid: (p.pidBase + instance - 1).toString(16).padStart(4, '0'),
     buttonCount: p.buttonCount,
@@ -89,14 +94,18 @@ function instanceConfig(kind: DeviceKind, instance: number): DeviceConfig {
 export const productName = (kind: DeviceKind) => PRODUCTS[kind].name
 
 /** Configs for a specific set of instance numbers (each clamped to [1, MAX_INSTANCES]). */
-export const instancesFor = (kind: DeviceKind, instances: number[]): DeviceConfig[] =>
-  instances
-    .filter((n) => Number.isInteger(n) && n >= 1 && n <= MAX_INSTANCES)
-    .map((n) => instanceConfig(kind, n))
+export const instancesFor = (kind: DeviceKind, instances: number[]): DeviceConfig[] => {
+  const valid = instances.filter((n) => Number.isInteger(n) && n >= 1 && n <= MAX_INSTANCES)
+  return valid.map((n) => instanceConfig(kind, n, valid.length))
+}
 
-/** Config for a single instance of a product (instance clamped to [1, MAX_INSTANCES]). */
-export const deviceFor = (kind: DeviceKind, instance: number): DeviceConfig =>
-  instanceConfig(kind, Math.max(1, Math.min(MAX_INSTANCES, instance)))
+/**
+ * Config for a single instance of a product (instance clamped to [1, MAX_INSTANCES]).
+ * Pass the kind's current tracked-instance count so the name drops its number when
+ * it's the only one; omit it where only the vid/pid/key matter, not the display name.
+ */
+export const deviceFor = (kind: DeviceKind, instance: number, trackedCount = 1): DeviceConfig =>
+  instanceConfig(kind, Math.max(1, Math.min(MAX_INSTANCES, instance)), trackedCount)
 
 /** Instance-1 config of each product — default single-device references. */
 export const DEVICES = {

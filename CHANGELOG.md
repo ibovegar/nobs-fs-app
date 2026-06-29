@@ -32,6 +32,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the Home product card, and its name all follow. This lets a user who swaps their instance-1 board
   for, say, a left-mount "Nobs Panel 2" remove the now-absent original and have the left panel
   become the main card. Stored instance sets no longer force instance 1 in.
+- A device's numbered name (e.g. "Nobs Panel 2") now only shows once a second module of that
+  product is tracked, instead of being tied to its fixed PID-slot number. Removing the last other
+  instance — like the instance-1 unit in the example above — drops the survivor back to its bare
+  product name instead of leaving it stuck as "… 2" forever.
 - Encoder cards in the autopilot view no longer flash their card background while turning (cw/ccw);
   the knob's own ring glow already shows that motion, so the push button is now the only thing that
   triggers the card highlight.
