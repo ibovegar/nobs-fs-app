@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-06-29
+
+### Fixed
+- Native app showed a blank screen on launch (regression in 0.5.0). On the first render the live
+  device set is still empty (enumeration hasn't arrived), so each product's `useDevice` starts with a
+  zero-length `buttons` array; when a device then appeared, the card rendered for one frame with that
+  stale empty array before the resync effect ran, and `PanelGrid`/`Panel`/`Approach` indexing by
+  button position hit an `undefined` entry and crashed the whole tree. `useDevice` now always returns
+  a buttons array sized to the current device, so that one-frame gap can't expose a short array.
+
 ## [0.5.0] - 2026-06-29
 
 ### Added

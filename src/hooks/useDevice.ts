@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { getDriver } from '~/io'
 import type { ButtonState, DeviceConfig } from '~/panel'
-import { type DeviceEvent, initialSyncState, reduceSnapshot } from './deviceSync'
+import { type DeviceEvent, freshButtons, initialSyncState, reduceSnapshot } from './deviceSync'
 
 export type { DeviceEvent }
 
@@ -58,5 +58,13 @@ export function useDevice(
     setView((prev) => ({ ...prev, buttons }))
   }, [])
 
-  return { ...view, resetCounts }
+  // `view` lags the live `buttonCount` by one render when the device changes
+  // (the effect that resyncs state runs after this render): on the render where
+  // a product flips from absent → present, `view.buttons` is still the previous,
+  // shorter array. Hand back a correctly-sized fresh array in that gap so
+  // consumers that index by button position (PanelGrid, Panel, Approach) never
+  // hit an undefined entry. Once the effect has run the lengths match and the
+  // real, live array is returned unchanged.
+  const buttons = view.buttons.length === buttonCount ? view.buttons : freshButtons(buttonCount)
+  return { isConnected: view.isConnected, buttons, resetCounts }
 }
