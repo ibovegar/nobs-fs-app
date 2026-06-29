@@ -10,8 +10,8 @@ import {
   ProductImage,
   Section,
 } from '~/components'
-import { type EventLogState, useInstanceCounts } from '~/hooks'
-import { DEVICES, type DeviceKind, instancesOf } from '~/panel'
+import { type EventLogState, useInstances } from '~/hooks'
+import { type DeviceKind, deviceFor, instancesFor } from '~/panel'
 import styles from './Home.module.css'
 
 const IMAGES: Record<DeviceKind, string> = {
@@ -26,13 +26,15 @@ interface Props {
   panel: EventLogState
 }
 
-// Instance 1 of each product is rendered from the watcher App owns (the shared,
-// single owner). Modules 2+ are opt-in extras, each a self-contained DeviceCard.
-function Extras({ kind, count }: { kind: DeviceKind; count: number }) {
+// The primary (lowest) instance of each product is rendered from the watcher App
+// owns (the shared, single owner). Every other tracked module is an opt-in extra,
+// each a self-contained DeviceCard.
+function Extras({ kind, instances }: { kind: DeviceKind; instances: number[] }) {
+  const primary = instances[0]
   return (
     <>
-      {instancesOf(kind, count)
-        .slice(1)
+      {instancesFor(kind, instances)
+        .filter((device) => device.instance !== primary)
         .map((device) => (
           <Section key={device.key} className={styles.section}>
             <DeviceCard device={device} image={IMAGES[kind]} />
@@ -43,14 +45,17 @@ function Extras({ kind, count }: { kind: DeviceKind; count: number }) {
 }
 
 export function Home({ autopilot, approach, panel }: Props) {
-  const counts = useInstanceCounts()
+  const instances = useInstances()
+  // Name of each product's primary card — the lowest tracked instance, which may not
+  // be instance 1 once a user removes it (e.g. only a left-mount "Nobs Panel 2" left).
+  const primaryName = (kind: DeviceKind) => deviceFor(kind, instances[kind][0]).name
 
   return (
     <>
       <Section className={styles.section}>
         <ProductCard>
           <ProductImage
-            name={DEVICES.autopilot.name}
+            name={primaryName('autopilot')}
             image={autopilotImg}
             isConnected={autopilot.isConnected}
             toolsTo="/tools/autopilot"
@@ -59,12 +64,12 @@ export function Home({ autopilot, approach, panel }: Props) {
           <PanelGrid buttons={autopilot.buttons} />
         </ProductCard>
       </Section>
-      <Extras kind="autopilot" count={counts.autopilot} />
+      <Extras kind="autopilot" instances={instances.autopilot} />
 
       <Section className={styles.section}>
         <ProductCard>
           <ProductImage
-            name={DEVICES.approach.name}
+            name={primaryName('approach')}
             image={approachImg}
             isConnected={approach.isConnected}
             toolsTo="/tools/approach"
@@ -73,12 +78,12 @@ export function Home({ autopilot, approach, panel }: Props) {
           <Approach buttons={approach.buttons} />
         </ProductCard>
       </Section>
-      <Extras kind="approach" count={counts.approach} />
+      <Extras kind="approach" instances={instances.approach} />
 
       <Section className={styles.section}>
         <ProductCard>
           <ProductImage
-            name={DEVICES.panel.name}
+            name={primaryName('panel')}
             image={panelImg}
             isConnected={panel.isConnected}
             toolsTo="/tools/panel"
@@ -87,7 +92,7 @@ export function Home({ autopilot, approach, panel }: Props) {
           <Panel buttons={panel.buttons} />
         </ProductCard>
       </Section>
-      <Extras kind="panel" count={counts.panel} />
+      <Extras kind="panel" instances={instances.panel} />
     </>
   )
 }

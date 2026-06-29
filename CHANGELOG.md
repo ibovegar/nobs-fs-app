@@ -26,6 +26,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   settings yet") for now, sharing a `DeviceSettings` page that mirrors the autopilot settings layout.
 
 ### Changed
+- The primary instance of a product is no longer pinned to instance 1: it's now the lowest tracked
+  instance. Any unit can be removed from the Devices page with its × as long as one remains (the
+  last stays), and removing the current primary promotes the next one up — App's shared watcher,
+  the Home product card, and its name all follow. This lets a user who swaps their instance-1 board
+  for, say, a left-mount "Nobs Panel 2" remove the now-absent original and have the left panel
+  become the main card. Stored instance sets no longer force instance 1 in.
 - Nobs Approach gear knob now glows only when the gear is down, instead of in both positions.
 - Nobs Approach lever order is now GEAR · FLAPS · PARK BRK (gear and flaps swapped).
 - Tools is now a per-device view (`/tools/<kind>`) reached from each device card's Tools link,

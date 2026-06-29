@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import type { LogEntry } from '~/components'
-import { DEVICES } from '~/panel'
+import { DEVICES, type DeviceConfig } from '~/panel'
 import { type DeviceEvent, useDevice } from './useDevice'
 import { useEventBuffer } from './useEventBuffer'
 import type { EventLogState } from './useEventLog'
@@ -17,7 +17,7 @@ const ENTRIES: Record<number, { text: string; kind: LogEntry['kind'] }> = {
   5: { text: 'PARK BRK    SET', kind: 'press' },
 }
 
-export function useApproachEventLog(): EventLogState {
+export function useApproachEventLog(device: DeviceConfig = DEVICES.approach): EventLogState {
   const { log, addLog } = useEventBuffer('approach')
 
   const handleEvent = useCallback(
@@ -30,6 +30,6 @@ export function useApproachEventLog(): EventLogState {
     [addLog],
   )
 
-  const dev = useDevice(DEVICES.approach, handleEvent)
+  const dev = useDevice(device, handleEvent)
   return { log, isConnected: dev.isConnected, buttons: dev.buttons }
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Route, Routes } from 'react-router'
 import {
   AuroraBackground,
@@ -8,19 +8,30 @@ import {
   Welcome,
   welcomeSeen,
 } from '~/components'
-import { useApproachEventLog, useEventLog, usePanelEventLog } from '~/hooks'
+import { useApproachEventLog, useEventLog, useInstances, usePanelEventLog } from '~/hooks'
 import { AutopilotSettings, DeviceSettings, Devices, Events, Home, Settings, Tools } from '~/pages'
+import { deviceFor } from '~/panel'
 import { watchSystemTheme } from '~/theme'
 import styles from './App.module.css'
 
 export default function App() {
   // The primary instance of each product is watched here (single owner) so the
   // connection state is shared by Home and Devices without the native HID bridge
-  // ever opening the same device twice. Extra instances (module 2+) are watched
-  // by their own Home cards.
-  const autopilot = useEventLog()
-  const approach = useApproachEventLog()
-  const panel = usePanelEventLog()
+  // ever opening the same device twice. The primary is the lowest tracked instance
+  // (the list is sorted ascending), so swapping the instance-1 unit out promotes the
+  // next one up. Memoised on the instance number so the HID subscription only
+  // re-targets when the primary actually changes, not on every render. Extra
+  // instances are watched by their own Home cards.
+  const instances = useInstances()
+  const autopilotIdx = instances.autopilot[0]
+  const approachIdx = instances.approach[0]
+  const panelIdx = instances.panel[0]
+  const autopilotDev = useMemo(() => deviceFor('autopilot', autopilotIdx), [autopilotIdx])
+  const approachDev = useMemo(() => deviceFor('approach', approachIdx), [approachIdx])
+  const panelDev = useMemo(() => deviceFor('panel', panelIdx), [panelIdx])
+  const autopilot = useEventLog(autopilotDev)
+  const approach = useApproachEventLog(approachDev)
+  const panel = usePanelEventLog(panelDev)
 
   // First-run welcome screen — shown until the user dismisses it once.
   const [showWelcome, setShowWelcome] = useState(() => !welcomeSeen())

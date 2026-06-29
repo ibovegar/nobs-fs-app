@@ -88,13 +88,17 @@ function instanceConfig(kind: DeviceKind, instance: number): DeviceConfig {
 /** The display name of a product kind (instance 1's name). */
 export const productName = (kind: DeviceKind) => PRODUCTS[kind].name
 
-/** Instances 1..count of a product kind (count clamped to [1, MAX_INSTANCES]). */
-export const instancesOf = (kind: DeviceKind, count: number): DeviceConfig[] =>
-  Array.from({ length: Math.max(1, Math.min(MAX_INSTANCES, count)) }, (_, i) =>
-    instanceConfig(kind, i + 1),
-  )
+/** Configs for a specific set of instance numbers (each clamped to [1, MAX_INSTANCES]). */
+export const instancesFor = (kind: DeviceKind, instances: number[]): DeviceConfig[] =>
+  instances
+    .filter((n) => Number.isInteger(n) && n >= 1 && n <= MAX_INSTANCES)
+    .map((n) => instanceConfig(kind, n))
 
-/** Primary (first) instance of each product — single-device references. */
+/** Config for a single instance of a product (instance clamped to [1, MAX_INSTANCES]). */
+export const deviceFor = (kind: DeviceKind, instance: number): DeviceConfig =>
+  instanceConfig(kind, Math.max(1, Math.min(MAX_INSTANCES, instance)))
+
+/** Instance-1 config of each product — default single-device references. */
 export const DEVICES = {
   autopilot: instanceConfig('autopilot', 1),
   approach: instanceConfig('approach', 1),

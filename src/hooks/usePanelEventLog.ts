@@ -1,10 +1,10 @@
 import { useCallback } from 'react'
-import { DEVICES, decodePanelButton, PANEL_SWITCHES } from '~/panel'
+import { DEVICES, type DeviceConfig, decodePanelButton, PANEL_SWITCHES } from '~/panel'
 import { type DeviceEvent, useDevice } from './useDevice'
 import { useEventBuffer } from './useEventBuffer'
 import type { EventLogState } from './useEventLog'
 
-export function usePanelEventLog(): EventLogState {
+export function usePanelEventLog(device: DeviceConfig = DEVICES.panel): EventLogState {
   const { log, addLog } = useEventBuffer('panel')
 
   const handleEvent = useCallback(
@@ -26,6 +26,6 @@ export function usePanelEventLog(): EventLogState {
     [addLog],
   )
 
-  const dev = useDevice(DEVICES.panel, handleEvent)
+  const dev = useDevice(device, handleEvent)
   return { log, isConnected: dev.isConnected, buttons: dev.buttons }
 }

@@ -33,20 +33,6 @@
   text-transform: uppercase;
 }
 
-.counter {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-}
-
-.countNum {
-  min-width: 1.5ch;
-  text-align: center;
-  color: var(--text-mid);
-  font-size: 13px;
-  font-variant-numeric: tabular-nums;
-}
-
 .countBtn {
   width: 26px;
   height: 26px;
@@ -138,4 +124,29 @@
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.04em;
+}
+
+.remove {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-card);
+  color: var(--text-mid);
+  font: inherit;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.remove:hover {
+  border-color: var(--danger);
+  color: var(--danger);
 }

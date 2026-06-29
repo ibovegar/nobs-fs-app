@@ -1,12 +1,12 @@
 import { CheckSolid } from '@lineiconshq/free-icons'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ConnectionIndicator, Icon, Section } from '~/components'
-import { setInstanceCount, useInstanceCounts } from '~/hooks'
+import { addInstance, removeInstance, useInstances } from '~/hooks'
 import { grantedFlags, isNative, onHidChange, requestHidDevices, webhidSupported } from '~/io'
 import {
   type DeviceConfig,
   type DeviceKind,
-  instancesOf,
+  instancesFor,
   MAX_INSTANCES,
   productName,
 } from '~/panel'
@@ -23,8 +23,8 @@ export function Devices({ connected }: Props) {
   // The native shell uses the Tauri HID bridge, which enumerates devices itself
   // — no per-device permission grant. WebHID's one-time grant is web-only.
   const needsGrant = !isNative() && webhidSupported()
-  const counts = useInstanceCounts()
-  const devices = useMemo(() => KINDS.flatMap((k) => instancesOf(k, counts[k])), [counts])
+  const instances = useInstances()
+  const devices = useMemo(() => KINDS.flatMap((k) => instancesFor(k, instances[k])), [instances])
 
   const [granted, setGranted] = useState<Record<string, boolean>>({})
   const refresh = useCallback(async () => {
@@ -56,36 +56,27 @@ export function Devices({ connected }: Props) {
         <p className={styles.hint}>
           Running more than one of the same module? Use <strong>+</strong> to add it, give each
           physical unit its own ID and name with the configuration command (e.g. <code>SET_ID</code>
-          ) so they stay separate.
+          ) so they stay separate. Remove any unit with its <strong>×</strong> (the last one of a
+          product stays); removing the first promotes the next to primary.
         </p>
 
         {KINDS.map((kind) => {
-          const list = instancesOf(kind, counts[kind])
+          const list = instancesFor(kind, instances[kind])
+          // Lowest tracked instance = the primary App watches; its live connection shows here.
+          const primary = instances[kind][0]
           return (
             <div key={kind} className={styles.group}>
               <div className={styles.groupHeader}>
                 <span className={styles.groupTitle}>{productName(kind)}</span>
-                <div className={styles.counter}>
-                  <button
-                    type="button"
-                    className={styles.countBtn}
-                    disabled={counts[kind] <= 1}
-                    onClick={() => setInstanceCount(kind, counts[kind] - 1)}
-                    aria-label={`Remove one ${productName(kind)}`}
-                  >
-                    −
-                  </button>
-                  <span className={styles.countNum}>{counts[kind]}</span>
-                  <button
-                    type="button"
-                    className={styles.countBtn}
-                    disabled={counts[kind] >= MAX_INSTANCES}
-                    onClick={() => setInstanceCount(kind, counts[kind] + 1)}
-                    aria-label={`Add one ${productName(kind)}`}
-                  >
-                    +
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  className={styles.countBtn}
+                  disabled={instances[kind].length >= MAX_INSTANCES}
+                  onClick={() => addInstance(kind)}
+                  aria-label={`Add one ${productName(kind)}`}
+                >
+                  +
+                </button>
               </div>
               <ul className={styles.list}>
                 {list.map((device) => (
@@ -96,7 +87,9 @@ export function Devices({ connected }: Props) {
                         {device.vid}:{device.pid}
                       </span>
                     </div>
-                    {device.instance === 1 && <ConnectionIndicator isConnected={connected[kind]} />}
+                    {device.instance === primary && (
+                      <ConnectionIndicator isConnected={connected[kind]} />
+                    )}
                     {needsGrant &&
                       (granted[device.key] ? (
                         <span className={styles.granted}>
@@ -112,6 +105,17 @@ export function Devices({ connected }: Props) {
                           Connect
                         </button>
                       ))}
+                    {list.length > 1 && (
+                      <button
+                        type="button"
+                        className={styles.remove}
+                        onClick={() => removeInstance(kind, device.instance)}
+                        aria-label={`Remove ${device.name}`}
+                        title={`Remove ${device.name}`}
+                      >
+                        ×
+                      </button>
+                    )}
                   </li>
                 ))}
               </ul>

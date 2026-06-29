@@ -1,6 +1,13 @@
 import { useCallback, useRef } from 'react'
 import type { LogEntry } from '~/components'
-import { ccwButton, cwButton, DEVICES, decodeButton, ENCODER_LABELS } from '~/panel'
+import {
+  ccwButton,
+  cwButton,
+  DEVICES,
+  type DeviceConfig,
+  decodeButton,
+  ENCODER_LABELS,
+} from '~/panel'
 import { type DeviceEvent, useDevice } from './useDevice'
 import { useEventBuffer } from './useEventBuffer'
 
@@ -10,7 +17,7 @@ export interface EventLogState {
   buttons: ReturnType<typeof useDevice>['buttons']
 }
 
-export function useEventLog(): EventLogState {
+export function useEventLog(device: DeviceConfig = DEVICES.autopilot): EventLogState {
   const { log, addLog } = useEventBuffer('autopilot')
   const resetCountsRef = useRef<(indices: number[]) => void>(() => {})
 
@@ -41,7 +48,7 @@ export function useEventLog(): EventLogState {
     [addLog],
   )
 
-  const gp = useDevice(DEVICES.autopilot, handleEvent)
+  const gp = useDevice(device, handleEvent)
   resetCountsRef.current = gp.resetCounts
 
   return { log, isConnected: gp.isConnected, buttons: gp.buttons }

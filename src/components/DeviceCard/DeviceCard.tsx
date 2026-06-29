@@ -12,8 +12,8 @@ interface Props {
 }
 
 // One self-contained device instance: watches its own HID stream and renders the
-// body matching its product kind. Used for every Home card except the primary
-// autopilot, which shares the event-log watcher (see Home / useEventLog).
+// body matching its product kind. Used for every Home card except each product's
+// primary instance, which shares the event-log watcher App owns (see Home / App).
 export function DeviceCard({ device, image }: Props) {
   const { isConnected, buttons } = useDevice(device)
 
