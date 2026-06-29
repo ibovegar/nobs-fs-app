@@ -32,6 +32,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the Home product card, and its name all follow. This lets a user who swaps their instance-1 board
   for, say, a left-mount "Nobs Panel 2" remove the now-absent original and have the left panel
   become the main card. Stored instance sets no longer force instance 1 in.
+- Encoder cards in the autopilot view no longer flash their card background while turning (cw/ccw);
+  the knob's own ring glow already shows that motion, so the push button is now the only thing that
+  triggers the card highlight.
 - Nobs Approach gear knob now glows only when the gear is down, instead of in both positions.
 - Nobs Approach lever order is now GEAR · FLAPS · PARK BRK (gear and flaps swapped).
 - Tools is now a per-device view (`/tools/<kind>`) reached from each device card's Tools link,
@@ -41,6 +44,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   now shows the Nobs Approach lever controls (flaps/gear/park brake) and the Nobs Panel toggles.
 
 ### Fixed
+- Encoder knob halo no longer flickers during a continuous turn, and can no longer get stuck lit:
+  it's now driven by a 220ms hold that re-arms on each detent pulse instead of the raw, single-frame
+  cw/ccw "pressed" bit.
+- Header logo could still show a text-select (I-beam) cursor when a selection drag started
+  elsewhere in the header and passed over it. `user-select: none` now applies to the whole header,
+  not just the logo, so no selection drag can start there in the first place.
 - Aurora backdrop blobs no longer show a muddy dark ring at their edge. Each gradient faded to the
   `transparent` keyword (`rgba(0,0,0,0)`), so the RGB interpolated toward black on the way to
   alpha 0; they now fade to their own colour at alpha 0 instead. The gradients also interpolate

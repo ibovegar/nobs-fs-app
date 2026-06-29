@@ -33,7 +33,7 @@ export function PanelGrid({ buttons }: Props) {
         const ccw = buttons[ccwButton(cell.index)]
         const push = buttons[pushButton(cell.index)]
         return (
-          <PanelCard key={key} active={cw.pressed || ccw.pressed || push.pressed}>
+          <PanelCard key={key} active={push.pressed}>
             <Encoder label={ENCODER_LABELS[cell.index]} cw={cw} ccw={ccw} push={push} />
           </PanelCard>
         )
