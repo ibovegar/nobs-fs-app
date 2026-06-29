@@ -35,6 +35,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Encoder cards in the autopilot view no longer flash their card background while turning (cw/ccw);
   the knob's own ring glow already shows that motion, so the push button is now the only thing that
   triggers the card highlight.
+- Regenerated the three Home product photos (`nobs_approach.png`, `nobs_autopilot.png`,
+  `nobs_panel.png`) with the sapphire recolor baked in, and retired the CSS `filter` (and the
+  `--product-image-brightness` token it was the only consumer of) that used to apply it on top.
 - Nobs Approach gear knob now glows only when the gear is down, instead of in both positions.
 - Nobs Approach lever order is now GEAR · FLAPS · PARK BRK (gear and flaps swapped).
 - Tools is now a per-device view (`/tools/<kind>`) reached from each device card's Tools link,

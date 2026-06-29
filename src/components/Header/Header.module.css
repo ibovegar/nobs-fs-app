@@ -7,6 +7,8 @@
   gap: var(--sp-4);
   padding: var(--sp-2) 23px;
   background: var(--bg-darker);
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .logo {
