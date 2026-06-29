@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-06-29
+
 ### Added
 - Native app now auto-detects connected modules by continuously enumerating the HID bus (new Rust
   `hid_list` command + `hid://devices` change event in `src-tauri/src/hid.rs`). A module shows up on
