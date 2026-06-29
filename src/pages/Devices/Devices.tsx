@@ -53,12 +53,21 @@ export function Devices({ connected }: Props) {
               ? "Grant one-time access to a device; it's then detected automatically whenever it's plugged in."
               : 'Automatic detection needs a Chromium browser (Chrome or Edge). Otherwise a device is detected once you actuate one of its controls.'}
         </p>
-        <p className={styles.hint}>
-          Running more than one of the same module? Use <strong>+</strong> to add it, give each
-          physical unit its own ID and name with the configuration command (e.g. <code>SET_ID</code>
-          ) so they stay separate. Remove any unit with its <strong>×</strong> (the last one of a
-          product stays); removing the first promotes the next to primary.
-        </p>
+        {isNative() ? (
+          <p className={styles.hint}>
+            Every connected module is listed below automatically and disappears when unplugged —
+            nothing to add or remove by hand. Give each physical unit its own ID with the
+            configuration command (e.g. <code>SET_ID</code>) so multiple of the same product stay
+            separate.
+          </p>
+        ) : (
+          <p className={styles.hint}>
+            Running more than one of the same module? Use <strong>+</strong> to add it, give each
+            physical unit its own ID and name with the configuration command (e.g.{' '}
+            <code>SET_ID</code>) so they stay separate. Remove any unit with its <strong>×</strong>{' '}
+            (the last one of a product stays); removing the first promotes the next to primary.
+          </p>
+        )}
 
         {KINDS.map((kind) => {
           const list = instancesFor(kind, instances[kind])
@@ -68,17 +77,24 @@ export function Devices({ connected }: Props) {
             <div key={kind} className={styles.group}>
               <div className={styles.groupHeader}>
                 <span className={styles.groupTitle}>{productName(kind)}</span>
-                <button
-                  type="button"
-                  className={styles.countBtn}
-                  disabled={instances[kind].length >= MAX_INSTANCES}
-                  onClick={() => addInstance(kind)}
-                  aria-label={`Add one ${productName(kind)}`}
-                >
-                  +
-                </button>
+                {!isNative() && (
+                  <button
+                    type="button"
+                    className={styles.countBtn}
+                    disabled={instances[kind].length >= MAX_INSTANCES}
+                    onClick={() => addInstance(kind)}
+                    aria-label={`Add one ${productName(kind)}`}
+                  >
+                    +
+                  </button>
+                )}
               </div>
               <ul className={styles.list}>
+                {isNative() && list.length === 0 && (
+                  <li className={styles.row}>
+                    <span className={styles.id}>Not detected</span>
+                  </li>
+                )}
                 {list.map((device) => (
                   <li key={device.key} className={styles.row}>
                     <div className={styles.info}>
@@ -105,7 +121,7 @@ export function Devices({ connected }: Props) {
                           Connect
                         </button>
                       ))}
-                    {list.length > 1 && (
+                    {!isNative() && list.length > 1 && (
                       <button
                         type="button"
                         className={styles.remove}

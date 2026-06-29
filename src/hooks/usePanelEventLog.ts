@@ -4,7 +4,7 @@ import { type DeviceEvent, useDevice } from './useDevice'
 import { useEventBuffer } from './useEventBuffer'
 import type { EventLogState } from './useEventLog'
 
-export function usePanelEventLog(device: DeviceConfig = DEVICES.panel): EventLogState {
+export function usePanelEventLog(device: DeviceConfig | null = DEVICES.panel): EventLogState {
   const { log, addLog } = useEventBuffer('panel')
 
   const handleEvent = useCallback(

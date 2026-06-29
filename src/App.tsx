@@ -10,9 +10,16 @@ import {
 } from '~/components'
 import { useApproachEventLog, useEventLog, useInstances, usePanelEventLog } from '~/hooks'
 import { AutopilotSettings, DeviceSettings, Devices, Events, Home, Settings, Tools } from '~/pages'
-import { deviceFor } from '~/panel'
+import { type DeviceKind, deviceFor } from '~/panel'
 import { watchSystemTheme } from '~/theme'
 import styles from './App.module.css'
+
+// The watched device for a product: its primary (lowest) instance, or null when
+// no instance is present (native, nothing plugged in) so the watcher sits idle
+// and the card stays hidden. The tracked count makes a lone unit show its bare
+// product name (see deviceFor).
+const primaryDevice = (kind: DeviceKind, list: number[]) =>
+  list.length ? deviceFor(kind, list[0], list.length) : null
 
 export default function App() {
   // The primary instance of each product is watched here (single owner) so the
@@ -23,12 +30,15 @@ export default function App() {
   // re-targets when the primary actually changes, not on every render. Extra
   // instances are watched by their own Home cards.
   const instances = useInstances()
-  const autopilotIdx = instances.autopilot[0]
-  const approachIdx = instances.approach[0]
-  const panelIdx = instances.panel[0]
-  const autopilotDev = useMemo(() => deviceFor('autopilot', autopilotIdx), [autopilotIdx])
-  const approachDev = useMemo(() => deviceFor('approach', approachIdx), [approachIdx])
-  const panelDev = useMemo(() => deviceFor('panel', panelIdx), [panelIdx])
+  const autopilotDev = useMemo(
+    () => primaryDevice('autopilot', instances.autopilot),
+    [instances.autopilot],
+  )
+  const approachDev = useMemo(
+    () => primaryDevice('approach', instances.approach),
+    [instances.approach],
+  )
+  const panelDev = useMemo(() => primaryDevice('panel', instances.panel), [instances.panel])
   const autopilot = useEventLog(autopilotDev)
   const approach = useApproachEventLog(approachDev)
   const panel = usePanelEventLog(panelDev)

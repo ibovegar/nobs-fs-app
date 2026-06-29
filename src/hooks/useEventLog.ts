@@ -17,7 +17,7 @@ export interface EventLogState {
   buttons: ReturnType<typeof useDevice>['buttons']
 }
 
-export function useEventLog(device: DeviceConfig = DEVICES.autopilot): EventLogState {
+export function useEventLog(device: DeviceConfig | null = DEVICES.autopilot): EventLogState {
   const { log, addLog } = useEventBuffer('autopilot')
   const resetCountsRef = useRef<(indices: number[]) => void>(() => {})
 

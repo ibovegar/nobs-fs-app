@@ -17,7 +17,7 @@ const ENTRIES: Record<number, { text: string; kind: LogEntry['kind'] }> = {
   5: { text: 'PARK BRK    SET', kind: 'press' },
 }
 
-export function useApproachEventLog(device: DeviceConfig = DEVICES.approach): EventLogState {
+export function useApproachEventLog(device: DeviceConfig | null = DEVICES.approach): EventLogState {
   const { log, addLog } = useEventBuffer('approach')
 
   const handleEvent = useCallback(

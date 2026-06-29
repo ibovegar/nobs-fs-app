@@ -35,6 +35,60 @@ struct ConnectionPayload {
     connected: bool,
 }
 
+/// A USB HID device currently present on the bus (one entry per distinct vid/pid).
+#[derive(Clone, Serialize, PartialEq, Eq, PartialOrd, Ord)]
+pub struct DeviceId {
+    vid: u16,
+    pid: u16,
+}
+
+/// Distinct (vid, pid) pairs across all HID interfaces currently enumerated. A
+/// single physical device can expose several interfaces (so several list
+/// entries with the same ids); we dedup to one per device identity.
+fn present_ids(api: &HidApi) -> Vec<DeviceId> {
+    let mut ids: Vec<DeviceId> = api
+        .device_list()
+        .map(|d| DeviceId { vid: d.vendor_id(), pid: d.product_id() })
+        .collect();
+    ids.sort();
+    ids.dedup();
+    ids
+}
+
+/// One-shot snapshot of the HID devices on the bus, for the frontend's initial
+/// read (the `hid://devices` event below covers every change after that).
+#[tauri::command]
+pub fn hid_list() -> Vec<DeviceId> {
+    match HidApi::new() {
+        Ok(api) => present_ids(&api),
+        Err(_) => Vec::new(),
+    }
+}
+
+/// Poll the HID bus and emit `hid://devices` with the full present-id list
+/// whenever it changes (plug/unplug), so the frontend can auto-detect which
+/// modules are actually connected instead of guessing from a saved set. The
+/// first iteration always emits, giving listeners an immediate baseline.
+pub fn start_enumeration(app: AppHandle) {
+    thread::spawn(move || {
+        let mut api = match HidApi::new() {
+            Ok(api) => api,
+            Err(_) => return,
+        };
+        let mut last: Option<Vec<DeviceId>> = None;
+        loop {
+            if api.refresh_devices().is_ok() {
+                let ids = present_ids(&api);
+                if last.as_ref() != Some(&ids) {
+                    let _ = app.emit("hid://devices", ids.clone());
+                    last = Some(ids);
+                }
+            }
+            thread::sleep(Duration::from_millis(1000));
+        }
+    });
+}
+
 /// Per-(vid, pid) stop flags for the active watcher threads.
 #[derive(Default)]
 pub struct HidState {

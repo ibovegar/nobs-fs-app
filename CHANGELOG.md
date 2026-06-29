@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Native app now auto-detects connected modules by continuously enumerating the HID bus (new Rust
+  `hid_list` command + `hid://devices` change event in `src-tauri/src/hid.rs`). A module shows up on
+  whichever PID slot it's set to, with no manual setup — previously the native app only watched a
+  saved instance set that defaulted to slot 1, so a panel configured to slot 2 went undetected until
+  the user added it by hand on the Devices page.
+
+### Changed
+- In the native app the active device set is now driven live by the HID bus instead of a persisted,
+  manually managed set: a product appears the moment its module is plugged in (any slot) and its card
+  disappears when unplugged, so a product with nothing connected is hidden entirely. The Devices page
+  drops its + / × controls natively (it just lists what's present, or "Not detected") and shows an
+  updated hint. The web build keeps the manual +/× model, since WebHID still needs a per-device grant.
+
 ## [0.4.0] - 2026-06-29
 
 ### Added

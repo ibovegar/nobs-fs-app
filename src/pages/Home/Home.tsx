@@ -51,48 +51,57 @@ export function Home({ autopilot, approach, panel }: Props) {
   const primaryName = (kind: DeviceKind) =>
     deviceFor(kind, instances[kind][0], instances[kind].length).name
 
+  // A product shows its primary card only while it has a present instance. On the
+  // web that's always true (the set keeps at least one); natively a product with
+  // nothing plugged in has an empty set and is hidden entirely.
   return (
     <>
-      <Section className={styles.section}>
-        <ProductCard>
-          <ProductImage
-            name={primaryName('autopilot')}
-            image={autopilotImg}
-            isConnected={autopilot.isConnected}
-            toolsTo="/tools/autopilot"
-            settingsTo="/autopilot/settings"
-          />
-          <PanelGrid buttons={autopilot.buttons} />
-        </ProductCard>
-      </Section>
+      {instances.autopilot.length > 0 && (
+        <Section className={styles.section}>
+          <ProductCard>
+            <ProductImage
+              name={primaryName('autopilot')}
+              image={autopilotImg}
+              isConnected={autopilot.isConnected}
+              toolsTo="/tools/autopilot"
+              settingsTo="/autopilot/settings"
+            />
+            <PanelGrid buttons={autopilot.buttons} />
+          </ProductCard>
+        </Section>
+      )}
       <Extras kind="autopilot" instances={instances.autopilot} />
 
-      <Section className={styles.section}>
-        <ProductCard>
-          <ProductImage
-            name={primaryName('approach')}
-            image={approachImg}
-            isConnected={approach.isConnected}
-            toolsTo="/tools/approach"
-            settingsTo="/approach/settings"
-          />
-          <Approach buttons={approach.buttons} />
-        </ProductCard>
-      </Section>
+      {instances.approach.length > 0 && (
+        <Section className={styles.section}>
+          <ProductCard>
+            <ProductImage
+              name={primaryName('approach')}
+              image={approachImg}
+              isConnected={approach.isConnected}
+              toolsTo="/tools/approach"
+              settingsTo="/approach/settings"
+            />
+            <Approach buttons={approach.buttons} />
+          </ProductCard>
+        </Section>
+      )}
       <Extras kind="approach" instances={instances.approach} />
 
-      <Section className={styles.section}>
-        <ProductCard>
-          <ProductImage
-            name={primaryName('panel')}
-            image={panelImg}
-            isConnected={panel.isConnected}
-            toolsTo="/tools/panel"
-            settingsTo="/panel/settings"
-          />
-          <Panel buttons={panel.buttons} />
-        </ProductCard>
-      </Section>
+      {instances.panel.length > 0 && (
+        <Section className={styles.section}>
+          <ProductCard>
+            <ProductImage
+              name={primaryName('panel')}
+              image={panelImg}
+              isConnected={panel.isConnected}
+              toolsTo="/tools/panel"
+              settingsTo="/panel/settings"
+            />
+            <Panel buttons={panel.buttons} />
+          </ProductCard>
+        </Section>
+      )}
       <Extras kind="panel" instances={instances.panel} />
     </>
   )

@@ -93,6 +93,26 @@ function instanceConfig(kind: DeviceKind, instance: number, trackedCount = 1): D
 /** The display name of a product kind (instance 1's name). */
 export const productName = (kind: DeviceKind) => PRODUCTS[kind].name
 
+/** USB vendor ID shared by every Nobs module (Espressif). */
+export const NOBS_VID = 0x303a
+
+/**
+ * Resolve a live USB (vid, pid) to the Nobs product kind + instance it is, or
+ * null if it isn't a Nobs module. The inverse of `instanceConfig`'s pid math:
+ * each product owns a contiguous block of MAX_INSTANCES PIDs from its `pidBase`.
+ */
+export function identifyDevice(
+  vid: number,
+  pid: number,
+): { kind: DeviceKind; instance: number } | null {
+  if (vid !== NOBS_VID) return null
+  for (const kind of Object.keys(PRODUCTS) as DeviceKind[]) {
+    const instance = pid - PRODUCTS[kind].pidBase + 1
+    if (instance >= 1 && instance <= MAX_INSTANCES) return { kind, instance }
+  }
+  return null
+}
+
 /** Configs for a specific set of instance numbers (each clamped to [1, MAX_INSTANCES]). */
 export const instancesFor = (kind: DeviceKind, instances: number[]): DeviceConfig[] => {
   const valid = instances.filter((n) => Number.isInteger(n) && n >= 1 && n <= MAX_INSTANCES)

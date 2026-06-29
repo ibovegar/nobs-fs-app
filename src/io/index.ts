@@ -1,5 +1,7 @@
 export { decodeJoystickReport } from './decodeReport'
 export { isNative } from './env'
+export type { NativeDeviceId } from './nativeDevices'
+export { listNativeDevices, onNativeDevicesChange } from './nativeDevices'
 export {
   configConnected,
   connectConfigPort,

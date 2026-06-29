@@ -8,6 +8,7 @@ pub fn run() {
     .invoke_handler(tauri::generate_handler![
       hid::hid_open,
       hid::hid_close,
+      hid::hid_list,
       serial::panel_serial_present,
       serial::panel_serial_send
     ])
@@ -19,6 +20,9 @@ pub fn run() {
             .build(),
         )?;
       }
+      // Continuously enumerate the HID bus so the frontend can auto-detect
+      // which Nobs modules are plugged in (emits `hid://devices` on change).
+      hid::start_enumeration(app.handle().clone());
       Ok(())
     })
     .run(tauri::generate_context!())
