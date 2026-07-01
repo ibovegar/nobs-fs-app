@@ -38,6 +38,18 @@
     ],
     "android": {
       "debugApplicationIdSuffix": ".debug"
+    },
+    "windows": {
+      "nsis": {
+        "headerImage": "icons/installer/header.bmp",
+        "sidebarImage": "icons/installer/sidebar.bmp",
+        "installerIcon": "icons/icon.ico",
+        "uninstallerIcon": "icons/icon.ico"
+      },
+      "wix": {
+        "bannerPath": "icons/installer/banner.bmp",
+        "dialogImagePath": "icons/installer/dialog.bmp"
+      }
     }
   }
 }

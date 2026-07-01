@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Nobs logo to the Windows installer UI: NSIS header/sidebar images and WiX MSI banner/dialog images
+  (`src-tauri/icons/installer/*.bmp`, generated from `icon.png` via
+  `scripts/generate-installer-images.ps1`), wired up in `src-tauri/tauri.conf.json`
+  (`bundle.windows.nsis` / `bundle.windows.wix`). Installer/uninstaller `.exe` icon also set explicitly.
+
+### Changed
+- Nobs Panel Home page photo (`nobs_panel.png`) rotated 0.2° clockwise to correct a shot that was
+  tilted a touch off-level.
+- Reduced the product-image unsharp-mask filter strength (`#nobs-img-sharpen` in `index.html`,
+  amount 0.4 → 0.1, kernel still sums to 1) — the original was over-sharpening.
+
 ## [0.5.1] - 2026-06-29
 
 ### Fixed
