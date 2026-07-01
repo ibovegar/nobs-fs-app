@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-07-01
+
 ### Added
 - Nobs logo to the Windows installer UI: NSIS header/sidebar images and WiX MSI banner/dialog images
   (`src-tauri/icons/installer/*.bmp`, generated from `icon.png` via
