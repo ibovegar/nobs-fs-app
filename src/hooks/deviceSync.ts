@@ -11,10 +11,19 @@ export interface DeviceSnapshot {
   pressed: boolean[]
 }
 
-// Cheap mechanical switches/encoders can chatter for a few ms when actuated —
-// the contact bit flickers before settling, which otherwise reads as several
-// rapid presses (duplicate log entries, inflated counts) for one actuation.
-export const DEBOUNCE_MS = 30
+// Cheap mechanical switches can chatter for a few ms when actuated — the contact
+// bit flickers before settling, which otherwise reads as several rapid presses
+// (duplicate log entries, inflated counts) for one actuation.
+//
+// MUST stay below the firmware's encoder pulse width (PULSE_ON_MS = 15 ms in
+// nobs-fs-autopilot). Each accelerated encoder detent is emitted as a 15 ms ON +
+// 15 ms OFF pulse; if this window is >= the pulse width, a pulse's own release
+// edge lands inside the window and is suppressed, which wedges `pressed` true and
+// makes the next press collapse into the `isDown === b.pressed` fast path below —
+// so ~half of all encoder pulses (and far more of a fast, accelerated burst) are
+// silently dropped, and encoder acceleration looks like it does nothing. 10 ms
+// still absorbs the few-ms switch chatter while passing every clean 15 ms pulse.
+export const DEBOUNCE_MS = 10
 
 export const freshButtons = (count: number): ButtonState[] =>
   Array.from({ length: count }, () => ({ pressed: false, lastPress: 0, count: 0 }))

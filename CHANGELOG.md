@@ -14,6 +14,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   than sitting in that path — the app exists purely to check panel state and configure it.
 
 ### Fixed
+- Encoder acceleration (and encoder counting in general) barely registered in the app: a fast spin
+  moved the knob/HSI/heading barely more than a slow one. The button debounce (`DEBOUNCE_MS`) was
+  30 ms, but the firmware emits each encoder detent as a 15 ms ON + 15 ms OFF pulse. With the window
+  wider than the pulse, every pulse's own release edge fell inside the debounce window and was
+  suppressed — which left `pressed` stuck true, so the next press collapsed into the
+  `isDown === b.pressed` fast path and was dropped. The result was ~50% of all encoder pulses lost,
+  and far more of a fast accelerated burst (8 pulses → 3 counted), so acceleration looked broken in
+  both the Encoder knob and the HSI tool (they share the same count). Lowered `DEBOUNCE_MS` to 10 ms
+  (still above the few-ms mechanical switch chatter it exists for, now below the encoder pulse
+  width); a simulation over the real `reduceSnapshot` confirms every pulse is now counted.
 - `README.md`, `CLAUDE.md`, `docs/mapping.md`, and `docs/connect.md` described only the Nobs
   Autopilot and a hardware identity (Arduino Micro, VID `0x2341`/PID `0x0657`) that predates the
   current shared-Espressif, per-product-PID-block scheme (`0x303A`, `0x80F0`+) in
