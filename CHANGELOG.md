@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- README callout (`> [!IMPORTANT]`) and shorter notes in `CLAUDE.md` and `docs/connect.md`
+  clarifying that this app is not required to fly: every panel is a standard USB game controller
+  MSFS binds and reads directly, and every input driver only observes/reads the HID reports rather
+  than sitting in that path — the app exists purely to check panel state and configure it.
+
+### Fixed
+- `README.md`, `CLAUDE.md`, `docs/mapping.md`, and `docs/connect.md` described only the Nobs
+  Autopilot and a hardware identity (Arduino Micro, VID `0x2341`/PID `0x0657`) that predates the
+  current shared-Espressif, per-product-PID-block scheme (`0x303A`, `0x80F0`+) in
+  `src/panel/panel.ts`. `CLAUDE.md`'s button-mapping line also had encoders and switches swapped
+  relative to the real firmware order. Updated all four to cover all three panels (Autopilot,
+  Approach, Panel), the correct VID/PID scheme, and current file/hook names (`useDevice`, the
+  `DEVICES` registry, the native/WebHID/Gamepad driver split) — `docs/mapping.md` also dropped an
+  AVR-specific pin table that no longer matches the current board identity, since it couldn't be
+  verified and pointed at a `firmware/` directory that no longer exists in this repo.
+- README screenshots (`docs/screenshot-*.png`) cut off content at the bottom. The Playwright
+  capture viewport (`playwright.config.ts`) was short enough that Home's three device sections
+  (each `flex: 1 1 0; min-height: 220px`) got squeezed to their floor, clipping the Nobs Panel
+  switch grid against the card's `overflow: hidden` rounded corners. Raised capture viewport
+  height 800 → 1080 and regenerated both screenshots (`pnpm screenshots`).
+
 ## [0.6.0] - 2026-07-01
 
 ### Added

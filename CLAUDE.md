@@ -1,6 +1,8 @@
 # nobs-fs-app
 
-React + Vite + TypeScript app that monitors a custom MSFS 2024 autopilot hardware panel over USB HID.
+React + Vite + TypeScript app that monitors a family of custom MSFS 2024 hardware panels (Autopilot,
+Approach, Panel) over USB HID. Each panel is a standard USB game controller MSFS binds directly, so
+this app is not required to fly — it's a companion for checking panel state and configuring it.
 
 ## Workflow
 
@@ -11,10 +13,15 @@ fresh `[Unreleased]` above it.
 
 ## Hardware
 
-- Arduino Micro as USB HID Gamepad (VID: 0x2341, PID: 0x0657)
-- 4 Bourns PEC11 rotary encoders (with push button)
-- 8 ON-ON momentary switches
-- Button mapping: `buttons[0–7]` = switches SW1–SW8, `buttons[8–15]` = encoders (CW/CCW pairs)
+Three panels, each its own USB HID gamepad board sharing Espressif's vendor ID `0x303A`; product ID
+picks out which panel and which physical unit (a 4-PID block per product: Panel `0x80F0`+,
+Autopilot `0x80F4`+, Approach `0x80F8`+). Full registry: `src/panel/panel.ts`.
+
+- **Nobs Autopilot**: 4 Bourns PEC11 rotary encoders (with push button) + 8 ON-ON momentary
+  switches. Button mapping: `buttons[0–11]` = encoders (CW/CCW/push triplets), `buttons[12–19]` =
+  switches SW1–SW8.
+- **Nobs Approach**: flaps lever, gear lever, push-pull parking brake — 6 buttons.
+- **Nobs Panel**: 8 bat toggle switches, each wired through both terminals — 16 buttons.
 
 ## Stack
 

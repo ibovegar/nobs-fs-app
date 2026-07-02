@@ -1,7 +1,12 @@
-# HID Button Mapping
+# HID Button Mapping — Nobs Autopilot
 
-Documents the relationship between physical hardware, Arduino firmware button indices,
-and the React app's `~/panel` constants.
+Documents the relationship between physical hardware, firmware button indices, and the React app's
+`~/panel` constants, for the **Nobs Autopilot** panel specifically. For Nobs Approach and Nobs
+Panel's simpler button layouts, see [Other panels](#other-panels) below.
+
+The firmware itself, and the board's schematic/wiring, live in the companion hardware repo
+(`nobs-fs-panel`), not in this app repo — this doc only covers the HID report shape the firmware
+produces and how the app decodes it.
 
 ## Physical hardware
 
@@ -11,13 +16,14 @@ and the React app's `~/panel` constants.
 | Standalone momentary switch | 8 | press / release |
 | **Total HID buttons** | | **20** |
 
+Identifies itself as an Arduino-Joystick-style USB HID gamepad, vendor ID `0x303A` (shared by every
+Nobs panel), product ID `0x80F4`–`0x80F7` (one PID per physical unit, assigned via the firmware's
+`SET_ID` command). See [`src/panel/panel.ts`](../src/panel/panel.ts) for the full device registry.
+
 ## Firmware layout
 
-Sketch: [`firmware/nobs-autopilot/nobs-autopilot.ino`](../firmware/nobs-autopilot/nobs-autopilot.ino)
-(Arduino board, MHeironimus `Joystick` library, report ID `0x05`).
-
-The sketch (`Joystick.setButton`) assigns indices in this order:
-**encoders first** (3 buttons each), **standalone switches after**.
+The firmware (`Joystick.setButton`-style HID reports, no report-ID byte) assigns indices in this
+order: **encoders first** (3 buttons each), **standalone switches after**.
 
 ```
 buttons[ 0] = ENC1 CW
@@ -141,47 +147,16 @@ export const pushButton   = (enc: number) => enc * BUTTONS_PER_ENCODER + 2
 export const switchButton = (sw:  number) => NUM_ENCODERS * BUTTONS_PER_ENCODER + sw
 ```
 
-## Physical pin assignments (Arduino board)
+## Physical pin assignments
 
-Wiring convention: every signal pin uses the MCU's internal pull-up
-(`INPUT_PULLUP`), so **no external resistors** are needed and a closed contact
-reads `LOW`:
-
-- **Encoders:** `A` and `B` → their MCU pins; `C` (common) → **GND**; `S` (push) →
-  its MCU pin; the extra `W` pin → **GND**.
-- **Switches:** pin 1 → its MCU pin; pin 2 → **GND**.
-
-The microcontroller port pin is shown in parentheses next to the Arduino label.
-
-### Encoders
-
-| Encoder | A | B | Push (S) | Buttons (CW / CCW / push) |
-|---|---|---|---|---|
-| ENC1 | A0 (PF7) | A1 (PF6) | A2 (PF5) | 0 / 1 / 2 |
-| ENC2 | A3 (PF4) | A4 (PF1) | A5 (PF0) | 3 / 4 / 5 |
-| ENC3 | D3 (PD0) | D2 (PD1) | D4 (PD4) | 6 / 7 / 8 |
-| ENC4 | D0 (PD2) | D1 (PD3) | D16 (PB2) | 9 / 10 / 11 |
-
-### Switches
-
-| Switch | Pin 1 → MCU | Button |
-|---|---|---|
-| SW1 | D12 (PD6) | 12 |
-| SW2 | D11 (PB7) | 13 |
-| SW3 | D10 (PB6) | 14 |
-| SW4 | D9 (PB5) | 15 |
-| SW5 | D8 (PB4) | 16 |
-| SW6 | D7 (PE6) | 17 |
-| SW7 | D6 (PD7) | 18 |
-| SW8 | D5 (PC6) | 19 |
-
-> Note: ENC4's push was moved off **PB0 (D17)**: that pin is the board's RX LED and
-> is held LOW by the LED circuit, so it reads as permanently pressed. It now uses
-> **PB2 (D16 / MOSI)**. For the same reason, avoid **PC7 (D13)** for inputs.
+Not tracked in this repo — the board schematic and wiring live in the companion `nobs-fs-panel`
+hardware repo alongside the firmware. (An earlier revision of this doc carried an AVR/Arduino
+Micro pinout table here; the panel's current VID/PID identity, `0x303A`/`0x80F4`+, doesn't match
+that generation of board, so that table has been removed rather than left in place uncorrected.)
 
 ## Decoding in the app (`decodeButton`)
 
-`App.tsx` calls `decodeButton(id)` on every gamepad event to turn a raw button index
+`useEventLog` calls `decodeButton(id)` on every device event to turn a raw button index
 into a typed logical control:
 
 ```ts
@@ -200,3 +175,21 @@ Event log output:
 | ENC1 push | `ENC1    PUSH` |
 | SW3 press | `SW 3    PRESSED` |
 | SW3 release | `SW 3    RELEASED` |
+
+## Other panels
+
+Nobs Approach and Nobs Panel share the same vendor ID and HID-report shape as the Autopilot above,
+just with fewer, simpler buttons — no separate mapping doc for them; each is defined next to the
+code that consumes it:
+
+- **Nobs Approach** (6 buttons): `buttons[0]`/`[1]` = flaps lever up/down (momentary),
+  `buttons[2]`/`[3]` = gear lever up/down (maintained), `buttons[4]`/`[5]` = parking brake
+  pushed-in/pulled-out (maintained). See the comment atop
+  [`src/components/Approach/Approach.tsx`](../src/components/Approach/Approach.tsx).
+- **Nobs Panel** (16 buttons): 8 toggle switches, each wired through both outer terminals as a
+  button pair — `up = 2×index`, `down = 2×index + 1`. SW1–SW6 are 2-position (ON-ON); SW7–SW8 are
+  3-position (ON-OFF-ON), where neither terminal closes at the centre. See `PANEL_SWITCHES` in
+  [`src/panel/panel.ts`](../src/panel/panel.ts).
+
+Every product's button count, PID offset, and numbering is defined in one place —
+[`src/panel/panel.ts`](../src/panel/panel.ts) — regardless of which doc you're reading.

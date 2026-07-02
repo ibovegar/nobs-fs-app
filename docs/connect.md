@@ -1,78 +1,72 @@
-# Connecting the Autopilot Panel (Web Gamepad path)
+# Connecting to a Panel
 
-This describes the **web** input path, used when running the app in a browser (`pnpm dev`): the
-development target. The shipping app is the native desktop build, which reads the panel directly
-via the HID driver (`src-tauri/src/hid.rs`) and ignores everything below.
+How the app talks to a panel over USB, in each of the three environments it runs in. The app picks
+the input driver at runtime (`src/io/selectDriver.ts`); the rest of the app (`useDevice`,
+components, pages) is identical regardless of which one is active.
 
-## How the browser talks to the panel
+> **This app is a read-only observer, not part of the input path MSFS uses.** Every driver below
+> only *reads* the panel's HID reports to display them; none of them write anything back or sit
+> between the panel and the sim. MSFS binds the panel directly as a USB game controller, so it
+> keeps working whether or not this app — or any driver below — is running at all.
 
-The app uses the browser's built-in **Web Gamepad API** (`navigator.getGamepads()`). No library or driver install required.
+| Environment | Driver | How it detects the panel |
+|---|---|---|
+| Native desktop (Tauri) | `nativeDriver.ts` | Rust HID bridge (`src-tauri/src/hid.rs`, `hidapi` crate) enumerates the USB bus directly — auto-detected, no interaction needed |
+| Browser, Chromium (Chrome/Edge) | `webhidDriver.ts` | WebHID (`navigator.hid`) — auto-detected after a one-time permission grant (the Devices page's **Connect** button) |
+| Browser, other (Firefox/Safari, no WebHID) | `gamepadDriver.ts` | Gamepad API (`navigator.getGamepads()`) — only appears after the user actuates a control once |
 
-When the panel connects over USB and identifies itself as a HID Gamepad, Windows registers it as a standard game controller. The browser exposes it automatically.
+The native desktop build is the shipping app. The browser paths exist for development
+(`pnpm dev`) and as a fallback where native isn't an option.
 
-```
-Panel firmware       →  Joystick.setButton(n, …)
-Windows HID driver   →  registers as generic gamepad
-Browser              →  navigator.getGamepads()[0].buttons[n].pressed
-useGamepad.ts        →  polls every ~16ms via requestAnimationFrame
-```
+## Identifying a panel
 
-> **First-press quirk:** The browser won't expose the gamepad until the user has pressed at least one button, due to a browser security policy to prevent fingerprinting. After that first interaction it works continuously. This is why the UI shows "AWAITING DEVICE" until you press a button or turn a knob.
+Every Nobs panel shares one USB vendor ID and is told apart by product ID — a 4-PID block per
+product, one PID per physical unit (assigned via the firmware's `SET_ID` command):
 
-## Identifying the correct controller
+| Product | Vendor ID | Product ID block |
+|---|---|---|
+| Nobs Panel | `0x303A` | `0x80F0`–`0x80F3` |
+| Nobs Autopilot | `0x303A` | `0x80F4`–`0x80F7` |
+| Nobs Approach | `0x303A` | `0x80F8`–`0x80FB` |
 
-If you have multiple controllers connected (Xbox pad, joystick, etc.) the app must pick the right one. Every gamepad has an `id` string exposed by the Gamepad API:
+This registry lives in one place, [`src/panel/panel.ts`](../src/panel/panel.ts) (`PRODUCTS`,
+`DeviceConfig`, `identifyDevice`) — every driver reads from it rather than hardcoding an identity.
 
-```
-"Nobs Autopilot USB HID Gamepad (Vendor: 2341 Product: 0657)"
-```
+## WebHID path (Chromium)
 
-### Step 1: find your panel's id
+`webhidDriver.ts` uses `navigator.hid`, which — unlike the Gamepad API — surfaces an already-
+granted device on page load and reacts to `connect`/`disconnect` events, so no control needs to be
+actuated first. The catch is a one-time permission grant: the user clicks **Connect** on the
+Devices page (`requestHidDevices`, must run from a user gesture), picks their panel from the
+browser's device chooser, and the grant then persists per-origin across reloads and replugs.
 
-Open the browser console while the panel is plugged in and run:
+## Gamepad API path (fallback)
 
-```js
-navigator.getGamepads()
-```
-
-Each entry shows its full `id`. Find the one that belongs to the panel.
-
-### Step 2: VID/PID (Arduino board defaults)
-
-The firmware sets a custom identity via `build.opt`:
-
-```
-vid=0x2341
-pid=0x0657
-```
-
-The browser will see the device as: `"... (Vendor: 2341 Product: 0657)"`.
-
-### Step 3: filter by VID/PID in the app (already implemented)
-
-`useGamepad.ts` already filters by `DEVICE_VID` / `DEVICE_PID` from `~/panel`:
+`gamepadDriver.ts` polls `navigator.getGamepads()` every animation frame and matches by substring
+against the device's `id` string, e.g. `"... (Vendor: 303a Product: 80f4)"`:
 
 ```ts
-// src/panel/panel.ts
-export const DEVICE_VID = '2341'
-export const DEVICE_PID = '0657'
-
-// src/hooks/useGamepad.ts
-const gp =
-  Array.from(gps).find((g) => g?.id.includes(DEVICE_VID) && g.id.includes(DEVICE_PID)) ?? null
+// src/io/gamepadDriver.ts
+const gp = Array.from(gamepads).find(
+  (g) => g?.id.includes(device.vid) && g.id.includes(device.pid),
+) ?? null
 ```
 
-If the VID/PID changes in firmware, update `DEVICE_VID`/`DEVICE_PID` in `src/panel/panel.ts`.
+> **First-actuation quirk:** browsers won't expose a gamepad until the user has interacted with it
+> at least once (an anti-fingerprinting policy), so this path needs a knob turn or switch flip
+> before the panel appears — WebHID and native don't have this limitation.
 
 ## Communication direction
 
-The Gamepad API is **read-only**. The app can read button states but cannot write anything back to the device.
+The HID input path (native, WebHID, and Gamepad API alike) is **read-only** — it reports button
+state but can't write back to the panel. For the one case that needs two-way communication (the
+Settings page's per-encoder acceleration sensitivity), the app uses a **separate serial channel**,
+environment-aware via [`src/io/panelConfig.ts`](../src/io/panelConfig.ts):
 
-If two-way communication is ever needed (e.g. sending config or LED states to the panel), the options are:
+- **Web**: Web Serial (`configSerial.ts`, Chromium only), one-time port grant opened within the
+  user gesture of moving a slider.
+- **Native**: Rust serial commands (`configNative.ts` → `src-tauri/src/serial.rs`, the
+  `serialport` crate), which find the panel's CDC port by VID/PID — no grant needed.
 
-| API | How | Pros | Cons |
-|---|---|---|---|
-| **WebSerial** | Read/write over the board's USB-CDC serial port (already enabled with `USB CDC On Boot: Enabled`) | Simple, well documented | Chrome/Edge only; user must pick the port once |
-| **WebHID** | Direct HID report communication | No serial port needed | More complex; requires custom HID report descriptors in firmware; Chrome/Edge only |
-
-For the current monitoring use case the Gamepad API is sufficient.
+Both send the same line protocol (`A<encoder><value>\n`, replying `A<encoder>=<value>\n`) to the
+firmware, which persists the value in EEPROM.

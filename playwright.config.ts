@@ -10,7 +10,11 @@ export default defineConfig({
     baseURL: `http://localhost:${PORT}`,
     ...devices['Desktop Chrome'],
     colorScheme: 'dark',
-    viewport: { width: 1280, height: 800 },
+    // Tall enough that the three device sections on Home (each `flex: 1 1 0;
+    // min-height: 220px` — see Home.module.css) aren't squeezed down to their
+    // floor, which clips a panel's switch grid against its card's
+    // `overflow: hidden` rounded corners.
+    viewport: { width: 1280, height: 1080 },
     deviceScaleFactor: 2, // crisp, retina-resolution PNGs
   },
   webServer: {

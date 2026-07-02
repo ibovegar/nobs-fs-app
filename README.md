@@ -11,11 +11,18 @@ presses and turns them back into the things you actually did: knob turns, button
 flips.
 
 The **native desktop app** (Windows) is the main event: install it, open it, and it finds your
-panel on its own, no setup, nothing to click. That's the one to use for actually flying.
+panel on its own, no setup, nothing to click.
 
 The same code also runs in the browser via `pnpm dev`, but that's really just for development. It
 works as a fallback: Chrome/Edge auto-connect after a one-time permission grant, while other browsers
 need you to nudge a control first to expose the device. Still, the desktop app is the real target.
+
+> **This app is not required to fly.** Each panel identifies itself as a standard USB game
+> controller, so once you've bound its buttons in MSFS's own controls setup, the sim reads it
+> directly, with or without this app running. This app is purely a **companion for checking and
+> configuring** your panel: watching its live state to verify wiring and button mapping, and (for
+> the Autopilot) tuning per-encoder acceleration. Close it whenever you like before you fly;
+> nothing about the panel itself depends on it.
 
 ## Download (Windows)
 
@@ -36,7 +43,7 @@ ships with Windows 11; on older Windows the installer grabs it for you.
 
 - **Home** (`/`): a live picture of your panel: knobs that turn, switches that flip, plus a press
   count for each control and whether the panel is connected.
-- **Events** (`/events`): a running log of everything the autopilot panel sends, newest at the top.
+- **Events** (`/events`): a running log of everything all three panels send, newest at the top.
 - **Tools** (`/tools`): four navigation dials (HSIs), one per knob, that you steer by turning the
   knobs.
 - **Devices** (`/devices`): which panels are plugged in right now.
@@ -46,21 +53,28 @@ ships with Windows 11; on older Windows the installer grabs it for you.
 
 ## The hardware
 
-The main panel, **Nobs Autopilot**, is an Arduino board wired up to look like a USB game controller:
+There are three panels, each its own board wired up to look like a USB game controller. Every
+board shares the same vendor ID, `0x303a` (Espressif), and is told apart by product ID: each panel
+reserves a block of four PIDs (one per physical unit, so you can run more than one of the same
+panel), starting at `0x80F0` for Nobs Panel, `0x80F4` for Nobs Autopilot, `0x80F8` for Nobs
+Approach. A board is assigned a specific slot in its block with the firmware's `SET_ID` command, so
+multiple units of the same panel stay distinguishable.
 
-- 4 rotary encoders, the detented knobs; each one also pushes in like a button
-- 8 ON-ON momentary toggle switches
-- It identifies itself with VID `0x2341`, PID `0x0657` (think of those as the panel's "name tag"
-  so the app can pick it out from any other controllers you have plugged in)
+| Panel | Controls | HID buttons |
+|---|---|---|
+| **Nobs Autopilot** | 4 rotary encoders (detented, each also pushes in like a button), 8 ON-ON momentary toggle switches | 20 |
+| **Nobs Approach** | Flaps lever (momentary up/down, 5 detents), Gear lever (2-position, maintained), push-pull parking brake knob (maintained) | 6 |
+| **Nobs Panel** | 8 bat toggle switches (SW1–SW6 are 2-position ON-ON, SW7–SW8 are 3-position ON-OFF-ON) | 16 |
 
-Building your own? The full wiring and the firmware live in [`docs/mapping.md`](docs/mapping.md):
-every pin, every button number, in tables you can follow along with.
+Building your own? The Autopilot's full wiring and button numbering live in
+[`docs/mapping.md`](docs/mapping.md), in tables you can follow along with. The firmware and wiring
+for all three panels lives in the companion hardware repo.
 
 ### How the buttons are numbered
 
-A game controller only speaks in numbered buttons, so the firmware assigns each knob and switch a
-number. Each knob takes three buttons in a row (turn one way, turn the other, push), then the flick
-switches follow:
+A game controller only speaks in numbered buttons, so each panel's firmware assigns its own knobs
+and switches a number, in the order below. For the flagship **Nobs Autopilot**, each knob takes
+three buttons in a row (turn one way, turn the other, push), then the toggle switches follow:
 
 | Button number | What it is |
 |---|---|
@@ -69,10 +83,10 @@ switches follow:
 | `enc*3 + 2` | knob *enc* pushed in |
 | `12 + sw`   | flick switch *sw* |
 
-So buttons `0–11` are the four knobs and `12–19` are switches SW1–SW8. If you ever need to change
-this, it all lives in one place: [`src/panel/panel.ts`](src/panel/panel.ts). (Two more panels,
-**Nobs Approach** and **Nobs Panel**, are sketched in there too, as placeholders for hardware that
-doesn't exist yet.)
+So buttons `0–11` are the four knobs and `12–19` are switches SW1–SW8. Nobs Approach and Nobs
+Panel follow their own, simpler numbering — every panel's button count, numbering, and layout is
+defined in one place, [`src/panel/panel.ts`](src/panel/panel.ts), the single source of truth the
+app reads from.
 
 > Why the knobs feel "paced": the sim only checks the controller about once per video frame, so the
 > firmware holds each knob click long enough to be noticed. In practice that caps a fast spin at
