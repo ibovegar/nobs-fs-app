@@ -17,7 +17,7 @@
    however many modules are connected, and the body (overflow-y: auto) scrolls. */
 .sectionFixed {
   flex: 0 0 auto;
-  height: 360px;
+  height: 310px;
   min-height: 0;
   max-height: none;
 }
