@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Trimmed Home's fixed section height (used past three modules) from 360px to 310px, fitting a
+  little more of the next card on screen.
+- The page scrollbar now sits against the window's right edge. Scrolling lived on `main`, which is
+  capped at 1500px and centred, so on a wide window the scrollbar floated in from the frame against
+  the content column rather than the browser edge. A full-width scroll container beside the sidebar
+  now owns the overflow; `main` keeps its cap and centring inside it, and gains `min-height: 100%`
+  so Home's `flex: 1 1 0` sections still have a definite height to share.
+
 ## [0.7.0] - 2026-08-19
 
 ### Added

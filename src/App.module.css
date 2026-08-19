@@ -19,16 +19,29 @@
   min-height: 0;
 }
 
+/* Full-width scroll container. The scrollbar belongs against the window's right
+   edge, so scrolling happens here rather than on .body — .body is capped at
+   1500px and centred, which would otherwise park the scrollbar in the middle of
+   a wide window, floating against the content instead of the frame. Sits right
+   of the sidebar, which stays put. */
+.scroll {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+}
+
 .body {
   max-width: 1500px;
   display: flex;
   flex-direction: column;
-  flex: 1;
   margin-left: auto;
   margin-right: auto;
   min-width: 0;
-  min-height: 0;
-  overflow-y: auto;
+  /* Fill the scroller when the content is short, so Home's `flex: 1 1 0` sections
+     still have a definite height to share — without this they have no height to
+     divide up and collapse to their min-height. */
+  min-height: 100%;
   padding-top: var(--sp-6);
   padding-bottom: var(--sp-6);
   padding-right: var(--sp-6);

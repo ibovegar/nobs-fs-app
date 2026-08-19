@@ -73,47 +73,51 @@ export default function App() {
       <Header />
       <div className={styles.layout}>
         <Sidebar />
-        <main className={styles.body}>
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <Home autopilot={autopilot} approach={approach} panel={panel} windy={windy} />
-              }
-            />
-            <Route
-              path="/devices"
-              element={
-                <Devices
-                  connected={{
-                    autopilot: autopilot.isConnected,
-                    approach: approach.isConnected,
-                    panel: panel.isConnected,
-                  }}
-                  windy={windy}
-                />
-              }
-            />
-            <Route
-              path="/events"
-              element={
-                <Events autopilot={autopilot} approach={approach} panel={panel} windy={windy} />
-              }
-            />
-            <Route
-              path="/tools/:kind"
-              element={<Tools autopilotButtons={autopilot.buttons} panelButtons={panel.buttons} />}
-            />
-            <Route path="/autopilot/settings" element={<AutopilotSettings />} />
-            <Route
-              path="/approach/settings"
-              element={<DeviceSettings title="Approach settings" />}
-            />
-            <Route path="/panel/settings" element={<DeviceSettings title="Panel settings" />} />
-            <Route path="/windy/settings" element={<WindySettings windy={windy} />} />
-            <Route path="/settings" element={<Settings />} />
-          </Routes>
-        </main>
+        <div className={styles.scroll}>
+          <main className={styles.body}>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <Home autopilot={autopilot} approach={approach} panel={panel} windy={windy} />
+                }
+              />
+              <Route
+                path="/devices"
+                element={
+                  <Devices
+                    connected={{
+                      autopilot: autopilot.isConnected,
+                      approach: approach.isConnected,
+                      panel: panel.isConnected,
+                    }}
+                    windy={windy}
+                  />
+                }
+              />
+              <Route
+                path="/events"
+                element={
+                  <Events autopilot={autopilot} approach={approach} panel={panel} windy={windy} />
+                }
+              />
+              <Route
+                path="/tools/:kind"
+                element={
+                  <Tools autopilotButtons={autopilot.buttons} panelButtons={panel.buttons} />
+                }
+              />
+              <Route path="/autopilot/settings" element={<AutopilotSettings />} />
+              <Route
+                path="/approach/settings"
+                element={<DeviceSettings title="Approach settings" />}
+              />
+              <Route path="/panel/settings" element={<DeviceSettings title="Panel settings" />} />
+              <Route path="/windy/settings" element={<WindySettings windy={windy} />} />
+              <Route path="/settings" element={<Settings />} />
+            </Routes>
+          </main>
+        </div>
       </div>
     </div>
   )
