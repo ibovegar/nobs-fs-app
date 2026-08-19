@@ -1,16 +1,21 @@
 mod hid;
 mod serial;
+mod windy;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
   tauri::Builder::default()
     .manage(hid::HidState::default())
+    .manage(windy::WindyState::default())
     .invoke_handler(tauri::generate_handler![
       hid::hid_open,
       hid::hid_close,
       hid::hid_list,
       serial::panel_serial_present,
-      serial::panel_serial_send
+      serial::panel_serial_send,
+      windy::windy_open,
+      windy::windy_close,
+      windy::windy_send
     ])
     .setup(|app| {
       if cfg!(debug_assertions) {

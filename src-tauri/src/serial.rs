@@ -25,7 +25,8 @@ use serialport::SerialPortType;
 const OPEN_SETTLE: Duration = Duration::from_millis(150);
 
 /// Find the serial port name for a USB device matching `vid`/`pid`.
-fn find_port(vid: u16, pid: u16) -> Option<String> {
+/// Shared with `windy.rs`, which keeps a port open rather than writing per call.
+pub fn find_port(vid: u16, pid: u16) -> Option<String> {
     serialport::available_ports().ok()?.into_iter().find_map(|p| match p.port_type {
         SerialPortType::UsbPort(info) if info.vid == vid && info.pid == pid => Some(p.port_name),
         _ => None,
