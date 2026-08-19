@@ -13,7 +13,7 @@ fresh `[Unreleased]` above it.
 
 ## Hardware
 
-Three panels, each its own USB HID gamepad board sharing Espressif's vendor ID `0x303A`; product ID
+Three **HID gamepad** panels, each its own board sharing Espressif's vendor ID `0x303A`; product ID
 picks out which panel and which physical unit (a 4-PID block per product: Panel `0x80F0`+,
 Autopilot `0x80F4`+, Approach `0x80F8`+). Full registry: `src/panel/panel.ts`.
 
@@ -22,6 +22,16 @@ Autopilot `0x80F4`+, Approach `0x80F8`+). Full registry: `src/panel/panel.ts`.
   switches SW1–SW8.
 - **Nobs Approach**: flaps lever, gear lever, push-pull parking brake — 6 buttons.
 - **Nobs Panel**: 8 bat toggle switches, each wired through both terminals — 16 buttons.
+
+Plus one **serial** module, which shares none of the above machinery:
+
+- **Nobs Windy**: a wind-effects generator — Arduino Uno Rev3 + Motor Shield Rev3 driving two fans
+  over PWM, with 3 push buttons (fan ON/OFF, speed up, speed down) and 5 speed levels. It has *no
+  HID interface at all*: everything travels over a two-way USB-CDC serial link, so this is the one
+  module the app both reads **and** drives. Its USB identity is a generic Arduino Uno
+  (`0x2341:0x0043`) for every unit — the per-unit ID (`0x80FC`+) is a logical one stored in EEPROM,
+  because the Uno's USB descriptor lives in a separate 16U2 chip the sketch can't rewrite.
+  Definition + protocol codec: `src/panel/windy.ts`.
 
 ## Stack
 
@@ -91,10 +101,14 @@ src/
     nativeDriver.ts      Tauri HID bridge (native; scaffold, Rust side pending)
     selectDriver.ts      runtime env detection → active driver
     webhid.d.ts          minimal WebHID typings (not in lib.dom)
+    windy.ts             Windy serial link facade (env-agnostic; read + write)
+    windySerial.ts       Windy over Web Serial (persistent port + line read loop)
+    windyNative.ts       Windy over the Tauri bridge (src-tauri/src/windy.rs)
     index.ts
   hooks/
     useDevice.ts         backend-agnostic: press detection, counts, events
     useEventLog.ts       autopilot event log (wraps useDevice)
+    useWindy.ts          single owner of the Windy serial link (state + commands)
     index.ts
   components/
     index.ts             public barrel
@@ -104,6 +118,7 @@ src/
     PanelGrid/           6×2 physical panel layout + ENCODER_LABELS
     Encoder/             encoder content (arrows, counts, net)
     SwitchBtn/           switch content (indicator, state)
+    Windy/               fan + speed controls (interactive — drives the hardware)
     EventLog/            scrollable event log + LogEntry type
   theme/
     palette.ts           color tokens (single source of truth)

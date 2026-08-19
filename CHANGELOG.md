@@ -7,6 +7,64 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Support for the **Nobs Windy** module (`nobs-fs-windy`): a wind-effects generator built on an
+  Arduino Uno Rev3 + Motor Shield driving two fans, with 3 push buttons (fan ON/OFF, speed up,
+  speed down). It appears on Home with a fan/speed card, in the Devices list, in the merged event
+  log, and gets its own settings page.
+- Windy is the first module the app can **drive**, not just observe. The other products are USB HID
+  gamepads the app only reads; Windy has no HID interface at all and talks over a two-way USB-CDC
+  serial link, so the app both sends commands (`SET_POWER`, `SET_SPEED`, `SET_ID`) and receives the
+  unsolicited `STATE:` pushes the firmware emits when someone presses a physical button. New
+  `src/panel/windy.ts` holds the hardware definition and the protocol codec; `src/io/windy.ts`
+  picks between the Web Serial (`windySerial`) and native (`windyNative`) transports; `useWindy`
+  owns the single link and turns its line stream into state plus event-log entries.
+- `useWindy` retries its opening `GET_STATE`/`GET_ID` probe until the module answers. The sketch
+  only prints `STATE:` when something actually *changes*, so that reply is the only way the app
+  ever learns the current state — and opening the port asserts DTR, resetting the Uno, so a probe
+  fired during the ~2 s bootloader window is lost outright. Asking once left every control disabled
+  indefinitely with nothing on screen explaining why.
+- A **Disconnect** button for Windy on the Devices page, which closes the link and releases the
+  serial port. Windows gives a COM port to a single owner, so while the app held it the Arduino IDE
+  could not flash the board — uploads failed with `Access is denied` and the only workaround was
+  quitting the app entirely, a miserable loop while iterating on firmware. A deliberate disconnect
+  also suspends the replug watcher, so a board re-enumerating mid-upload isn't grabbed straight back.
+- The Windy card explains itself when it can't be driven: it says why the controls are inert and
+  offers the one-time serial-port grant inline, instead of only on the Devices page. Failed connect
+  attempts now report a reason (port held by another program, no port picked) instead of silently
+  doing nothing.
+- The Windy port picker is unfiltered. Filtering on the stock Uno identity `2341:0043` broke
+  connecting outright for anyone whose board uses a different USB bridge — CH340 clones, FTDI,
+  `2341:0001` — because Chrome gives the user no way to see past a filter, so the picker opened
+  empty and Connect appeared to do nothing. No filter can be correct here anyway: Windy's identity
+  lives in EEPROM and is only readable over the open link (`GET_ID`), never in the USB descriptor,
+  so the board is confirmed by the protocol handshake instead. The granted port's USB ids are
+  remembered so later loads still reconnect silently.
+- Native Windy bridge in Rust (`src-tauri/src/windy.rs`): a worker thread that holds the port open,
+  emits `windy://line` / `windy://connection`, reconnects across replugs, and publishes a cloned
+  write handle so `windy_send` can write without stealing the read. The existing `serial.rs` could
+  not serve this — it is write-only and opens/closes per call, which cannot receive state pushes.
+- Windy settings page: reads the module's logical ID + name over `GET_ID` and writes them back with
+  `SET_ID`. Unlike the ESP32 products this identity is bookkeeping only — the Uno's USB VID/PID
+  lives in a separate 16U2 chip the sketch can't rewrite, so every Windy stays `2341:0043` on the
+  bus no matter which ID is stored.
+- Playwright smoke tests (`tests/windy.smoke.spec.ts`) that stub `navigator.serial` with a fake
+  board speaking the documented protocol, covering the read loop, parser, hook, and UI without
+  hardware. The fake mirrors the real sketch's awkward edges — uppercase hex IDs, `CRLF` line
+  endings, no reply when a command doesn't change anything — and one test holds it deaf for the
+  first few commands to cover the lost-probe case above.
+
+### Changed
+- Home switches to fixed-height sections once more than three modules are on screen, scrolling the
+  page instead of sharing the viewport between them. The shared-height model drives every section
+  down to its `min-height` at the same time as modules are added, so a fourth card (exactly what
+  Windy adds to a full set) left all of them too short to read. Three or fewer still scale with the
+  window as before.
+- `ProductImage`'s `image` prop is now optional, rendering a "no photo yet" placeholder when
+  omitted — the Windy repo ships no product photo.
+- Windy's fan blades sweep the full radius of their housing instead of stopping two-thirds out,
+  so the rosette reads as a fan filling the disc rather than a small emblem floating in it.
+
 ## [0.6.1] - 2026-07-02
 
 ### Added

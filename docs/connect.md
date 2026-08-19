@@ -32,6 +32,14 @@ product, one PID per physical unit (assigned via the firmware's `SET_ID` command
 This registry lives in one place, [`src/panel/panel.ts`](../src/panel/panel.ts) (`PRODUCTS`,
 `DeviceConfig`, `identifyDevice`) — every driver reads from it rather than hardcoding an identity.
 
+**Nobs Windy is not in that table, and cannot be.** It has no HID interface, so none of the drivers
+above see it at all, and its USB identity is a generic Arduino Uno (`0x2341:0x0043`) shared by every
+unit — the Uno's descriptor lives in a separate 16U2 chip its sketch can't rewrite. Its per-unit ID
+(`0x80FC`–`0x80FF`) is therefore *logical*: stored in EEPROM and readable only over the open serial
+link with `GET_ID`. The app cannot filter for it up front, so the user picks the port and the module
+confirms itself by answering. Windy's definition and protocol codec live separately, in
+[`src/panel/windy.ts`](../src/panel/windy.ts).
+
 ## WebHID path (Chromium)
 
 `webhidDriver.ts` uses `navigator.hid`, which — unlike the Gamepad API — surfaces an already-
@@ -70,3 +78,23 @@ environment-aware via [`src/io/panelConfig.ts`](../src/io/panelConfig.ts):
 
 Both send the same line protocol (`A<encoder><value>\n`, replying `A<encoder>=<value>\n`) to the
 firmware, which persists the value in EEPROM.
+
+### Nobs Windy: read *and* write, over serial only
+
+Windy is the exception to all of the above. With no HID interface, its serial port carries
+everything in both directions, and it stays open for the session rather than being opened per write:
+
+- **Web**: Web Serial ([`src/io/windySerial.ts`](../src/io/windySerial.ts)) — a persistent port with
+  a read loop turning the byte stream into lines.
+- **Native**: a Rust worker thread ([`src-tauri/src/windy.rs`](../src-tauri/src/windy.rs)) holding
+  the port open and emitting `windy://line` / `windy://connection`.
+
+[`src/io/windy.ts`](../src/io/windy.ts) picks between them, and [`useWindy`](../src/hooks/useWindy.ts)
+owns the single link. The firmware only prints `STATE:` when something *changes*, so the app probes
+with `GET_STATE` on connect and retries until answered — opening the port also resets the Uno via
+DTR, which can swallow the first attempt.
+
+That DTR reset is worth knowing about generally: opening *or* closing the port reboots the board, so
+Windy persists its fan state to EEPROM and restores it on boot. It keeps blowing whether or not the
+app is connected. For the same reason the Devices page has a **Disconnect** button — Windows gives a
+COM port to one owner, so the app must let go before the Arduino IDE can flash the board.
