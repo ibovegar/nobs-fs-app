@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-08-19
+
 ### Added
 - Support for the **Nobs Windy** module (`nobs-fs-windy`): a wind-effects generator built on an
   Arduino Uno Rev3 + Motor Shield driving two fans, with 3 push buttons (fan ON/OFF, speed up,
