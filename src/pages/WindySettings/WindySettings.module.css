@@ -1,0 +1,180 @@
+.back {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  align-self: flex-start;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-mid);
+  font: inherit;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.15s ease;
+
+  span {
+    margin-bottom: 1px;
+  }
+}
+
+.back:hover {
+  color: var(--text-bright);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  padding: var(--sp-4);
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  max-width: 80ch;
+  padding: var(--sp-4);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-card);
+}
+
+.groupHead {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.title {
+  margin: 0;
+  color: var(--text-bright);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.hint {
+  margin: 0;
+  color: var(--text-mid);
+  font-size: 13px;
+  line-height: 1.5;
+
+  code {
+    font-family: "Consolas", "Courier New", monospace;
+    font-size: 12px;
+    color: var(--text);
+  }
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 7ch minmax(0, 32ch) auto;
+  align-items: center;
+  gap: var(--sp-4);
+}
+
+.rowLabel {
+  color: var(--text-mid);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.select,
+.input {
+  width: 100%;
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--border-mid);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text-bright);
+  font: inherit;
+  font-size: 13px;
+}
+
+.select:focus-visible,
+.input:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.select:disabled,
+.input:disabled,
+.save:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.save {
+  padding: var(--sp-2) var(--sp-4);
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  background: var(--accent-dim);
+  color: var(--accent);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.save:hover:not(:disabled) {
+  background: var(--bg-card-hi);
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  font-size: 12px;
+}
+
+.muted {
+  color: var(--text-dim);
+}
+
+/*
+ * "Saved" tag. Always rendered (hidden until the first save) so its grid column
+ * reserves a constant width and the row doesn't reflow when it appears. `.flash`
+ * reveals it and blinks; the node is remounted via key so the animation replays.
+ */
+.saved {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  visibility: hidden;
+}
+
+.flash {
+  visibility: visible;
+  animation: savedFlash 0.6s ease-in-out;
+}
+
+@keyframes savedFlash {
+  0%,
+  50%,
+  100% {
+    opacity: 1;
+  }
+  25%,
+  75% {
+    opacity: 0.15;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flash {
+    animation: none;
+  }
+}
