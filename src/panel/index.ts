@@ -32,3 +32,20 @@ export {
   pushButton,
   switchButton,
 } from './panel'
+export type { WindyIdentity, WindyMessage, WindyPower, WindyState } from './windy'
+export {
+  clampWindyLevel,
+  parseWindyLine,
+  WINDY_ID_BASE,
+  WINDY_LEVELS,
+  WINDY_MAX_INSTANCES,
+  WINDY_MAX_LEVEL,
+  WINDY_MIN_LEVEL,
+  WINDY_NAME,
+  WINDY_USB_PID,
+  WINDY_USB_VID,
+  windyCommand,
+  windyIdFor,
+  windyInstanceOf,
+  windyNameFor,
+} from './windy'
