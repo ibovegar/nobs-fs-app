@@ -12,3 +12,15 @@ export {
 export { getDriver } from './selectDriver'
 export type { DeviceDriver, DeviceSnapshot, SnapshotListener } from './types'
 export { grantedFlags, onHidChange, requestHidDevices, webhidSupported } from './webhidDriver'
+export {
+  connectWindy,
+  disconnectWindy,
+  onWindyConnection,
+  onWindyLine,
+  reconnectWindy,
+  sendWindy,
+  windyConnected,
+  windyError,
+  windyNeedsGrant,
+  windySupported,
+} from './windy'
