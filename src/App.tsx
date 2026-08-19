@@ -8,8 +8,17 @@ import {
   Welcome,
   welcomeSeen,
 } from '~/components'
-import { useApproachEventLog, useEventLog, useInstances, usePanelEventLog } from '~/hooks'
-import { AutopilotSettings, DeviceSettings, Devices, Events, Home, Settings, Tools } from '~/pages'
+import { useApproachEventLog, useEventLog, useInstances, usePanelEventLog, useWindy } from '~/hooks'
+import {
+  AutopilotSettings,
+  DeviceSettings,
+  Devices,
+  Events,
+  Home,
+  Settings,
+  Tools,
+  WindySettings,
+} from '~/pages'
 import { type DeviceKind, deviceFor } from '~/panel'
 import { watchSystemTheme } from '~/theme'
 import styles from './App.module.css'
@@ -42,6 +51,10 @@ export default function App() {
   const autopilot = useEventLog(autopilotDev)
   const approach = useApproachEventLog(approachDev)
   const panel = usePanelEventLog(panelDev)
+  // Windy is not on the HID bus at all — it's a serial link, and one that can only
+  // be held open by a single owner — so it's watched here rather than per-card,
+  // and there's no instance set behind it (see hooks/useWindy).
+  const windy = useWindy()
 
   // First-run welcome screen — shown until the user dismisses it once.
   const [showWelcome, setShowWelcome] = useState(() => !welcomeSeen())
@@ -64,7 +77,9 @@ export default function App() {
           <Routes>
             <Route
               path="/"
-              element={<Home autopilot={autopilot} approach={approach} panel={panel} />}
+              element={
+                <Home autopilot={autopilot} approach={approach} panel={panel} windy={windy} />
+              }
             />
             <Route
               path="/devices"
@@ -75,12 +90,15 @@ export default function App() {
                     approach: approach.isConnected,
                     panel: panel.isConnected,
                   }}
+                  windy={windy}
                 />
               }
             />
             <Route
               path="/events"
-              element={<Events autopilot={autopilot} approach={approach} panel={panel} />}
+              element={
+                <Events autopilot={autopilot} approach={approach} panel={panel} windy={windy} />
+              }
             />
             <Route
               path="/tools/:kind"
@@ -92,6 +110,7 @@ export default function App() {
               element={<DeviceSettings title="Approach settings" />}
             />
             <Route path="/panel/settings" element={<DeviceSettings title="Panel settings" />} />
+            <Route path="/windy/settings" element={<WindySettings windy={windy} />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
         </main>

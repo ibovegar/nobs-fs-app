@@ -1,7 +1,7 @@
 import { CheckSolid } from '@lineiconshq/free-icons'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ConnectionIndicator, Icon, Section } from '~/components'
-import { addInstance, removeInstance, useInstances } from '~/hooks'
+import { addInstance, removeInstance, useInstances, type WindyControl } from '~/hooks'
 import { grantedFlags, isNative, onHidChange, requestHidDevices, webhidSupported } from '~/io'
 import {
   type DeviceConfig,
@@ -9,17 +9,23 @@ import {
   instancesFor,
   MAX_INSTANCES,
   productName,
+  WINDY_NAME,
+  WINDY_USB_PID,
+  WINDY_USB_VID,
 } from '~/panel'
 import styles from './Devices.module.css'
 
 const KINDS: DeviceKind[] = ['autopilot', 'approach', 'panel']
 
+const hex4 = (n: number) => n.toString(16).padStart(4, '0')
+
 interface Props {
   // Live connection of each product's primary instance (watched in App).
   connected: Record<DeviceKind, boolean>
+  windy: WindyControl
 }
 
-export function Devices({ connected }: Props) {
+export function Devices({ connected, windy }: Props) {
   // The native shell uses the Tauri HID bridge, which enumerates devices itself
   // — no per-device permission grant. WebHID's one-time grant is web-only.
   const needsGrant = !isNative() && webhidSupported()
@@ -138,6 +144,83 @@ export function Devices({ connected }: Props) {
             </div>
           )
         })}
+
+        {/*
+         * Windy sits outside the loop above: it isn't a HID device, so it has no
+         * WebHID grant, no PID block on the bus, and no instance set to add to or
+         * remove from. Its link is a serial port — one per machine — and the USB
+         * identity below is the generic Arduino Uno every Windy shares. The
+         * per-unit ID is a logical one the module reports over that link.
+         */}
+        <div className={styles.group}>
+          <div className={styles.groupHeader}>
+            <span className={styles.groupTitle}>{WINDY_NAME}</span>
+          </div>
+          <ul className={styles.list}>
+            {!windy.supported ? (
+              <li className={styles.row}>
+                <span className={styles.id}>
+                  Needs a Chromium browser (Chrome or Edge), or the desktop app
+                </span>
+              </li>
+            ) : isNative() && !windy.isConnected ? (
+              <li className={styles.row}>
+                <span className={styles.id}>Not detected</span>
+              </li>
+            ) : (
+              <li className={styles.row}>
+                <div className={styles.info}>
+                  <span className={styles.name}>{windy.identity?.name || WINDY_NAME}</span>
+                  <span className={styles.id}>
+                    {hex4(WINDY_USB_VID)}:{hex4(WINDY_USB_PID)}
+                    {windy.identity ? ` · ID ${windy.identity.id}` : ''}
+                  </span>
+                </div>
+                <ConnectionIndicator isConnected={windy.isConnected} />
+                {windy.isConnected ? (
+                  <button
+                    type="button"
+                    className={styles.connect}
+                    onClick={() => void windy.disconnect()}
+                    title="Release the COM port so the Arduino IDE can flash the board"
+                  >
+                    Disconnect
+                  </button>
+                ) : (
+                  windy.needsGrant && (
+                    <button
+                      type="button"
+                      className={styles.connect}
+                      onClick={() => void windy.connect()}
+                    >
+                      Connect
+                    </button>
+                  )
+                )}
+              </li>
+            )}
+            {windy.error && !windy.isConnected && (
+              <li className={styles.row}>
+                <span className={styles.id}>{windy.error}</span>
+              </li>
+            )}
+          </ul>
+          {windy.isConnected && (
+            <p className={styles.hint}>
+              Windows gives a COM port to one program at a time, so while the app is connected the
+              Arduino IDE can't flash Windy — uploads fail with <code>Access is denied</code>. Hit{' '}
+              <strong>Disconnect</strong> before uploading, then reconnect afterwards.
+            </p>
+          )}
+          {windy.needsGrant && !windy.isConnected && (
+            <p className={styles.hint}>
+              Windy is picked by <strong>COM port</strong>, not by USB ID: its per-unit identity
+              lives in EEPROM and can only be read once the port is open, and clone boards use a
+              different USB bridge. So the picker lists every serial port — choose the one Windy is
+              on (the Arduino IDE's <strong>Tools → Port</strong> shows which).
+            </p>
+          )}
+        </div>
       </div>
     </Section>
   )
