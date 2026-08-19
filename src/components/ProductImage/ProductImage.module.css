@@ -36,6 +36,17 @@
   overflow: hidden;
 }
 
+/* Stand-in for a product that has no photo yet — keeps the card's proportions
+   so its layout matches the products that do have one. */
+.noImage {
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  opacity: 0.65;
+}
+
 /* Click target for enlarging the image; hosts the hover magnify overlay. */
 .zoomButton {
   position: relative;

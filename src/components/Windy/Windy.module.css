@@ -1,0 +1,196 @@
+/* card shell lives in PanelCard — only windy-specific styles here */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: 1fr;
+  gap: 1px;
+  flex: 1;
+  background: var(--border);
+}
+
+.label {
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--text-mid);
+}
+
+/* ── Fan ─────────────────────────────────────────────────────────────────────
+   A recessed housing with the blade rosette spinning inside it. */
+
+.hub {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 35%, var(--bg-card-hi) 0%, var(--bg-darker) 85%);
+  border: 2px solid var(--border-mid);
+  box-shadow:
+    inset 0 2px 6px rgba(0, 0, 0, 0.5),
+    0 2px 6px rgba(0, 0, 0, 0.28);
+}
+
+/* Sized to just inside the housing so the blade tips run right up to its rim. */
+.fan {
+  width: 96px;
+  height: 96px;
+  fill: var(--text-dim);
+  transition: fill 0.15s ease;
+}
+
+.spinning {
+  fill: var(--accent);
+  /* --spin is set per level in Windy.tsx: faster level, shorter period. */
+  animation: spin var(--spin, 1s) linear infinite;
+}
+
+.spindle {
+  fill: var(--border-mid);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Respect a reduced-motion preference — the colour change still reads as "running". */
+@media (prefers-reduced-motion: reduce) {
+  .spinning {
+    animation: none;
+  }
+}
+
+/* ── Power button ────────────────────────────────────────────────────────────*/
+
+.power {
+  min-width: 72px;
+  padding: var(--sp-2) var(--sp-4);
+  border: 1px solid var(--border-mid);
+  border-radius: 6px;
+  background: var(--bg-darker);
+  color: var(--text-mid);
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.power:hover:not(:disabled) {
+  color: var(--text-bright);
+  border-color: var(--accent);
+}
+
+.powerOn {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 10px var(--accent-glow);
+}
+
+.power:disabled,
+.bar:disabled,
+.step:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Why the controls are inert — never leave them disabled without a reason. */
+.status {
+  max-width: 26ch;
+  text-align: center;
+  font-size: 10px;
+  line-height: 1.4;
+  color: var(--text-dim);
+}
+
+.error {
+  color: var(--danger);
+}
+
+/* ── Speed ───────────────────────────────────────────────────────────────────
+   Five climbing bars; clicking one jumps straight to that level. */
+
+.bars {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--sp-2);
+  height: 104px;
+}
+
+.bar {
+  width: 14px;
+  /* --height is set per level in Windy.tsx so the bars form a ramp. */
+  height: var(--height, 40px);
+  padding: 0;
+  border: 1px solid var(--border-mid);
+  border-radius: 3px;
+  background: var(--bg-darker);
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.bar:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+/* At or below the selected level — the level is remembered while the fans are
+   off, so it stays visible, just without the running glow. */
+.barSet {
+  background: var(--border-mid);
+}
+
+.barLit {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.step {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--border-mid);
+  border-radius: 4px;
+  background: var(--bg-darker);
+  color: var(--text-mid);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.step:hover:not(:disabled) {
+  color: var(--text-bright);
+  border-color: var(--accent);
+}
+
+.readout {
+  min-width: 62px;
+  text-align: center;
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--text-mid);
+}
+
+.readoutOn {
+  color: var(--accent);
+}

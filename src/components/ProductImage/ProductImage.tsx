@@ -8,7 +8,9 @@ import styles from './ProductImage.module.css'
 
 interface Props {
   name: string
-  image: string
+  // Product photo. Omit for a product with no photo yet (e.g. Nobs Windy, whose
+  // repo has no images) — a neutral placeholder stands in and zoom is disabled.
+  image?: string
   isConnected: boolean
   // Per-device tools route, e.g. "/tools/panel". Omit to hide the Tools link.
   toolsTo?: string
@@ -33,19 +35,23 @@ export function ProductImage({ name, image, isConnected, toolsTo, settingsTo }: 
         <ConnectionIndicator isConnected={isConnected} />
       </div>
       <div className={styles.imageContainer}>
-        <button
-          type="button"
-          className={styles.zoomButton}
-          onClick={() => setZoomed(true)}
-          aria-label={`Enlarge ${name} image`}
-        >
-          <img src={image} alt={name} className={styles.image} />
-          <span className={styles.zoomOverlay} aria-hidden="true">
-            <span className={styles.zoomChip}>
-              <Icon icon={SearchPlusOutlined} size={28} />
+        {image ? (
+          <button
+            type="button"
+            className={styles.zoomButton}
+            onClick={() => setZoomed(true)}
+            aria-label={`Enlarge ${name} image`}
+          >
+            <img src={image} alt={name} className={styles.image} />
+            <span className={styles.zoomOverlay} aria-hidden="true">
+              <span className={styles.zoomChip}>
+                <Icon icon={SearchPlusOutlined} size={28} />
+              </span>
             </span>
-          </span>
-        </button>
+          </button>
+        ) : (
+          <span className={styles.noImage}>No photo yet</span>
+        )}
       </div>
       <nav className={styles.nav}>
         {links.map((link) => (
@@ -62,7 +68,7 @@ export function ProductImage({ name, image, isConnected, toolsTo, settingsTo }: 
         ))}
       </nav>
 
-      {zoomed && <ImageLightbox src={image} alt={name} onClose={() => setZoomed(false)} />}
+      {zoomed && image && <ImageLightbox src={image} alt={name} onClose={() => setZoomed(false)} />}
     </div>
   )
 }
