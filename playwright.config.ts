@@ -1,7 +1,8 @@
 import { defineConfig, devices } from '@playwright/test'
 
-// Playwright is used here only to capture the README screenshots in `tests/screenshots.spec.ts`.
-// It boots the Vite dev server, drives the app in a headless Chromium, and writes PNGs to `docs/`.
+// Playwright boots the Vite dev server and drives the app in a headless Chromium.
+// It captures the README screenshots (`tests/screenshots.spec.ts`, writing PNGs to
+// `docs/`) and runs the Windy serial smoke check (`tests/windy.smoke.spec.ts`).
 const PORT = 5173
 
 export default defineConfig({
