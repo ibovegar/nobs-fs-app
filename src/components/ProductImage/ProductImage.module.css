@@ -104,9 +104,6 @@
     object-fit: contain;
     align-self: center;
     margin-bottom: -30px;
-    /* Mild sharpen (def in index.html) to counter the softness of drawing these
-       large photos into small cells on 1x displays. */
-    filter: url(#nobs-img-sharpen);
   }
 }
 

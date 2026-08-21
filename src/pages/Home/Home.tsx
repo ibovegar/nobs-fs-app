@@ -1,6 +1,7 @@
 import approachImg from '~/assets/images/nobs_approach.png'
 import autopilotImg from '~/assets/images/nobs_autopilot.png'
 import panelImg from '~/assets/images/nobs_panel.png'
+import windyImg from '~/assets/images/nobs_windy.png'
 import {
   Approach,
   DeviceCard,
@@ -145,6 +146,7 @@ export function Home({ autopilot, approach, panel, windy }: Props) {
           <ProductCard>
             <ProductImage
               name={windy.identity?.name || WINDY_NAME}
+              image={windyImg}
               isConnected={windy.isConnected}
               settingsTo="/windy/settings"
             />

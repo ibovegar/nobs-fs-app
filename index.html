@@ -18,18 +18,6 @@
   </head>
   <body>
     <div id="root"></div>
-    <!-- Global SVG filter: a mild unsharp-mask convolution (kernel sums to 1, so
-         brightness is preserved) referenced by the product images. They're large
-         photos drawn into small cells, and on 1x displays that heavy downscale
-         goes soft; this restores crisp edges without the haloing a stronger
-         kernel would add. Lives here so the single `#nobs-img-sharpen` id is
-         always in the document for CSS `filter: url(...)` to resolve. -->
-    <svg width="0" height="0" aria-hidden="true" style="position: absolute">
-      <filter id="nobs-img-sharpen">
-        <feConvolveMatrix order="3" preserveAlpha="true"
-          kernelMatrix="0 -0.1 0  -0.1 1.4 -0.1  0 -0.1 0" />
-      </filter>
-    </svg>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

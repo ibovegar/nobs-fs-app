@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.2] - 2026-08-21
+
+### Added
+- Nobs Windy product photo (`nobs_windy.png`) on the Home page, matching the other three products'
+  cards (zoomable image, replacing the "No photo yet" placeholder).
+
+### Removed
+- The product-image unsharp-mask filter (`#nobs-img-sharpen` in `index.html`, and its use in
+  `ProductImage.module.css`). It existed to counter softness from an unpredictable downscale; now
+  that the Home widgets are a fixed size, that downscale is fixed too and doesn't need correcting.
+
 ## [0.7.1] - 2026-08-19
 
 ### Changed

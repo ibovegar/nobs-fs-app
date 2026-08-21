@@ -8,8 +8,8 @@ import styles from './ProductImage.module.css'
 
 interface Props {
   name: string
-  // Product photo. Omit for a product with no photo yet (e.g. Nobs Windy, whose
-  // repo has no images) — a neutral placeholder stands in and zoom is disabled.
+  // Product photo. Omit for a product with no photo yet — a neutral placeholder
+  // stands in and zoom is disabled.
   image?: string
   isConnected: boolean
   // Per-device tools route, e.g. "/tools/panel". Omit to hide the Tools link.
