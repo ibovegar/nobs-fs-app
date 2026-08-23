@@ -6,7 +6,7 @@
   padding: 0;
   border: none;
   background: transparent;
-  color: var(--text-mid);
+  color: var(--text-bright);
   font: inherit;
   font-size: 13px;
   line-height: 1;
@@ -19,7 +19,7 @@
 }
 
 .back:hover {
-  color: var(--text-bright);
+  color: var(--text-mid);
 }
 
 .card {
@@ -86,8 +86,8 @@
   padding: var(--sp-2) var(--sp-3);
   border: 1px solid var(--border-mid);
   border-radius: 8px;
-  background: transparent;
-  color: var(--text-mid);
+  background: var(--bg-card-hi);
+  color: var(--text-bright);
   font: inherit;
   font-size: 13px;
   cursor: pointer;
@@ -98,8 +98,8 @@
 }
 
 .field:hover {
-  background: var(--bg-card-hi);
-  color: var(--text-bright);
+  background: transparent;
+  color: var(--text-mid);
 }
 
 .fieldActive,

@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.3] - 2026-08-23
+
+### Added
+- Empty-state placeholder on Home for when no devices are connected at all (native only, nothing
+  plugged in): a hint to plug in or power on a panel, a note about the Devices page, and a **Go to
+  Devices** button that navigates there.
+
+### Changed
+- Every button's default and hover colors are now swapped: what used to be the hover color is the
+  resting state, and the old resting color shows on hover. Applies app-wide (Devices' connect/remove/
+  add buttons, Windy's power/speed controls, Welcome's primary/secondary actions, the Home empty-state
+  button, back buttons, Settings' segmented control, and both close buttons).
+
 ## [0.7.2] - 2026-08-21
 
 ### Added

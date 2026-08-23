@@ -103,23 +103,23 @@
 }
 
 .primary {
-  border: 1px solid var(--accent);
-  background: var(--accent);
+  border: 1px solid var(--accent-main);
+  background: var(--accent-main);
   color: var(--text-bright);
 }
 
 .primary:hover {
-  background: var(--accent-main);
-  border-color: var(--accent-main);
+  background: var(--accent);
+  border-color: var(--accent);
 }
 
 .secondary {
-  border: 1px solid var(--border-mid);
+  border: 1px solid var(--accent);
   background: transparent;
-  color: var(--text-mid);
+  color: var(--text-bright);
 }
 
 .secondary:hover {
-  border-color: var(--accent);
-  color: var(--text-bright);
+  border-color: var(--border-mid);
+  color: var(--text-mid);
 }

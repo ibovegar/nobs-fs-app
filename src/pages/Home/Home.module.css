@@ -21,3 +21,58 @@
   min-height: 0;
   max-height: none;
 }
+
+/* Shown instead of the device sections when nothing is plugged in at all
+   (native only — the web always keeps at least one tracked instance per
+   product). Fills the body so it reads as a real empty state, not a stray
+   card. */
+.empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+  padding: var(--sp-7) var(--sp-4);
+  text-align: center;
+}
+
+.emptyIcon {
+  color: var(--text-dim);
+  margin-bottom: var(--sp-2);
+}
+
+.emptyTitle {
+  margin: 0;
+  color: var(--text-bright);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.emptyHint {
+  margin: 0;
+  max-width: 420px;
+  color: var(--text-mid);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.emptyButton {
+  margin-top: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4);
+  border: 1px solid var(--accent-main);
+  border-radius: 8px;
+  background: var(--accent-main);
+  color: var(--text-bright);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.12s,
+    border-color 0.12s;
+}
+
+.emptyButton:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+}

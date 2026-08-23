@@ -34,10 +34,10 @@
   justify-content: center;
   width: 40px;
   height: 40px;
-  border: 1px solid var(--border-mid);
+  border: 1px solid var(--accent);
   border-radius: 8px;
   background: var(--bg-card);
-  color: var(--text-mid);
+  color: var(--text-bright);
   cursor: pointer;
   transition:
     color 0.12s,
@@ -45,6 +45,6 @@
 }
 
 .close:hover {
-  color: var(--text-bright);
-  border-color: var(--accent);
+  color: var(--text-mid);
+  border-color: var(--border-mid);
 }

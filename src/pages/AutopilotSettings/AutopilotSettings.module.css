@@ -6,7 +6,7 @@
   padding: 0;
   border: none;
   background: transparent;
-  color: var(--text-mid);
+  color: var(--text-bright);
   font: inherit;
   font-size: 13px;
   line-height: 1;
@@ -19,7 +19,7 @@
 }
 
 .back:hover {
-  color: var(--text-bright);
+  color: var(--text-mid);
 }
 
 .body {

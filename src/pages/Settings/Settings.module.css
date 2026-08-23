@@ -48,10 +48,10 @@
   flex: 1;
   max-width: 16ch;
   padding: var(--sp-3) var(--sp-4);
-  border: 1px solid var(--border-mid);
+  border: 1px solid var(--accent);
   border-radius: 8px;
   background: var(--bg);
-  color: var(--text-mid);
+  color: var(--text-bright);
   font: inherit;
   text-align: left;
   cursor: pointer;
@@ -62,8 +62,8 @@
 }
 
 .segment:hover {
-  border-color: var(--accent);
-  color: var(--text-bright);
+  border-color: var(--border-mid);
+  color: var(--text-mid);
 }
 
 .segmentActive {

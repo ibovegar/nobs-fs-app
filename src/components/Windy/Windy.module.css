@@ -69,10 +69,10 @@
 .power {
   min-width: 72px;
   padding: var(--sp-2) var(--sp-4);
-  border: 1px solid var(--border-mid);
+  border: 1px solid var(--accent);
   border-radius: 6px;
   background: var(--bg-darker);
-  color: var(--text-mid);
+  color: var(--text-bright);
   font-family: "Consolas", "Courier New", monospace;
   font-size: 12px;
   letter-spacing: 0.12em;
@@ -84,8 +84,8 @@
 }
 
 .power:hover:not(:disabled) {
-  color: var(--text-bright);
-  border-color: var(--accent);
+  color: var(--text-mid);
+  border-color: var(--border-mid);
 }
 
 .powerOn {
@@ -130,7 +130,7 @@
   /* --height is set per level in Windy.tsx so the bars form a ramp. */
   height: var(--height, 40px);
   padding: 0;
-  border: 1px solid var(--border-mid);
+  border: 1px solid var(--accent);
   border-radius: 3px;
   background: var(--bg-darker);
   cursor: pointer;
@@ -140,7 +140,7 @@
 }
 
 .bar:hover:not(:disabled) {
-  border-color: var(--accent);
+  border-color: var(--border-mid);
 }
 
 /* At or below the selected level — the level is remembered while the fans are
@@ -165,10 +165,10 @@
   width: 24px;
   height: 24px;
   padding: 0;
-  border: 1px solid var(--border-mid);
+  border: 1px solid var(--accent);
   border-radius: 4px;
   background: var(--bg-darker);
-  color: var(--text-mid);
+  color: var(--text-bright);
   font-size: 15px;
   line-height: 1;
   cursor: pointer;
@@ -178,8 +178,8 @@
 }
 
 .step:hover:not(:disabled) {
-  color: var(--text-bright);
-  border-color: var(--accent);
+  color: var(--text-mid);
+  border-color: var(--border-mid);
 }
 
 .readout {

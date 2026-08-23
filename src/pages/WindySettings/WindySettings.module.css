@@ -6,7 +6,7 @@
   padding: 0;
   border: none;
   background: transparent;
-  color: var(--text-mid);
+  color: var(--text-bright);
   font: inherit;
   font-size: 13px;
   line-height: 1;
@@ -19,7 +19,7 @@
 }
 
 .back:hover {
-  color: var(--text-bright);
+  color: var(--text-mid);
 }
 
 .body {
@@ -115,7 +115,7 @@
   padding: var(--sp-2) var(--sp-4);
   border: 1px solid var(--accent);
   border-radius: 6px;
-  background: var(--accent-dim);
+  background: var(--bg-card-hi);
   color: var(--accent);
   font: inherit;
   font-size: 13px;
@@ -125,7 +125,7 @@
 }
 
 .save:hover:not(:disabled) {
-  background: var(--bg-card-hi);
+  background: var(--accent-dim);
 }
 
 .status {

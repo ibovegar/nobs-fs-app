@@ -1,3 +1,5 @@
+import { Plug1Solid } from '@lineiconshq/free-icons'
+import { useNavigate } from 'react-router'
 import approachImg from '~/assets/images/nobs_approach.png'
 import autopilotImg from '~/assets/images/nobs_autopilot.png'
 import panelImg from '~/assets/images/nobs_panel.png'
@@ -5,6 +7,7 @@ import windyImg from '~/assets/images/nobs_windy.png'
 import {
   Approach,
   DeviceCard,
+  Icon,
   Panel,
   PanelGrid,
   ProductCard,
@@ -57,6 +60,7 @@ function Extras({
 }
 
 export function Home({ autopilot, approach, panel, windy }: Props) {
+  const navigate = useNavigate()
   const instances = useInstances()
   // Name of each product's primary card — the lowest tracked instance, which may not
   // be instance 1 once a user removes it (e.g. only a left-mount "Nobs Panel 2" left).
@@ -83,7 +87,27 @@ export function Home({ autopilot, approach, panel, windy }: Props) {
 
   // A product shows its primary card only while it has a present instance. On the
   // web that's always true (the set keeps at least one); natively a product with
-  // nothing plugged in has an empty set and is hidden entirely.
+  // nothing plugged in has an empty set and is hidden entirely — which is the only
+  // way the Home screen ends up with nothing to show, so that's the case the
+  // placeholder below covers.
+  if (sectionCount === 0) {
+    return (
+      <div className={styles.empty}>
+        <Icon icon={Plug1Solid} size={40} className={styles.emptyIcon} />
+        <h2 className={styles.emptyTitle}>No devices connected</h2>
+        <p className={styles.emptyHint}>
+          Plug in or power on a Nobs panel and it'll show up here automatically.
+        </p>
+        <p className={styles.emptyHint}>
+          The Devices page lists every panel nobs-fs can track and its live connection status.
+        </p>
+        <button type="button" className={styles.emptyButton} onClick={() => navigate('/devices')}>
+          Go to Devices
+        </button>
+      </div>
+    )
+  }
+
   return (
     <>
       {instances.autopilot.length > 0 && (
