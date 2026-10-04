@@ -1,7 +1,7 @@
 # nobs-fs-app
 
 React + Vite + TypeScript app that monitors a family of custom MSFS 2024 hardware panels (Autopilot,
-Approach, Panel) over USB HID. Each panel is a standard USB game controller MSFS binds directly, so
+Approach, Panel, Light) over USB HID. Each panel is a standard USB game controller MSFS binds directly, so
 this app is not required to fly — it's a companion for checking panel state and configuring it.
 
 ## Workflow
@@ -13,15 +13,18 @@ fresh `[Unreleased]` above it.
 
 ## Hardware
 
-Three **HID gamepad** panels, each its own board sharing Espressif's vendor ID `0x303A`; product ID
+Four **HID gamepad** panels, each its own board sharing Espressif's vendor ID `0x303A`; product ID
 picks out which panel and which physical unit (a 4-PID block per product: Panel `0x80F0`+,
-Autopilot `0x80F4`+, Approach `0x80F8`+). Full registry: `src/panel/panel.ts`.
+Autopilot `0x80F4`+, Approach `0x80F8`+, Light `0x80FC`+). Full registry: `src/panel/panel.ts`.
 
 - **Nobs Autopilot**: 4 Bourns PEC11 rotary encoders (with push button) + 8 ON-ON momentary
   switches. Button mapping: `buttons[0–11]` = encoders (CW/CCW/push triplets), `buttons[12–19]` =
   switches SW1–SW8.
 - **Nobs Approach**: flaps lever, gear lever, push-pull parking brake — 6 buttons.
 - **Nobs Panel**: 8 bat toggle switches, each wired through both terminals — 16 buttons.
+- **Nobs FS Light**: 6 rotary encoders (with push button) + 2 three-position ON-OFF-ON toggle
+  switches — 22 buttons. `buttons[0–17]` = encoders (CW/CCW/push triplets), `buttons[18–21]` =
+  up/down pairs, SW2 first (18/19) then SW1 (20/21).
 
 Plus one **serial** module, which shares none of the above machinery:
 

@@ -17,6 +17,13 @@ export const BUTTON_COUNT = NUM_ENCODERS * BUTTONS_PER_ENCODER + NUM_SWITCHES
 
 export const ENCODER_LABELS = ['ENC1', 'ENC2', 'ENC3', 'ENC4'] as const
 
+// Nobs FS Light: 6 encoders (same CW/CCW/push triplets as above) followed by 2
+// three-position toggle switches, each a button pair. See the "Nobs FS Light
+// product" section at the bottom of this file.
+export const LIGHT_NUM_ENCODERS = 6
+export const LIGHT_NUM_SWITCHES = 2
+export const LIGHT_BUTTON_COUNT = LIGHT_NUM_ENCODERS * BUTTONS_PER_ENCODER + LIGHT_NUM_SWITCHES * 2
+
 // ── Device registry ──────────────────────────────────────────────────────────
 // Every Nobs product is its own USB HID gamepad. The Gamepad API exposes the USB
 // identity as "... (Vendor: <vid> Product: <pid>)"; the drivers match on those.
@@ -27,7 +34,7 @@ export const ENCODER_LABELS = ['ENC1', 'ENC2', 'ENC3', 'ENC4'] as const
 // board is moved onto a given instance's PID/name with the firmware's SET_ID command
 // (see nobs-fs-panel/docs/board-identity.md). Every Nobs box shares Espressif's
 // vendor ID (0x303A); the per-instance vid/pid here must match the firmware.
-export type DeviceKind = 'autopilot' | 'approach' | 'panel'
+export type DeviceKind = 'autopilot' | 'approach' | 'panel' | 'light'
 
 export interface DeviceConfig {
   /** Stable per-instance id, e.g. "panel-2". */
@@ -53,7 +60,9 @@ interface Product {
   buttonCount: number
 }
 
-// PID blocks: panel 80F0–80F3, autopilot 80F4–80F7, approach 80F8–80FB.
+// PID blocks: panel 80F0–80F3, autopilot 80F4–80F7, approach 80F8–80FB, light 80FC–80FF.
+// (Windy's logical id block is also 80FC–80FF, but that one never reaches the USB bus —
+// Windy enumerates under the Arduino Uno's own VID — so the two can't be confused here.)
 const PRODUCTS: Record<DeviceKind, Product> = {
   panel: { kind: 'panel', name: 'Nobs Panel', vid: '303a', pidBase: 0x80f0, buttonCount: 16 },
   autopilot: {
@@ -69,6 +78,13 @@ const PRODUCTS: Record<DeviceKind, Product> = {
     vid: '303a',
     pidBase: 0x80f8,
     buttonCount: 6,
+  },
+  light: {
+    kind: 'light',
+    name: 'Nobs FS Light',
+    vid: '303a',
+    pidBase: 0x80fc,
+    buttonCount: LIGHT_BUTTON_COUNT,
   },
 }
 
@@ -132,6 +148,7 @@ export const DEVICES = {
   autopilot: instanceConfig('autopilot', 1),
   approach: instanceConfig('approach', 1),
   panel: instanceConfig('panel', 1),
+  light: instanceConfig('light', 1),
 } satisfies Record<DeviceKind, DeviceConfig>
 
 /** HID button index for an encoder's clockwise pulse. */
@@ -228,3 +245,60 @@ export const decodePanelButton = (id: number): PanelButtonEvent => ({
   switchIndex: Math.floor(id / 2),
   terminal: id % 2 === 0 ? 'up' : 'down',
 })
+
+// ── Nobs FS Light product — encoder + toggle-switch mapping ──────────────────
+// 6 rotary encoders then 2 toggle switches. The encoders use the shared triplet
+// helpers (cwButton/ccwButton/pushButton), so buttons 0–17 are ENC1–ENC6. Each
+// switch is 3-position (ON-OFF-ON) and wired through both outer terminals, so it
+// occupies a button PAIR after the encoders (terminal 1 = "up", terminal 3 = "down");
+// the centre position closes neither. The pairs run in reverse switch order: SW2 is
+// buttons 18/19 and SW1 is buttons 20/21.
+// See nobs-fs-light/docs/arduino-esp-32-wiring.md.
+export const LIGHT_ENCODER_LABELS = ['ENC1', 'ENC2', 'ENC3', 'ENC4', 'ENC5', 'ENC6'] as const
+
+const LIGHT_SWITCH_BASE = LIGHT_NUM_ENCODERS * BUTTONS_PER_ENCODER
+/** Button-pair slot (0-based, after the encoders) of switch `i`, and vice versa. */
+const lightSwitchSlot = (i: number) => LIGHT_NUM_SWITCHES - 1 - i
+
+export const LIGHT_SWITCHES: PanelSwitch[] = Array.from({ length: LIGHT_NUM_SWITCHES }, (_, i) => ({
+  index: i,
+  label: `SW${i + 1}`,
+  kind: 'on-off-on',
+  up: LIGHT_SWITCH_BASE + lightSwitchSlot(i) * 2,
+  down: LIGHT_SWITCH_BASE + lightSwitchSlot(i) * 2 + 1,
+}))
+
+// Front-panel order, 4 columns × 2 rows (the grid wraps rows via CSS).
+export const LIGHT_LAYOUT: PanelCell[] = [
+  // Row 1: ENC1 · ENC3 · ENC5 · SW1
+  { kind: 'encoder', index: 0 },
+  { kind: 'encoder', index: 2 },
+  { kind: 'encoder', index: 4 },
+  { kind: 'switch', index: 0 },
+  // Row 2: ENC2 · ENC4 · ENC6 · SW2
+  { kind: 'encoder', index: 1 },
+  { kind: 'encoder', index: 3 },
+  { kind: 'encoder', index: 5 },
+  { kind: 'switch', index: 1 },
+]
+
+export type LightButton =
+  | { kind: 'encoder'; index: number; dir: 'cw' | 'ccw' }
+  | { kind: 'encoder-push'; index: number }
+  | { kind: 'switch'; index: number; terminal: 'up' | 'down' }
+
+/** Decode a Nobs FS Light HID button index into its logical control. */
+export function decodeLightButton(id: number): LightButton {
+  if (id >= LIGHT_SWITCH_BASE) {
+    const offset = id - LIGHT_SWITCH_BASE
+    return {
+      kind: 'switch',
+      index: lightSwitchSlot(Math.floor(offset / 2)),
+      terminal: offset % 2 === 0 ? 'up' : 'down',
+    }
+  }
+  const enc = Math.floor(id / BUTTONS_PER_ENCODER)
+  const offset = id % BUTTONS_PER_ENCODER
+  if (offset === 2) return { kind: 'encoder-push', index: enc }
+  return { kind: 'encoder', index: enc, dir: offset === 0 ? 'cw' : 'ccw' }
+}

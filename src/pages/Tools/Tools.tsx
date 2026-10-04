@@ -39,8 +39,8 @@ export function Tools({ autopilotButtons, panelButtons }: Props) {
         </Section>
       )}
 
-      {kind === 'approach' && (
-        <Section label={productName('approach')}>
+      {(kind === 'approach' || kind === 'light') && (
+        <Section label={productName(kind)}>
           <div className={styles.empty}>No tools yet</div>
         </Section>
       )}

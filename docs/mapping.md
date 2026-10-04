@@ -190,6 +190,11 @@ code that consumes it:
   button pair — `up = 2×index`, `down = 2×index + 1`. SW1–SW6 are 2-position (ON-ON); SW7–SW8 are
   3-position (ON-OFF-ON), where neither terminal closes at the centre. See `PANEL_SWITCHES` in
   [`src/panel/panel.ts`](../src/panel/panel.ts).
+- **Nobs FS Light** (22 buttons): 6 encoders using the same triplets as the Autopilot
+  (`enc×3` = CW, `+1` = CCW, `+2` = push; buttons 0–17), then 2 three-position (ON-OFF-ON) toggle
+  switches as button pairs — in reverse switch order (SW2 = buttons 18 up / 19 down, SW1 = buttons 20 up / 21 down), neither closed at the
+  centre. See `LIGHT_SWITCHES` and `LIGHT_LAYOUT` in
+  [`src/panel/panel.ts`](../src/panel/panel.ts).
 
 Every product's button count, PID offset, and numbering is defined in one place —
 [`src/panel/panel.ts`](../src/panel/panel.ts) — regardless of which doc you're reading.

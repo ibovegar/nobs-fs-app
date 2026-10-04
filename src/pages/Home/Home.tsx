@@ -8,6 +8,7 @@ import {
   Approach,
   DeviceCard,
   Icon,
+  Light,
   Panel,
   PanelGrid,
   ProductCard,
@@ -20,7 +21,8 @@ import { isNative } from '~/io'
 import { type DeviceKind, deviceFor, instancesFor, WINDY_NAME } from '~/panel'
 import styles from './Home.module.css'
 
-const IMAGES: Record<DeviceKind, string> = {
+// No product photo for Nobs FS Light yet — its cards show the placeholder.
+const IMAGES: Partial<Record<DeviceKind, string>> = {
   autopilot: autopilotImg,
   approach: approachImg,
   panel: panelImg,
@@ -30,6 +32,7 @@ interface Props {
   autopilot: EventLogState
   approach: EventLogState
   panel: EventLogState
+  light: EventLogState
   windy: WindyControl
 }
 
@@ -59,7 +62,7 @@ function Extras({
   )
 }
 
-export function Home({ autopilot, approach, panel, windy }: Props) {
+export function Home({ autopilot, approach, panel, light, windy }: Props) {
   const navigate = useNavigate()
   const instances = useInstances()
   // Name of each product's primary card — the lowest tracked instance, which may not
@@ -75,6 +78,7 @@ export function Home({ autopilot, approach, panel, windy }: Props) {
     instances.autopilot.length +
     instances.approach.length +
     instances.panel.length +
+    instances.light.length +
     (showWindy ? 1 : 0)
 
   // Up to three modules the sections share the viewport height and scale with the
@@ -157,6 +161,21 @@ export function Home({ autopilot, approach, panel, windy }: Props) {
         </Section>
       )}
       <Extras kind="panel" instances={instances.panel} className={sectionClass} />
+
+      {instances.light.length > 0 && (
+        <Section className={sectionClass}>
+          <ProductCard>
+            <ProductImage
+              name={primaryName('light')}
+              isConnected={light.isConnected}
+              toolsTo="/tools/light"
+              settingsTo="/light/settings"
+            />
+            <Light buttons={light.buttons} />
+          </ProductCard>
+        </Section>
+      )}
+      <Extras kind="light" instances={instances.light} className={sectionClass} />
 
       {/*
        * Windy has no instance set behind it: it isn't on the HID bus, so there is

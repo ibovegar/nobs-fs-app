@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-10-04
+
+### Added
+- **Nobs FS Light** as a fourth HID product (`light`, PID block `0x80FC`–`0x80FF`, 22 buttons): 6
+  rotary encoders (CW/CCW/push triplets, buttons 0–17) and 2 three-position ON-OFF-ON toggle
+  switches (a button pair each: SW2 on buttons 18/19, SW1 on 20/21). It gets a Home card (4 × 2
+  grid of encoders and switches, no product photo yet), a Devices entry, its own event log on the
+  Events page, and placeholder Tools and Settings pages. Definition in `src/panel/panel.ts`; new `Light` component
+  and `useLightEventLog` hook.
+
 ## [0.7.3] - 2026-08-23
 
 ### Added

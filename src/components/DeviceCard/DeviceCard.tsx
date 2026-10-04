@@ -1,6 +1,7 @@
 import { useDevice } from '~/hooks'
 import type { DeviceConfig } from '~/panel'
 import { Approach } from '../Approach'
+import { Light } from '../Light'
 import { Panel } from '../Panel'
 import { PanelGrid } from '../PanelGrid'
 import { ProductCard } from '../ProductCard'
@@ -8,7 +9,8 @@ import { ProductImage } from '../ProductImage'
 
 interface Props {
   device: DeviceConfig
-  image: string
+  // Product photo; omit for a product with no photo yet.
+  image?: string
 }
 
 // One self-contained device instance: watches its own HID stream and renders the
@@ -29,6 +31,7 @@ export function DeviceCard({ device, image }: Props) {
       {device.kind === 'panel' && <Panel buttons={buttons} />}
       {device.kind === 'approach' && <Approach buttons={buttons} />}
       {device.kind === 'autopilot' && <PanelGrid buttons={buttons} />}
+      {device.kind === 'light' && <Light buttons={buttons} />}
     </ProductCard>
   )
 }

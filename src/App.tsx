@@ -8,7 +8,14 @@ import {
   Welcome,
   welcomeSeen,
 } from '~/components'
-import { useApproachEventLog, useEventLog, useInstances, usePanelEventLog, useWindy } from '~/hooks'
+import {
+  useApproachEventLog,
+  useEventLog,
+  useInstances,
+  useLightEventLog,
+  usePanelEventLog,
+  useWindy,
+} from '~/hooks'
 import {
   AutopilotSettings,
   DeviceSettings,
@@ -48,9 +55,11 @@ export default function App() {
     [instances.approach],
   )
   const panelDev = useMemo(() => primaryDevice('panel', instances.panel), [instances.panel])
+  const lightDev = useMemo(() => primaryDevice('light', instances.light), [instances.light])
   const autopilot = useEventLog(autopilotDev)
   const approach = useApproachEventLog(approachDev)
   const panel = usePanelEventLog(panelDev)
+  const light = useLightEventLog(lightDev)
   // Windy is not on the HID bus at all — it's a serial link, and one that can only
   // be held open by a single owner — so it's watched here rather than per-card,
   // and there's no instance set behind it (see hooks/useWindy).
@@ -79,7 +88,13 @@ export default function App() {
               <Route
                 path="/"
                 element={
-                  <Home autopilot={autopilot} approach={approach} panel={panel} windy={windy} />
+                  <Home
+                    autopilot={autopilot}
+                    approach={approach}
+                    panel={panel}
+                    light={light}
+                    windy={windy}
+                  />
                 }
               />
               <Route
@@ -90,6 +105,7 @@ export default function App() {
                       autopilot: autopilot.isConnected,
                       approach: approach.isConnected,
                       panel: panel.isConnected,
+                      light: light.isConnected,
                     }}
                     windy={windy}
                   />
@@ -98,7 +114,13 @@ export default function App() {
               <Route
                 path="/events"
                 element={
-                  <Events autopilot={autopilot} approach={approach} panel={panel} windy={windy} />
+                  <Events
+                    autopilot={autopilot}
+                    approach={approach}
+                    panel={panel}
+                    light={light}
+                    windy={windy}
+                  />
                 }
               />
               <Route
@@ -113,6 +135,7 @@ export default function App() {
                 element={<DeviceSettings title="Approach settings" />}
               />
               <Route path="/panel/settings" element={<DeviceSettings title="Panel settings" />} />
+              <Route path="/light/settings" element={<DeviceSettings title="Light settings" />} />
               <Route path="/windy/settings" element={<WindySettings windy={windy} />} />
               <Route path="/settings" element={<Settings />} />
             </Routes>
