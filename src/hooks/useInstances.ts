@@ -19,7 +19,7 @@ import { type DeviceKind, identifyDevice, MAX_INSTANCES } from '~/panel'
 const KEY = 'nobs.instances'
 const LEGACY_KEY = 'nobs.instanceCounts' // pre-set model: { kind: count }
 type Instances = Record<DeviceKind, number[]>
-const KINDS: DeviceKind[] = ['autopilot', 'approach', 'panel', 'light']
+const KINDS: DeviceKind[] = ['autopilot', 'approach', 'panel', 'light', 'yoke']
 
 // Stable for the app's lifetime (set by a window global), so it's safe to choose the
 // store backing from it once rather than branching hook calls per render.
@@ -28,7 +28,13 @@ const NATIVE = isNative()
 const listeners = new Set<() => void>()
 let cache: Instances | null = null
 
-const defaults = (): Instances => ({ autopilot: [1], approach: [1], panel: [1], light: [1] })
+const defaults = (): Instances => ({
+  autopilot: [1],
+  approach: [1],
+  panel: [1],
+  light: [1],
+  yoke: [1],
+})
 
 /** Drop out-of-range/duplicate slots, sort ascending, fall back to [1] if none remain. */
 function normalize(list: unknown): number[] {
@@ -94,11 +100,11 @@ function subscribe(cb: () => void) {
 // started lazily on first use and never torn down (app-lifetime singleton).
 
 const nativeListeners = new Set<() => void>()
-let nativeCache: Instances = { autopilot: [], approach: [], panel: [], light: [] }
+let nativeCache: Instances = { autopilot: [], approach: [], panel: [], light: [], yoke: [] }
 let nativeStarted = false
 
 function applyNative(ids: { vid: number; pid: number }[]) {
-  const next: Instances = { autopilot: [], approach: [], panel: [], light: [] }
+  const next: Instances = { autopilot: [], approach: [], panel: [], light: [], yoke: [] }
   for (const { vid, pid } of ids) {
     const found = identifyDevice(vid, pid)
     if (found) next[found.kind].push(found.instance)

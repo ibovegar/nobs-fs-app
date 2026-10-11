@@ -24,6 +24,10 @@ export const LIGHT_NUM_ENCODERS = 6
 export const LIGHT_NUM_SWITCHES = 2
 export const LIGHT_BUTTON_COUNT = LIGHT_NUM_ENCODERS * BUTTONS_PER_ENCODER + LIGHT_NUM_SWITCHES * 2
 
+// Nobs Yoke: 7 push buttons (one button each) and 2 momentary trim toggles (a
+// button pair each). See the "Nobs Yoke product" section at the bottom of this file.
+export const YOKE_BUTTON_COUNT = 11
+
 // ── Device registry ──────────────────────────────────────────────────────────
 // Every Nobs product is its own USB HID gamepad. The Gamepad API exposes the USB
 // identity as "... (Vendor: <vid> Product: <pid>)"; the drivers match on those.
@@ -34,7 +38,7 @@ export const LIGHT_BUTTON_COUNT = LIGHT_NUM_ENCODERS * BUTTONS_PER_ENCODER + LIG
 // board is moved onto a given instance's PID/name with the firmware's SET_ID command
 // (see nobs-fs-panel/docs/board-identity.md). Every Nobs box shares Espressif's
 // vendor ID (0x303A); the per-instance vid/pid here must match the firmware.
-export type DeviceKind = 'autopilot' | 'approach' | 'panel' | 'light'
+export type DeviceKind = 'autopilot' | 'approach' | 'panel' | 'light' | 'yoke'
 
 export interface DeviceConfig {
   /** Stable per-instance id, e.g. "panel-2". */
@@ -60,7 +64,8 @@ interface Product {
   buttonCount: number
 }
 
-// PID blocks: panel 80F0–80F3, autopilot 80F4–80F7, approach 80F8–80FB, light 80FC–80FF.
+// PID blocks: panel 80F0–80F3, autopilot 80F4–80F7, approach 80F8–80FB, light 80FC–80FF,
+// yoke 8100–8103.
 // (Windy's logical id block is also 80FC–80FF, but that one never reaches the USB bus —
 // Windy enumerates under the Arduino Uno's own VID — so the two can't be confused here.)
 const PRODUCTS: Record<DeviceKind, Product> = {
@@ -85,6 +90,13 @@ const PRODUCTS: Record<DeviceKind, Product> = {
     vid: '303a',
     pidBase: 0x80fc,
     buttonCount: LIGHT_BUTTON_COUNT,
+  },
+  yoke: {
+    kind: 'yoke',
+    name: 'Nobs Yoke',
+    vid: '303a',
+    pidBase: 0x8100,
+    buttonCount: YOKE_BUTTON_COUNT,
   },
 }
 
@@ -149,6 +161,7 @@ export const DEVICES = {
   approach: instanceConfig('approach', 1),
   panel: instanceConfig('panel', 1),
   light: instanceConfig('light', 1),
+  yoke: instanceConfig('yoke', 1),
 } satisfies Record<DeviceKind, DeviceConfig>
 
 /** HID button index for an encoder's clockwise pulse. */
@@ -301,4 +314,48 @@ export function decodeLightButton(id: number): LightButton {
   const offset = id % BUTTONS_PER_ENCODER
   if (offset === 2) return { kind: 'encoder-push', index: enc }
   return { kind: 'encoder', index: enc, dir: offset === 0 ? 'cw' : 'ccw' }
+}
+
+// ── Nobs Yoke product — push-button + trim-toggle mapping ────────────────────
+// The Beechcraft King Air yoke grip: 6 switches on the left handle (SW1–SW6), 3 on
+// the right (SW7–SW9). Buttons run in switch order. Push buttons take one button
+// each. The two trim switches (SW3/SW4) are momentary (ON)-OFF-(ON) toggles wired
+// through both outer terminals, so each occupies a button PAIR (terminal 1 = "up",
+// terminal 3 = "down"); sprung back to the centre, neither is closed.
+// `cap` is the push button's physical cap: a red one for AP DISC, a smaller red one
+// for CWS, black for the rest. See nobs-fs-yoke/docs/arduino-esp-32-wiring.md.
+export type YokeCap = 'red' | 'red-small' | 'black'
+
+export type YokeControl =
+  | { kind: 'push'; label: string; cap: YokeCap; button: number }
+  | { kind: 'toggle'; label: string; up: number; down: number }
+
+// In switch order SW1..SW9, which is also the Home card's cell order. Switches with
+// no fixed function yet are labelled by their switch number.
+export const YOKE_CONTROLS: YokeControl[] = [
+  { kind: 'push', label: 'AP DISC', cap: 'red', button: 0 },
+  { kind: 'push', label: 'CWS', cap: 'red-small', button: 1 },
+  { kind: 'toggle', label: 'TRIM L', up: 2, down: 3 },
+  { kind: 'toggle', label: 'TRIM R', up: 4, down: 5 },
+  { kind: 'push', label: 'PTT', cap: 'black', button: 6 },
+  { kind: 'push', label: 'SW6', cap: 'black', button: 7 },
+  { kind: 'push', label: 'SW7', cap: 'black', button: 8 },
+  { kind: 'push', label: 'SW8', cap: 'black', button: 9 },
+  { kind: 'push', label: 'SW9', cap: 'black', button: 10 },
+]
+
+export type YokeButton =
+  | { kind: 'push'; label: string }
+  | { kind: 'toggle'; label: string; terminal: 'up' | 'down' }
+
+/** Decode a Nobs Yoke HID button index into its control, or null if out of range. */
+export function decodeYokeButton(id: number): YokeButton | null {
+  for (const c of YOKE_CONTROLS) {
+    if (c.kind === 'push') {
+      if (c.button === id) return { kind: 'push', label: c.label }
+    } else if (c.up === id || c.down === id) {
+      return { kind: 'toggle', label: c.label, terminal: c.up === id ? 'up' : 'down' }
+    }
+  }
+  return null
 }

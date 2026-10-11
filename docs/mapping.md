@@ -195,6 +195,11 @@ code that consumes it:
   switches as button pairs — in reverse switch order (SW2 = buttons 18 up / 19 down, SW1 = buttons 20 up / 21 down), neither closed at the
   centre. See `LIGHT_SWITCHES` and `LIGHT_LAYOUT` in
   [`src/panel/panel.ts`](../src/panel/panel.ts).
+- **Nobs Yoke** (11 buttons): the King Air yoke grip's 9 switches in switch order. Push buttons
+  take one button each — `buttons[0]` = SW1 AP DISC, `[1]` = SW2 CWS, `[6]` = SW5 PTT,
+  `[7]`–`[10]` = SW6–SW9. The two trim switches are momentary (ON)-OFF-(ON) toggles as button
+  pairs — SW3 TRIM L = buttons 2 up / 3 down, SW4 TRIM R = buttons 4 up / 5 down — neither closed
+  at the centre. See `YOKE_CONTROLS` in [`src/panel/panel.ts`](../src/panel/panel.ts).
 
 Every product's button count, PID offset, and numbering is defined in one place —
 [`src/panel/panel.ts`](../src/panel/panel.ts) — regardless of which doc you're reading.

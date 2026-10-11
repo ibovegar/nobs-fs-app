@@ -8,7 +8,7 @@ interface Props {
 }
 
 // Per-device settings view for products without bespoke settings yet (approach,
-// panel, light). Mirrors the autopilot settings layout — back button + titled Section —
+// panel, light, yoke). Mirrors the autopilot settings layout — back button + titled Section —
 // with a placeholder body to fill in later.
 export function DeviceSettings({ title }: Props) {
   const navigate = useNavigate()

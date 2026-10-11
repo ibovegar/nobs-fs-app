@@ -6,6 +6,7 @@ import { Panel } from '../Panel'
 import { PanelGrid } from '../PanelGrid'
 import { ProductCard } from '../ProductCard'
 import { ProductImage } from '../ProductImage'
+import { Yoke } from '../Yoke'
 
 interface Props {
   device: DeviceConfig
@@ -32,6 +33,7 @@ export function DeviceCard({ device, image }: Props) {
       {device.kind === 'approach' && <Approach buttons={buttons} />}
       {device.kind === 'autopilot' && <PanelGrid buttons={buttons} />}
       {device.kind === 'light' && <Light buttons={buttons} />}
+      {device.kind === 'yoke' && <Yoke buttons={buttons} />}
     </ProductCard>
   )
 }

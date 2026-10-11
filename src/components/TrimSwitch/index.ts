@@ -1,0 +1,1 @@
+export { TrimSwitch } from './TrimSwitch'

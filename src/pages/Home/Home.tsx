@@ -15,13 +15,14 @@ import {
   ProductImage,
   Section,
   Windy,
+  Yoke,
 } from '~/components'
 import { type EventLogState, useInstances, type WindyControl } from '~/hooks'
 import { isNative } from '~/io'
 import { type DeviceKind, deviceFor, instancesFor, WINDY_NAME } from '~/panel'
 import styles from './Home.module.css'
 
-// No product photo for Nobs FS Light yet — its cards show the placeholder.
+// No product photo for Nobs FS Light or Nobs Yoke yet — their cards show the placeholder.
 const IMAGES: Partial<Record<DeviceKind, string>> = {
   autopilot: autopilotImg,
   approach: approachImg,
@@ -33,6 +34,7 @@ interface Props {
   approach: EventLogState
   panel: EventLogState
   light: EventLogState
+  yoke: EventLogState
   windy: WindyControl
 }
 
@@ -62,7 +64,7 @@ function Extras({
   )
 }
 
-export function Home({ autopilot, approach, panel, light, windy }: Props) {
+export function Home({ autopilot, approach, panel, light, yoke, windy }: Props) {
   const navigate = useNavigate()
   const instances = useInstances()
   // Name of each product's primary card — the lowest tracked instance, which may not
@@ -79,6 +81,7 @@ export function Home({ autopilot, approach, panel, light, windy }: Props) {
     instances.approach.length +
     instances.panel.length +
     instances.light.length +
+    instances.yoke.length +
     (showWindy ? 1 : 0)
 
   // Up to three modules the sections share the viewport height and scale with the
@@ -176,6 +179,21 @@ export function Home({ autopilot, approach, panel, light, windy }: Props) {
         </Section>
       )}
       <Extras kind="light" instances={instances.light} className={sectionClass} />
+
+      {instances.yoke.length > 0 && (
+        <Section className={sectionClass}>
+          <ProductCard>
+            <ProductImage
+              name={primaryName('yoke')}
+              isConnected={yoke.isConnected}
+              toolsTo="/tools/yoke"
+              settingsTo="/yoke/settings"
+            />
+            <Yoke buttons={yoke.buttons} />
+          </ProductCard>
+        </Section>
+      )}
+      <Extras kind="yoke" instances={instances.yoke} className={sectionClass} />
 
       {/*
        * Windy has no instance set behind it: it isn't on the HID bus, so there is

@@ -1,0 +1,109 @@
+/* card shell lives in PanelCard — only button-specific styles here */
+
+.label {
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--text-mid);
+}
+
+/* ── Round-capped push button ────────────────────────────────────────────────
+   A fixed-size well keeps every cell the same height (and level with the trim
+   switches) whatever the cap size; the round, dished cap sits centred in it and
+   sinks when pressed. */
+
+.well {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 66px;
+}
+
+.cap {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  /* a slight bezel: the thin rim left showing around the hollow, lit from the
+     top-left so it runs light → dark across the cap, with a glint where the
+     light strikes it */
+  background:
+    radial-gradient(circle at 20% 18%, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 22%),
+    linear-gradient(135deg, var(--cap-hi) 0%, var(--cap) 50%, var(--cap-lo) 100%);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+  transition:
+    transform 0.1s,
+    box-shadow 0.12s;
+}
+
+/* the hollow inside the bezel: the same light reversed (dark → light), since a
+   dish is shaded under its top-left wall and catches the light on its far slope.
+   That reversal against the rim is what makes it read as going inward, not as a
+   dome. The inset shadows are the wall's cast shadow and the lit lip opposite.
+   Gloss: the top layer is a ring centred up-left of the cap, so only its far arc
+   lands inside — a crescent of reflected light on the lower-right slope, where a
+   polished dish mirrors a light from the top-left. */
+.cap::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle at 34% 30%,
+      rgba(255, 255, 255, 0) 44%,
+      rgba(255, 255, 255, 0.1) 62%,
+      rgba(255, 255, 255, 0) 74%
+    ),
+    linear-gradient(135deg, var(--cap-lo) 0%, var(--cap) 55%, var(--cap-hi) 100%);
+  box-shadow:
+    inset 3px 4px 6px rgba(0, 0, 0, 0.55),
+    inset -1px -1px 2px rgba(255, 255, 255, 0.2);
+  transition: box-shadow 0.12s;
+}
+
+.red {
+  --cap: var(--danger-main);
+  --cap-hi: color-mix(in srgb, var(--danger-main), white 35%);
+  --cap-lo: color-mix(in srgb, var(--danger-main), black 55%);
+}
+
+.black {
+  --cap: var(--bg-darker);
+  --cap-hi: var(--border-mid);
+  --cap-lo: black;
+}
+
+.small {
+  width: 26px;
+  height: 26px;
+}
+
+/* pressed: the cap sinks into the grip, its hollow deepens, and it picks up the
+   accent ring */
+.pressed {
+  transform: scale(0.9);
+  box-shadow:
+    0 0 0 2px var(--accent),
+    0 0 14px var(--accent-glow);
+}
+
+.pressed::after {
+  box-shadow:
+    inset 4px 6px 9px rgba(0, 0, 0, 0.75),
+    inset -1px -1px 2px rgba(255, 255, 255, 0.2);
+}
+
+.state {
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  transition: color 0.12s;
+}
+
+.stateOn {
+  color: var(--accent);
+}

@@ -8,6 +8,9 @@ export type {
   PanelCell,
   PanelSwitch,
   PanelSwitchKind,
+  YokeButton,
+  YokeCap,
+  YokeControl,
 } from './panel'
 export {
   BUTTON_COUNT,
@@ -18,6 +21,7 @@ export {
   decodeButton,
   decodeLightButton,
   decodePanelButton,
+  decodeYokeButton,
   deviceFor,
   ENCODER_LABELS,
   identifyDevice,
@@ -39,6 +43,8 @@ export {
   productName,
   pushButton,
   switchButton,
+  YOKE_BUTTON_COUNT,
+  YOKE_CONTROLS,
 } from './panel'
 export type { WindyIdentity, WindyMessage, WindyPower, WindyState } from './windy'
 export {

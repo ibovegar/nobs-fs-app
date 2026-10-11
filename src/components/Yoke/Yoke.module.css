@@ -1,0 +1,25 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 1px;
+  flex: 1;
+  background: var(--border);
+}
+
+/* 9 controls in a 5 × 2 grid leave one cell over — fill it so the grid's border
+   colour doesn't show through as a solid block. */
+.filler {
+  background: var(--bg-card);
+}
+
+@media (max-width: 720px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+  }
+
+  .filler {
+    display: none;
+  }
+}

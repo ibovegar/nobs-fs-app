@@ -54,12 +54,12 @@ ships with Windows 11; on older Windows the installer grabs it for you.
 
 ## The hardware
 
-Four panels, each its own board wired up to look like a USB game controller, plus **Nobs Windy** —
+Five panels, each its own board wired up to look like a USB game controller, plus **Nobs Windy** —
 a wind-effects box that works quite differently (see below). Every
 board shares the same vendor ID, `0x303a` (Espressif), and is told apart by product ID: each panel
 reserves a block of four PIDs (one per physical unit, so you can run more than one of the same
 panel), starting at `0x80F0` for Nobs Panel, `0x80F4` for Nobs Autopilot, `0x80F8` for Nobs
-Approach, `0x80FC` for Nobs FS Light. A board is assigned a specific slot in its block with the firmware's `SET_ID` command, so
+Approach, `0x80FC` for Nobs FS Light, `0x8100` for Nobs Yoke. A board is assigned a specific slot in its block with the firmware's `SET_ID` command, so
 multiple units of the same panel stay distinguishable.
 
 | Panel | Controls | HID buttons |
@@ -68,6 +68,7 @@ multiple units of the same panel stay distinguishable.
 | **Nobs Approach** | Flaps lever (momentary up/down, 5 detents), Gear lever (2-position, maintained), push-pull parking brake knob (maintained) | 6 |
 | **Nobs Panel** | 8 bat toggle switches (SW1–SW6 are 2-position ON-ON, SW7–SW8 are 3-position ON-OFF-ON) | 16 |
 | **Nobs FS Light** | 6 rotary encoders (detented, each also pushes in like a button), 2 toggle switches (3-position ON-OFF-ON) | 22 |
+| **Nobs Yoke** | Beechcraft King Air yoke grip: 7 push buttons (AP DISC, CWS, PTT and four spare), 2 momentary (ON)-OFF-(ON) trim toggles | 11 |
 
 ### Nobs Windy — the odd one out
 
@@ -105,7 +106,7 @@ three buttons in a row (turn one way, turn the other, push), then the toggle swi
 | `12 + sw`   | flick switch *sw* |
 
 So buttons `0–11` are the four knobs and `12–19` are switches SW1–SW8. Nobs Approach, Nobs
-Panel and Nobs FS Light follow their own numbering — every panel's button count, numbering, and layout is
+Panel, Nobs FS Light and Nobs Yoke follow their own numbering — every panel's button count, numbering, and layout is
 defined in one place, [`src/panel/panel.ts`](src/panel/panel.ts), the single source of truth the
 app reads from.
 

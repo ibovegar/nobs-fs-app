@@ -29,6 +29,7 @@ product, one PID per physical unit (assigned via the firmware's `SET_ID` command
 | Nobs Autopilot | `0x303A` | `0x80F4`–`0x80F7` |
 | Nobs Approach | `0x303A` | `0x80F8`–`0x80FB` |
 | Nobs FS Light | `0x303A` | `0x80FC`–`0x80FF` |
+| Nobs Yoke | `0x303A` | `0x8100`–`0x8103` |
 
 This registry lives in one place, [`src/panel/panel.ts`](../src/panel/panel.ts) (`PRODUCTS`,
 `DeviceConfig`, `identifyDevice`) — every driver reads from it rather than hardcoding an identity.

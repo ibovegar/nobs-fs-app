@@ -15,6 +15,7 @@ import {
   useLightEventLog,
   usePanelEventLog,
   useWindy,
+  useYokeEventLog,
 } from '~/hooks'
 import {
   AutopilotSettings,
@@ -56,10 +57,12 @@ export default function App() {
   )
   const panelDev = useMemo(() => primaryDevice('panel', instances.panel), [instances.panel])
   const lightDev = useMemo(() => primaryDevice('light', instances.light), [instances.light])
+  const yokeDev = useMemo(() => primaryDevice('yoke', instances.yoke), [instances.yoke])
   const autopilot = useEventLog(autopilotDev)
   const approach = useApproachEventLog(approachDev)
   const panel = usePanelEventLog(panelDev)
   const light = useLightEventLog(lightDev)
+  const yoke = useYokeEventLog(yokeDev)
   // Windy is not on the HID bus at all — it's a serial link, and one that can only
   // be held open by a single owner — so it's watched here rather than per-card,
   // and there's no instance set behind it (see hooks/useWindy).
@@ -93,6 +96,7 @@ export default function App() {
                     approach={approach}
                     panel={panel}
                     light={light}
+                    yoke={yoke}
                     windy={windy}
                   />
                 }
@@ -106,6 +110,7 @@ export default function App() {
                       approach: approach.isConnected,
                       panel: panel.isConnected,
                       light: light.isConnected,
+                      yoke: yoke.isConnected,
                     }}
                     windy={windy}
                   />
@@ -119,6 +124,7 @@ export default function App() {
                     approach={approach}
                     panel={panel}
                     light={light}
+                    yoke={yoke}
                     windy={windy}
                   />
                 }
@@ -136,6 +142,7 @@ export default function App() {
               />
               <Route path="/panel/settings" element={<DeviceSettings title="Panel settings" />} />
               <Route path="/light/settings" element={<DeviceSettings title="Light settings" />} />
+              <Route path="/yoke/settings" element={<DeviceSettings title="Yoke settings" />} />
               <Route path="/windy/settings" element={<WindySettings windy={windy} />} />
               <Route path="/settings" element={<Settings />} />
             </Routes>

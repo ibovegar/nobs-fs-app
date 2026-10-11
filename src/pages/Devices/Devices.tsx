@@ -15,7 +15,7 @@ import {
 } from '~/panel'
 import styles from './Devices.module.css'
 
-const KINDS: DeviceKind[] = ['autopilot', 'approach', 'panel', 'light']
+const KINDS: DeviceKind[] = ['autopilot', 'approach', 'panel', 'light', 'yoke']
 
 const hex4 = (n: number) => n.toString(16).padStart(4, '0')
 

@@ -1,0 +1,99 @@
+/* card shell lives in PanelCard — only switch-specific styles here */
+
+.label {
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--text-mid);
+}
+
+/* ── Trim switch ─────────────────────────────────────────────────────────────
+   A wide, low rectangular black cap with three white grip lines across its
+   middle, sitting bare on the grip (no housing). The cap is sprung to the centre
+   and slides (with a slight tilt) up or down while held, along a vertical track
+   that shows its line of travel. The slot is the fixed-size area it moves in,
+   which keeps the cell level with the push buttons. */
+
+.slot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 66px;
+  perspective: 120px;
+}
+
+/* the track: a recessed vertical groove behind the cap, showing above and below it */
+.slot::before {
+  content: "";
+  position: absolute;
+  top: 9px;
+  bottom: 9px;
+  left: 50%;
+  width: 6px;
+  margin-left: -3px;
+  border-radius: 3px;
+  background: var(--bg-darker);
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, 0.6),
+    0 0 0 1px var(--border-mid);
+}
+
+.cap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative; /* above the track */
+  gap: 4px;
+  width: 58px;
+  height: 28px;
+  border-radius: 4px;
+  border: 1px solid black;
+  /* shaded down its length so the cap reads as a raised, slightly curved block */
+  background: linear-gradient(180deg, var(--border-mid) 0%, var(--bg-darker) 22%, black 100%);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.18),
+    0 2px 5px rgba(0, 0, 0, 0.5);
+  transition:
+    transform 0.14s cubic-bezier(0.34, 1.3, 0.64, 1),
+    box-shadow 0.12s;
+}
+
+.cap.up {
+  transform: translateY(-10px) rotateX(22deg);
+}
+
+.cap.down {
+  transform: translateY(10px) rotateX(-22deg);
+}
+
+.cap.up,
+.cap.down {
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.18),
+    0 0 0 2px var(--accent),
+    0 0 14px var(--accent-glow);
+}
+
+/* white grip line */
+.line {
+  width: 36px;
+  height: 2px;
+  border-radius: 1px;
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.state {
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  transition: color 0.12s;
+}
+
+.stateOn {
+  color: var(--accent);
+}
