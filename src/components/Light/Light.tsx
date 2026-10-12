@@ -34,6 +34,7 @@ export function Light({ buttons }: Props) {
                 position={position}
                 active={up || down}
                 readout={position.toUpperCase()}
+                cap={sw.cap}
               />
             </PanelCard>
           )

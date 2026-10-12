@@ -8,100 +8,275 @@
 }
 
 /* ── Bat toggle ──────────────────────────────────────────────────────────────
-   A rounded bezel with a chrome pivot nut and a fixed shaft stub centred on
-   it; a knob slides straight up/down to indicate position (vertical motion
-   only — no rotation, which swings the tip sideways, and no rigid shaft
-   sliding as one block). ON-ON switches use only up + down; ON-OFF-ON adds
-   the centre rest. */
+   Drawn in the same plain style as the yoke's caps, and from the same viewpoint:
+   square-on to the panel. So the collar is a face-on ring, and the bat — which
+   sticks out of the panel toward you, tilted up or down — is seen from its
+   end: its round tip, nearest you, in front, with a short stretch of
+   its cone running back behind it to the pivot. Flipping the switch moves the
+   tip up or down off the collar's centre (vertically only, no
+   sideways swing). ON-ON switches use only up + down; ON-OFF-ON adds the centre
+   rest, where the bat points straight at you and only the tip shows.
+
+   The metal is stainless steel whatever the theme, so its shades are mixed from
+   white and a cool blue-black rather than taken from the (theme-flipping)
+   text/border tokens. It is a mid-grey steel, not a white one: what makes it
+   read as metal is the range — thin near-white glints and near-black
+   reflections against that grey — so the shades sit far apart. */
 
 .switch {
+  --steel-ink: rgb(14, 22, 34);
+  --metal-spec: color-mix(in srgb, white, var(--steel-ink) 4%);
+  --metal-hi: color-mix(in srgb, white, var(--steel-ink) 24%);
+  --metal: color-mix(in srgb, white, var(--steel-ink) 48%);
+  --metal-lo: color-mix(in srgb, white, var(--steel-ink) 72%);
+  --metal-deep: color-mix(in srgb, white, var(--steel-ink) 92%);
+
   position: relative;
   width: 46px;
   height: 66px;
-  border-radius: 10px;
-  background: linear-gradient(180deg, var(--bg-card-hi) 0%, var(--bg-card) 80%);
-  border: 2px solid var(--border-mid);
-  box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.07),
-    0 2px 6px rgba(0, 0, 0, 0.28);
 }
 
-/* chrome pivot nut the bat emerges from */
-.nut {
+/* the collar: a polished turned face — mid-grey steel with two narrow glints and
+   two dark reflections round it, the way a lathed ring mirrors a light from the
+   top-left */
+.collar {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 22px;
-  height: 22px;
-  margin: -11px 0 0 -11px;
+  width: 32px;
+  height: 32px;
+  margin: -16px 0 0 -16px;
   border-radius: 50%;
-  background: radial-gradient(circle at 50% 35%, var(--border-mid) 0%, var(--bg-darker) 80%);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+  background: conic-gradient(
+    from -45deg,
+    var(--metal-spec) 0%,
+    var(--metal-hi) 4%,
+    var(--metal) 12%,
+    var(--metal-lo) 19%,
+    var(--metal-deep) 25%,
+    var(--metal-lo) 31%,
+    var(--metal) 40%,
+    var(--metal-hi) 47%,
+    var(--metal-spec) 50%,
+    var(--metal-hi) 53%,
+    var(--metal) 62%,
+    var(--metal-lo) 69%,
+    var(--metal-deep) 75%,
+    var(--metal-lo) 81%,
+    var(--metal) 90%,
+    var(--metal-hi) 96%,
+    var(--metal-spec) 100%
+  );
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.3),
+    0 0 0 1px rgba(0, 0, 0, 0.4),
+    0 2px 5px rgba(0, 0, 0, 0.4);
 }
 
-/* the bat shaft — pinned at the nut (its pivot) and reaching up to the knob.
-   Flipping scaleY(1)→scaleY(-1) swings it from the UP tip down to the DOWN tip,
-   collapsing through the nut at the midpoint (foreshortened, the way a real bat
-   tilts toward you) rather than swinging sideways. Because the knob slides with
-   the SAME easing, the ball stays glued to the shaft's tip the whole way — and
-   pinning one end at the nut means there is no seam. */
-.shaft {
+/* the hollow the bat sits in: the same light reversed (dark → light), which is
+   what makes it read as going inward */
+.collar::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, black 0%, var(--metal-deep) 60%, var(--metal-lo) 100%);
+  box-shadow: inset 2px 3px 5px rgba(0, 0, 0, 0.6);
+}
+
+/* the bat: two pieces, the cone's foreshortened flank and the round tip in
+   front of it; this wrapper only gives the pair one shared edge and shadow (a
+   clipped shape can't carry a box-shadow of its own). */
+.bat {
+  position: absolute;
+  /* the cone's shading: light and dark bands fanned out from the cone's apex
+     (where its sides would meet, 40px down), so they narrow with the flank
+     instead of being sliced off by its edges. Across the width: dark edge, a
+     thin hard glint left of centre, grey steel, a dark reflection, and a little
+     light bounced back on the far edge. The 26.2deg sweep is the cone's own
+     angle. */
+  --steel-fan: conic-gradient(
+    from -13.1deg at 50% 39.6px,
+    var(--metal-lo) 0deg,
+    var(--metal) 4.1deg,
+    var(--metal-hi) 6.6deg,
+    var(--metal-spec) 7.7deg,
+    var(--metal-hi) 8.9deg,
+    var(--metal) 11.9deg,
+    var(--metal-lo) 16.1deg,
+    var(--metal-deep) 19.6deg,
+    var(--metal) 24.1deg,
+    var(--metal-lo) 26.2deg
+  );
+
+  inset: 0;
+  filter: drop-shadow(0 0 0.5px rgba(0, 0, 0, 0.7)) drop-shadow(0 3px 4px rgba(0, 0, 0, 0.5));
+}
+
+/* the flank — what shows of the cone between the pivot and the tip. Its sides
+   run tangent from the 18px tip to an 8px rounded root in the hollow, only 22px apart: a long bat seen nearly end-on, so its near end looms large and
+   close to the collar's centre while the far end stays small. The pivot is the
+   centre of the root; flipping scaleY(1)→scaleY(-1) carries the flank from the
+   UP side
+   to the DOWN side, vanishing at the midpoint — where the bat points straight
+   at you and the tip hides it all. The tip slides with the SAME easing, so it
+   stays on the flank's wide end the whole way. */
+.body {
   position: absolute;
   left: 50%;
-  bottom: 50%; /* bottom edge sits on the nut centre — the pivot */
-  width: 12px;
-  height: 21px; /* reaches from the nut up to the knob's UP position */
-  margin-left: -6px;
-  border-radius: 6px;
-  transform-origin: 50% 100%;
-  transform: scaleY(0.24); /* CENTER: collapsed to a stub on the nut */
-  /* solid satin-metal rod: shaded across the width for a rounded cross-section.
-     A horizontal gradient also stays put through the scaleY flip (vertical
-     scaling doesn't distort it). */
-  background: linear-gradient(
-    90deg,
-    var(--border-mid) 0%,
-    var(--text-dim) 50%,
-    var(--border-mid) 100%
-  );
-  border: 1px solid var(--bg-darker);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-  transition: transform 0.16s cubic-bezier(0.34, 1.3, 0.64, 1);
+  bottom: calc(50% - 4px); /* the root's radius hangs below the pivot */
+  width: 18px;
+  height: 26px;
+  margin-left: -9px;
+  clip-path: path("M0.24 2.05 L17.76 2.05 L12.9 22.91 A4 4 0 0 1 5.1 22.91 Z");
+  transform-origin: 50% calc(100% - 4px);
+  transform: scaleY(0); /* CENTER: end-on — only the tip shows */
+  background: var(--steel-fan);
+  transition:
+    transform 0.16s cubic-bezier(0.34, 1.3, 0.64, 1),
+    filter 0.16s;
 }
-.shaft.up {
-  transform: scaleY(1); /* extend up to the knob */
+/* bat tilted up: you are looking at its underside, which is in its own shade */
+.up .body {
+  transform: scaleY(1);
+  filter: brightness(0.85);
 }
-.shaft.down {
-  transform: scaleY(-1); /* flip down to the knob, pivoting on the nut */
+/* bat tilted down: you are looking at its lit top side */
+.down .body {
+  transform: scaleY(-1);
 }
 
-/* the knob (ball tip) — slides straight up/down between the nut (CENTER) and
-   near the housing's top/bottom edge, staying at the shaft's free tip. */
-.knob {
+/* the rounded tip, in front of the flank — at CENTER it sits over the hollow */
+.tip {
   position: absolute;
   left: 50%;
   top: 33px;
-  width: 16px;
-  height: 16px;
-  margin-left: -8px;
-  margin-top: -8px;
+  width: 18px;
+  height: 18px;
+  margin: -9px 0 0 -9px;
   border-radius: 50%;
-  /* solid satin-metal ball: one soft off-centre light, darkening to the rim —
-     a physical knob, not a glossy highlight. */
-  background: radial-gradient(
-    circle at 40% 34%,
-    var(--text-mid) 0%,
-    var(--border-mid) 62%,
-    var(--bg-darker) 100%
-  );
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  /* a polished dome facing you: the flank's bands carried on, darkening toward
+     the rim as the dome curves away, with a small glint */
+  background:
+    radial-gradient(circle at 33% 33%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 14%),
+    radial-gradient(circle, rgba(14, 22, 34, 0) 45%, rgba(14, 22, 34, 0.6) 100%),
+    linear-gradient(
+      90deg,
+      var(--metal-lo) 0%,
+      var(--metal) 16%,
+      var(--metal-hi) 25%,
+      var(--metal-spec) 30%,
+      var(--metal-hi) 34%,
+      var(--metal) 45%,
+      var(--metal-lo) 61%,
+      var(--metal-deep) 74%,
+      var(--metal) 92%,
+      var(--metal-lo) 100%
+    );
   transition: top 0.16s cubic-bezier(0.34, 1.3, 0.64, 1);
 }
-.knob.up {
-  top: 12px;
+.up .tip {
+  top: 11px;
 }
-.knob.down {
-  top: 54px;
+.down .tip {
+  top: 55px;
+}
+
+/* end-on, the tip is a dome facing you, and a dome is lit in the round: one
+   highlight up-left, falling away evenly to a dark rim. The side-to-side bands
+   above only make sense while the tip is the end of a tilted bat, so this face
+   covers them at CENTER and fades out as the bat tips up or down. */
+.tip::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 36% 32%,
+    var(--metal-spec) 0%,
+    var(--metal-hi) 10%,
+    var(--metal) 36%,
+    var(--metal-lo) 68%,
+    var(--metal-deep) 100%
+  );
+  transition: opacity 0.16s;
+}
+.up .tip::after,
+.down .tip::after {
+  opacity: 0;
+}
+
+/* ── Plastic cap ─────────────────────────────────────────────────────────────
+   A coloured slip-on cap over the bat: the tip and the flank down to a short
+   neck of bare steel at the pivot. It has the same sheen as the yoke's caps:
+   each colour runs from 35% toward white on the lit side to 55% toward black
+   on the far side, with one soft glint on the tip. The green is the theme's
+   own, darkened toward the forest green of a real cap. */
+
+.white {
+  --cap: color-mix(in srgb, white, var(--steel-ink) 8%);
+  --cap-hi: white;
+  --cap-lo: color-mix(in srgb, white, var(--steel-ink) 34%);
+}
+
+.green {
+  --cap: color-mix(in srgb, var(--green), black 35%);
+  --cap-hi: color-mix(in srgb, var(--cap), white 35%);
+  --cap-lo: color-mix(in srgb, var(--cap), black 55%);
+}
+
+/* the same red as the yoke's AP DISC cap */
+.red {
+  --cap: var(--danger-main);
+  --cap-hi: color-mix(in srgb, var(--danger-main), white 35%);
+  --cap-lo: color-mix(in srgb, var(--danger-main), black 55%);
+}
+
+/* the cap's sleeve over the flank. It is a child of the body, so it is cut to
+   the cone's sides and flips and foreshortens with it. Its open end is a round
+   rim seen at an angle, so it ends in a curve bulging toward the pivot (an arc
+   as wide as the cone is there) rather than a straight cut. The plastic is
+   fanned from the same apex as the steel's bands. */
+.sleeve {
+  position: absolute;
+  inset: 0;
+  clip-path: path("M0 0 H18 V18 H14.04 A5.04 4 0 0 1 3.96 18 H0 Z");
+  background: conic-gradient(
+    from -13.1deg at 50% 39.6px,
+    var(--cap-lo) 0deg,
+    var(--cap) 3.7deg,
+    var(--cap-hi) 8.1deg,
+    var(--cap) 13.6deg,
+    var(--cap-lo) 26.2deg
+  );
+}
+
+/* the shadow the rim casts on the steel neck: a dark ellipse just larger than
+   the sleeve's rounded end, showing as a thin line round it */
+.capped .body {
+  background:
+    radial-gradient(5.8px 4.9px at 50% 18.2px, rgba(14, 22, 34, 0.75) 86%, rgba(14, 22, 34, 0) 100%),
+    var(--steel-fan);
+}
+
+.capped .tip {
+  background:
+    radial-gradient(circle at 34% 32%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 30%),
+    radial-gradient(circle, rgba(14, 22, 34, 0) 50%, rgba(14, 22, 34, 0.35) 100%),
+    linear-gradient(
+      90deg,
+      var(--cap-lo) 0%,
+      var(--cap) 14%,
+      var(--cap-hi) 31%,
+      var(--cap) 52%,
+      var(--cap-lo) 100%
+    );
+}
+
+.capped .tip::after {
+  background:
+    radial-gradient(circle at 34% 30%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 24%),
+    radial-gradient(circle at 38% 34%, var(--cap-hi) 0%, var(--cap) 42%, var(--cap-lo) 100%);
 }
 
 .state {

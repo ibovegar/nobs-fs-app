@@ -225,10 +225,13 @@ export const PANEL_LAYOUT: PanelCell[] = [
 export const NOBS_PANEL_SWITCH_COUNT = 8
 
 export type PanelSwitchKind = 'on-on' | 'on-off-on'
+/** Colour of the plastic cap pushed onto a toggle's bat. */
+export type ToggleCap = 'white' | 'green' | 'red'
 export interface PanelSwitch {
   index: number // 0-based switch number
   label: string // 'SW1'..'SW8'
   kind: PanelSwitchKind
+  cap?: ToggleCap // unset = bare steel bat
   up: number // button index of pin 1 terminal (2i)
   down: number // button index of pin 3 terminal (2i+1)
 }
@@ -239,6 +242,7 @@ export const PANEL_SWITCHES: PanelSwitch[] = Array.from(
     index: i,
     label: `SW${i + 1}`,
     kind: i >= 6 ? 'on-off-on' : 'on-on', // only SW7/SW8 have a centre rest
+    cap: i < 4 ? 'white' : i < 6 ? 'green' : 'red', // SW1–4 white, SW5–6 green, SW7–8 red
     up: i * 2,
     down: i * 2 + 1,
   }),

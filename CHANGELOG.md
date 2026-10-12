@@ -18,6 +18,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   AP DISC, a smaller red one for CWS, black for PTT and SW6–SW9), and `TrimSwitch`, a rectangular
   black cap with three white grip lines that slides up/down for the two trim switches.
 
+### Changed
+- The bat toggle switches (Nobs Panel, and SW1/SW2 on Nobs FS Light) are redrawn in the same plain
+  style as the yoke's caps, in mirror-polished stainless steel: a round turned collar with a dished
+  hollow, and a cone-shaped bat — narrow at the pivot, flaring to a rounded tip — seen as it is
+  from in front of the panel: pointing out at you, its round tip in front, above or below the
+  collar (dead centre on the centre rest), with the cone running back behind it to the pivot. The
+  steel is a mid-grey with thin glints and dark reflections rather than a bright white metal. The rounded-rectangle bezel is gone, and
+  the steel keeps its colour in both themes. Positions are unchanged.
+- The Nobs Panel toggles now wear their coloured plastic caps, white on
+  SW1–SW4, green on SW5–SW6, red (the yoke's AP DISC red) on SW7–SW8. The cap covers the bat down to a short steel neck at
+  the pivot. The colour is per switch, from a new optional `cap` field on `PanelSwitch` in
+  `src/panel/panel.ts`; the two Nobs FS Light toggles have none set and stay bare steel.
+
 ## [0.8.0] - 2026-10-04
 
 ### Added

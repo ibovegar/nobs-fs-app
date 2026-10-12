@@ -35,6 +35,7 @@ export function Panel({ buttons }: Props) {
               position={position}
               active={active}
               readout={position.toUpperCase()}
+              cap={sw.cap}
             />
           </PanelCard>
         )
