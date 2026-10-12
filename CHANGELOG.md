@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-10-12
+
 ### Added
 - **Nobs Yoke** as a fifth HID product (`yoke`, PID block `0x8100`–`0x8103`, 11 buttons): the
   Beechcraft King Air yoke grip's 7 push buttons (AP DISC, CWS, PTT, SW6–SW9) and 2 momentary

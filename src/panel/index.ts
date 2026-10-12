@@ -8,6 +8,7 @@ export type {
   PanelCell,
   PanelSwitch,
   PanelSwitchKind,
+  ToggleCap,
   YokeButton,
   YokeCap,
   YokeControl,
