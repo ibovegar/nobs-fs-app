@@ -7,12 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.1] - 2026-10-24
+
+### Fixed
+- The Nobs Yoke's trim switches had up and down swapped. As mounted in the grip, each pair's second
+  button is "up" and its first is "down": TRIM L is now buttons 3 up / 2 down, TRIM R 5 up / 4
+  down (`YOKE_CONTROLS` in `src/panel/panel.ts`).
+
 ## [0.9.0] - 2026-10-12
 
 ### Added
 - **Nobs Yoke** as a fifth HID product (`yoke`, PID block `0x8100`–`0x8103`, 11 buttons): the
   Beechcraft King Air yoke grip's 7 push buttons (AP DISC, CWS, PTT, SW6–SW9) and 2 momentary
-  (ON)-OFF-(ON) trim toggles (TRIM L on buttons 2/3, TRIM R on 4/5). It gets a Home card (5 × 2
+  (ON)-OFF-(ON) trim toggles (TRIM L on buttons 2 down / 3 up, TRIM R on 4 down / 5 up). It gets a Home card (5 × 2
   grid, no product photo yet), a Devices entry, its own event log on the Events page, and
   placeholder Tools and Settings pages. Definition in `src/panel/panel.ts` (`YOKE_CONTROLS`); new
   `Yoke` component and `useYokeEventLog` hook.

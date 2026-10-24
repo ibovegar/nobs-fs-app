@@ -324,8 +324,9 @@ export function decodeLightButton(id: number): LightButton {
 // The Beechcraft King Air yoke grip: 6 switches on the left handle (SW1–SW6), 3 on
 // the right (SW7–SW9). Buttons run in switch order. Push buttons take one button
 // each. The two trim switches (SW3/SW4) are momentary (ON)-OFF-(ON) toggles wired
-// through both outer terminals, so each occupies a button PAIR (terminal 1 = "up",
-// terminal 3 = "down"); sprung back to the centre, neither is closed.
+// through both outer terminals, so each occupies a button PAIR; sprung back to the
+// centre, neither is closed. As mounted in the grip, terminal 3 (the pair's second
+// button) is "up" and terminal 1 (the first) is "down".
 // `cap` is the push button's physical cap: a red one for AP DISC, a smaller red one
 // for CWS, black for the rest. See nobs-fs-yoke/docs/arduino-esp-32-wiring.md.
 export type YokeCap = 'red' | 'red-small' | 'black'
@@ -339,8 +340,8 @@ export type YokeControl =
 export const YOKE_CONTROLS: YokeControl[] = [
   { kind: 'push', label: 'AP DISC', cap: 'red', button: 0 },
   { kind: 'push', label: 'CWS', cap: 'red-small', button: 1 },
-  { kind: 'toggle', label: 'TRIM L', up: 2, down: 3 },
-  { kind: 'toggle', label: 'TRIM R', up: 4, down: 5 },
+  { kind: 'toggle', label: 'TRIM L', up: 3, down: 2 },
+  { kind: 'toggle', label: 'TRIM R', up: 5, down: 4 },
   { kind: 'push', label: 'PTT', cap: 'black', button: 6 },
   { kind: 'push', label: 'SW6', cap: 'black', button: 7 },
   { kind: 'push', label: 'SW7', cap: 'black', button: 8 },

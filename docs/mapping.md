@@ -198,7 +198,7 @@ code that consumes it:
 - **Nobs Yoke** (11 buttons): the King Air yoke grip's 9 switches in switch order. Push buttons
   take one button each — `buttons[0]` = SW1 AP DISC, `[1]` = SW2 CWS, `[6]` = SW5 PTT,
   `[7]`–`[10]` = SW6–SW9. The two trim switches are momentary (ON)-OFF-(ON) toggles as button
-  pairs — SW3 TRIM L = buttons 2 up / 3 down, SW4 TRIM R = buttons 4 up / 5 down — neither closed
+  pairs — SW3 TRIM L = buttons 3 up / 2 down, SW4 TRIM R = buttons 5 up / 4 down — neither closed
   at the centre. See `YOKE_CONTROLS` in [`src/panel/panel.ts`](../src/panel/panel.ts).
 
 Every product's button count, PID offset, and numbering is defined in one place —
