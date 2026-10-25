@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-10-25
+
+### Changed
+- Encoder knobs (Autopilot and Light) are redrawn as black anodised metal knobs, in the same style
+  as the toggle switches and yoke buttons: a turned metal face with a small chamfer, lit from the
+  top-left, with a white pointer dot. Only the dot turns; the lighting stays fixed.
+- The Autopilot's push buttons (SW1–SW8) are redrawn as the real parts: square grey plastic caps
+  with a matte top and a narrow bevelled edge. Pressing sinks the cap and lights the accent ring;
+  ON/OFF now reads beneath the button, as on the toggle switches, instead of on it.
+- The Nobs Approach controls are redrawn as the real parts, face-on like the toggle switches:
+  - GEAR: a polished chrome collar with an ivory stem and a tall ivory knob with three
+    raised grip ribs and a fine groove near each side, swung up or down.
+  - FLAPS: a polished chrome collar with an ivory handle that widens to a flat, square-ended
+    blade. It rests centred and tips up or down only while flicked, as the momentary switch does;
+    the flap setting reads off a tick scale beside it, lit in a vivid blue that fills from the top
+    as the flaps extend.
+  - PARK BRK: a chrome mushroom knob with a satin centre in a chrome bezel; pulled out, it comes
+    toward you.
+- The Nobs Windy fan indicator is redrawn as a real fan face-on: a black plastic frame with corner
+  mounting holes and seven swept blades on a hub. Only the blades turn,
+  faster with the speed level and slightly blurred at the top levels; they no longer turn blue
+  while running. The separate ON/OFF button is gone: click the fan itself to turn the fans on or
+  off.
+- The Nobs Windy speed bars are restyled to match the flaps scale: each sits in a dark slot
+  recessed into the panel, and the level fills them in the same vivid sapphire lamp colour,
+  glowing while the fans run and dimly lit while they're off. The − and + buttons are gone: click
+  a bar to set the speed.
+
+### Removed
+- The generic `Lever` component, replaced by `GearLever` and `FlapsLever`.
+
 ## [0.9.2] - 2026-10-25
 
 ### Fixed

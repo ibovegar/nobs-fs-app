@@ -48,11 +48,16 @@ export function Encoder({ label, cw, ccw, push }: Props) {
       </div>
 
       <div className={styles.body}>
+        {/* Only the pointer turns; the face's glints stay put, since the light on
+            a real knob doesn't turn with it. */}
         <div
           className={`${styles.knob}${liveDir ? ` ${styles.knobLive}` : ''} ${dirClass}`}
           style={{ '--knob-angle': `${angle}deg` } as CSSProperties}
         >
-          <span className={styles.indicator} />
+          <span className={styles.face} />
+          <span className={styles.pointer}>
+            <span className={styles.indicator} />
+          </span>
         </div>
       </div>
     </>

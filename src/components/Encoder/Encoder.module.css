@@ -38,71 +38,103 @@
   justify-content: center;
 }
 
-/* ── Rotating knob ─────────────────────────────────────────────────────────── */
+/* ── Rotating knob ───────────────────────────────────────────────────────────
+   Drawn like the toggles' collars and the yoke's caps: square-on to the panel,
+   lit from the top-left. A plain black metal knob: a turned face with a small
+   chamfer round its edge, and a white pointer dot.
+
+   Like the toggles' steel, the metal is the same whatever the theme, so its
+   shades are mixed from white and the same cool blue-black ink. It is black
+   metal, so they all sit near the dark end — but still spread apart, with dim
+   glints and true-black reflections, which is what keeps it reading as metal
+   rather than black plastic. */
 
 .knob {
   --knob-angle: 0deg;
-  --knob-ring: var(--border-mid);
+  --steel-ink: rgb(14, 22, 34);
+  --black-spec: color-mix(in srgb, white, var(--steel-ink) 70%);
+  --black-hi: color-mix(in srgb, white, var(--steel-ink) 85%);
+  --black: color-mix(in srgb, black, var(--steel-ink) 70%);
+  --black-lo: color-mix(in srgb, black, var(--steel-ink) 40%);
+  --black-deep: black;
+
   position: relative;
   width: 54px;
   height: 54px;
   border-radius: 50%;
-  /* soft domed dial — light catches near the top, fading into the card */
-  background: radial-gradient(circle at 50% 35%, var(--bg-card-hi) 0%, var(--bg-card) 72%);
-  border: 2px solid var(--knob-ring);
-  box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.07),
-    0 2px 6px rgba(0, 0, 0, 0.28);
+  /* the chamfer: a narrow bevel round the face, catching the light top-left and
+     falling into shadow bottom-right */
+  background: linear-gradient(
+    135deg,
+    var(--black-spec) 0%,
+    var(--black-hi) 30%,
+    var(--black-lo) 65%,
+    var(--black-deep) 100%
+  );
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.45);
+  transition: box-shadow 0.15s;
+}
+
+.face,
+.pointer {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+
+/* the turned face: the same pair of glints and dark reflections the toggles'
+   collars have, inside the chamfer */
+.face {
+  inset: 2px;
+  background: conic-gradient(
+    from -45deg,
+    var(--black-spec) 0%,
+    var(--black-hi) 5%,
+    var(--black) 13%,
+    var(--black-lo) 19%,
+    var(--black-deep) 25%,
+    var(--black-lo) 31%,
+    var(--black) 39%,
+    var(--black-hi) 46%,
+    var(--black-spec) 50%,
+    var(--black-hi) 54%,
+    var(--black) 63%,
+    var(--black-lo) 69%,
+    var(--black-deep) 75%,
+    var(--black-lo) 81%,
+    var(--black) 89%,
+    var(--black-hi) 95%,
+    var(--black-spec) 100%
+  );
+}
+
+/* carries the pointer dot round as the knob turns */
+.pointer {
   transform: rotate(var(--knob-angle));
-  transition:
-    transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 0.15s,
-    box-shadow 0.15s;
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* faint machined inner ring for a precision-instrument feel */
-.knob::before {
-  content: "";
-  position: absolute;
-  inset: 6px;
-  border-radius: 50%;
-  border: 1px solid var(--border);
-  opacity: 0.6;
-}
-
-/* center hub — the axle the dial turns around */
-.knob::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 8px;
-  height: 8px;
-  margin: -4px 0 0 -4px;
-  border-radius: 50%;
-  background: var(--border-mid);
-}
-
-/* single clean pointer dot near the rim */
+/* the white pointer dot near the rim */
 .indicator {
   position: absolute;
-  top: 7px;
+  top: 8px;
   left: 50%;
   width: 7px;
   height: 7px;
   margin-left: -3.5px;
   border-radius: 50%;
-  background: var(--text-mid);
+  background: color-mix(in srgb, white, var(--steel-ink) 6%);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.3);
   transition:
     background 0.15s,
     box-shadow 0.15s;
 }
 
-/* live (actively turning) — ring glows + pointer lights up in the direction colour */
+/* live (actively turning) — a glow ring round the knob, and the pointer lights
+   up in the direction colour */
 .knobCw.knobLive {
-  --knob-ring: var(--accent);
   box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.07),
+    0 0 0 2px var(--accent),
     0 0 14px var(--accent-glow);
 }
 .knobCw.knobLive .indicator {
@@ -111,9 +143,8 @@
 }
 
 .knobCcw.knobLive {
-  --knob-ring: var(--danger);
   box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.07),
+    0 0 0 2px var(--danger),
     0 0 14px var(--danger-glow);
 }
 .knobCcw.knobLive .indicator {

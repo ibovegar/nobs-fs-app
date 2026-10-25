@@ -8,85 +8,129 @@
 }
 
 /* ── Push-pull knob ──────────────────────────────────────────────────────────
-   A round knob on a shaft that slides out of (pull) or into (push) a panel boss. */
+   Drawn like the toggle switches: square-on to the panel, lit from the
+   top-left. The real part is a chrome mushroom knob in a chrome bezel: a
+   wide, rolled rim — polished, so it mirrors the light as bright and dark
+   bands, and darkens toward its outer edge as it curves away — round a
+   slightly dished satin centre. Seen from the front, pulling it out brings it
+   straight toward you: it grows, and its shadow spreads and falls further
+   from it. Pushed in, it sits snug on the bezel.
+
+   The metal keeps its own colours whatever the theme, mixed from white and
+   the same cool blue-black ink as the toggles. */
 
 .mount {
+  --steel-ink: rgb(14, 22, 34);
+  --metal-spec: color-mix(in srgb, white, var(--steel-ink) 4%);
+  --metal-hi: color-mix(in srgb, white, var(--steel-ink) 24%);
+  --metal: color-mix(in srgb, white, var(--steel-ink) 48%);
+  --metal-lo: color-mix(in srgb, white, var(--steel-ink) 72%);
+  --metal-deep: color-mix(in srgb, white, var(--steel-ink) 92%);
+
   position: relative;
-  width: 64px;
-  height: 128px;
+  width: 96px;
+  height: 160px;
 }
 
-/* the panel boss the shaft passes through */
-.boss {
-  position: absolute;
-  left: 50%;
-  bottom: 16px;
-  width: 38px;
-  height: 18px;
-  margin-left: -19px;
-  border-radius: 5px;
-  background: linear-gradient(180deg, var(--bg-card-hi) 0%, var(--bg-card) 80%);
-  border: 1px solid var(--border-mid);
-  box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.06),
-    0 2px 4px rgba(0, 0, 0, 0.4);
-}
-
-/* knob sits atop the shaft; the shaft's base is anchored at the boss, so the
-   rod extends (and the knob rises) as it's pulled instead of sliding as a unit */
-.plunger {
-  position: absolute;
-  left: 50%;
-  bottom: 28px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transform: translateX(-50%);
-}
-
+.bezel,
 .knob {
-  width: 50px;
-  height: 50px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
   border-radius: 50%;
-  background: radial-gradient(circle at 50% 32%, var(--bg-card-hi) 0%, var(--bg-card) 72%);
-  border: 2px solid var(--border-mid);
-  box-shadow:
-    inset 0 2px 3px rgba(255, 255, 255, 0.1),
-    0 3px 6px rgba(0, 0, 0, 0.45);
-  transition:
-    background 0.12s,
-    border-color 0.12s,
-    box-shadow 0.15s;
 }
 
-.shaft {
-  width: 8px;
-  height: 30px;
-  border-radius: 0 0 4px 4px;
-  background: linear-gradient(
-    90deg,
-    var(--border-mid) 0%,
-    var(--text-dim) 50%,
-    var(--border-mid) 100%
+/* the bezel: a polished chrome ring round the shaft's hole — only its outer
+   edge shows past the knob */
+.bezel {
+  width: 58px;
+  height: 58px;
+  margin: -29px 0 0 -29px;
+  background: conic-gradient(
+    from -45deg,
+    var(--metal-spec) 0%,
+    var(--metal) 12%,
+    var(--metal-deep) 25%,
+    var(--metal) 40%,
+    var(--metal-spec) 50%,
+    var(--metal) 62%,
+    var(--metal-deep) 75%,
+    var(--metal) 90%,
+    var(--metal-spec) 100%
   );
-  /* rod length encodes the position: longer = pulled out, shorter = pushed in */
-  transition: height 0.18s cubic-bezier(0.34, 1.3, 0.64, 1);
-}
-
-.pull .shaft {
-  height: 52px;
-}
-.push .shaft {
-  height: 16px;
-}
-
-/* engaged: accent-tinted, glowing knob */
-.on {
-  background: radial-gradient(circle at 50% 32%, var(--accent) 0%, var(--accent-dark) 75%);
-  border-color: var(--accent);
   box-shadow:
-    inset 0 2px 3px rgba(255, 255, 255, 0.2),
-    0 0 14px var(--accent-glow);
+    0 0 0 1px rgba(0, 0, 0, 0.45),
+    0 2px 5px rgba(0, 0, 0, 0.4);
+}
+
+/* the mushroom knob's rolled rim: the polished bands of a turned part, with
+   the edge falling into shade as it curls back toward the panel */
+.knob {
+  width: 70px;
+  height: 70px;
+  margin: -35px 0 0 -35px;
+  background:
+    radial-gradient(
+      circle,
+      rgba(14, 22, 34, 0) 62%,
+      rgba(14, 22, 34, 0.15) 80%,
+      rgba(14, 22, 34, 0.6) 100%
+    ),
+    conic-gradient(
+      from -45deg,
+      var(--metal-spec) 0%,
+      var(--metal-hi) 5%,
+      var(--metal) 13%,
+      var(--metal-lo) 19%,
+      var(--metal-deep) 25%,
+      var(--metal-lo) 31%,
+      var(--metal) 40%,
+      var(--metal-hi) 46%,
+      var(--metal-spec) 50%,
+      var(--metal-hi) 54%,
+      var(--metal) 62%,
+      var(--metal-lo) 69%,
+      var(--metal-deep) 75%,
+      var(--metal-lo) 81%,
+      var(--metal) 90%,
+      var(--metal-hi) 95%,
+      var(--metal-spec) 100%
+    );
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.5),
+    0 3px 5px rgba(0, 0, 0, 0.45);
+  transition:
+    transform 0.18s cubic-bezier(0.34, 1.3, 0.64, 1),
+    box-shadow 0.18s;
+}
+
+/* the satin centre: a shallow dish, so it is lit the other way round to the
+   rim — shaded under its top-left wall, catching the light on its far slope —
+   and brushed, so the light spreads soft. A bright lip marks where the rim
+   rolls over into it. */
+.knob::after {
+  content: "";
+  position: absolute;
+  inset: 13px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--metal-lo) 0%, var(--metal) 50%, var(--metal-hi) 100%);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.35),
+    0 0 0 2px rgba(255, 255, 255, 0.35),
+    inset 2px 3px 5px rgba(0, 0, 0, 0.35);
+}
+
+/* pulled out: the knob comes toward you, off the bezel */
+.pull .knob {
+  transform: scale(1.1);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.5),
+    0 10px 16px rgba(0, 0, 0, 0.55);
+}
+
+/* pushed in: snug on the bezel */
+.push .knob {
+  transform: scale(0.97);
 }
 
 .state {

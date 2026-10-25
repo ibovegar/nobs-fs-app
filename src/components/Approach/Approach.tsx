@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { ButtonState } from '~/panel'
-import { Lever } from '../Lever'
+import { FlapsLever } from '../FlapsLever'
+import { GearLever } from '../GearLever'
 import { PanelCard } from '../PanelCard'
 import { PushPullKnob } from '../PushPullKnob'
 import styles from './Approach.module.css'
@@ -47,19 +48,17 @@ export function Approach({ buttons }: Props) {
   return (
     <div className={styles.grid}>
       <PanelCard flashKey={Math.max(buttons[2].lastPress, buttons[3].lastPress)}>
-        <Lever
+        <GearLever
           label="GEAR"
-          shape="long"
-          stages={2}
-          value={gearDn ? 1 : 0}
+          position={gearDn ? 'down' : 'up'}
           active={gearDn}
           readout={gearDn ? 'DOWN' : 'UP'}
         />
       </PanelCard>
       <PanelCard flashKey={Math.max(buttons[0].lastPress, buttons[1].lastPress)}>
-        <Lever
+        <FlapsLever
           label="FLAPS"
-          shape="wide"
+          tilt={buttons[0].pressed ? 'up' : buttons[1].pressed ? 'down' : 'center'}
           stages={FLAP_STAGES}
           value={flaps}
           active={flaps > 0}

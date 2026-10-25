@@ -1,5 +1,5 @@
-import type { CSSProperties } from 'react'
-import { clampWindyLevel, WINDY_LEVELS, WINDY_MAX_LEVEL, WINDY_MIN_LEVEL } from '~/panel'
+import { type CSSProperties, useId } from 'react'
+import { clampWindyLevel, WINDY_LEVELS, WINDY_MIN_LEVEL } from '~/panel'
 import { PanelCard } from '../PanelCard'
 import styles from './Windy.module.css'
 
@@ -16,34 +16,94 @@ interface Props {
   onSpeed: (level: number) => void
 }
 
-// A fan blade rosette. The disc spins only while the fans are running, and its
-// period is driven by the speed level (see --spin below).
+// Seven swept blades, one every 360/7°. The path is one blade pointing up,
+// running from the hub (r=12) out to the tip (r=44.5), its tip swept forward
+// in the direction of spin.
+const FAN_BLADES = Array.from({ length: 7 }, (_, i) => (i * 360) / 7)
+const BLADE_PATH =
+  'M50 38 Q53.14 20.16 72.25 11.46 A44.5 44.5 0 0 1 90 30.49 ' +
+  'Q70.14 30.55 57.39 40.54 A12 12 0 0 0 50 38 Z'
+// Mounting holes in the frame's corners.
+const FAN_SCREWS = [
+  [8.5, 8.5],
+  [91.5, 8.5],
+  [8.5, 91.5],
+  [91.5, 91.5],
+]
+
+// A fan as the box's fans look face-on: a black plastic frame and swept blades
+// on a hub. Only the rotor turns, and
+// only while the fans run; its period comes from the speed level (see --spin
+// below), and the faster levels blur it a little, as a real fan's blades do.
 function FanDisc({ spinning, level }: { spinning: boolean; level: number }) {
+  // Gradient ids are document-global in SVG, so make them unique per fan.
+  const id = useId()
+  const speed = clampWindyLevel(level)
+
   return (
     <div className={styles.hub}>
-      <svg
-        className={`${styles.fan}${spinning ? ` ${styles.spinning}` : ''}`}
-        style={{ '--spin': `${1.8 / clampWindyLevel(level)}s` } as CSSProperties}
-        viewBox="0 0 100 100"
-        aria-hidden="true"
-      >
+      <svg className={styles.fan} viewBox="0 0 100 100" aria-hidden="true">
         <title>Fan</title>
-        {/*
-         * One blade per quadrant, each sweeping from the spindle out to the rim
-         * (r=48) and spanning ~26° of arc there, leaving a ~64° gap between them.
-         * Blades wide enough to nearly meet filled the disc but killed the
-         * silhouette — it read as a solid plate with four scratches rather than a
-         * fan. The arc endpoints sit exactly on the r=48 circle, which keeps the
-         * rosette centred; off it, SVG re-centres each arc and the blades splay.
-         */}
-        {[0, 90, 180, 270].map((angle) => (
-          <path
-            key={angle}
-            d="M50 50 C 68 41, 88 39, 97.8 45.8 A 48 48 0 0 1 94.8 67.2 C 84 62, 62 56, 50 50 Z"
-            transform={`rotate(${angle} 50 50)`}
+        <defs>
+          <linearGradient id={`${id}frame`} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#3a414b" />
+            <stop offset="0.45" stopColor="#1a1e24" />
+            <stop offset="1" stopColor="#08090c" />
+          </linearGradient>
+          <radialGradient id={`${id}throat`}>
+            <stop offset="0.8" stopColor="#050608" />
+            <stop offset="1" stopColor="#14171c" />
+          </radialGradient>
+          <linearGradient id={`${id}blade`} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#59616c" />
+            <stop offset="0.5" stopColor="#2c3138" />
+            <stop offset="1" stopColor="#15181d" />
+          </linearGradient>
+          <radialGradient id={`${id}hub`} cx="0.38" cy="0.34" r="0.75">
+            <stop offset="0" stopColor="#4a525d" />
+            <stop offset="0.6" stopColor="#22262c" />
+            <stop offset="1" stopColor="#0d0f12" />
+          </radialGradient>
+        </defs>
+
+        {/* the frame, with its corner mounting holes */}
+        <rect width="100" height="100" rx="12" fill={`url(#${id}frame)`} />
+        {FAN_SCREWS.map(([cx, cy]) => (
+          <circle
+            key={`${cx}-${cy}`}
+            cx={cx}
+            cy={cy}
+            r="3.4"
+            fill="#030405"
+            stroke="#4a515b"
+            strokeWidth="0.8"
           />
         ))}
-        <circle cx="50" cy="50" r="8" className={styles.spindle} />
+        {/* the round throat the blades turn in */}
+        <circle cx="50" cy="50" r="46.5" fill={`url(#${id}throat)`} />
+
+        <g
+          className={`${styles.rotor}${spinning ? ` ${styles.spinning}` : ''}`}
+          style={
+            {
+              '--spin': `${1.8 / speed}s`,
+              '--blur': `${Math.max(0, speed - 2) * 0.35}px`,
+            } as CSSProperties
+          }
+        >
+          {FAN_BLADES.map((angle) => (
+            <path
+              key={angle}
+              d={BLADE_PATH}
+              transform={`rotate(${angle} 50 50)`}
+              fill={`url(#${id}blade)`}
+              stroke="#0a0b0e"
+              strokeWidth="0.5"
+            />
+          ))}
+          <circle cx="50" cy="50" r="13" fill={`url(#${id}hub)`} />
+          <circle cx="50" cy="50" r="7.5" fill="none" stroke="#3b424c" strokeWidth="0.6" />
+        </g>
       </svg>
     </div>
   )
@@ -73,15 +133,17 @@ export function Windy({
     <div className={styles.grid}>
       <PanelCard active={on}>
         <span className={styles.label}>FAN</span>
-        <FanDisc spinning={on} level={level} />
+        {/* No separate power button: the fan is the switch, and its spinning is
+            the state. */}
         <button
           type="button"
-          className={`${styles.power}${on ? ` ${styles.powerOn}` : ''}`}
+          className={styles.fanButton}
           disabled={!ready}
           onClick={() => onPower(!on)}
+          aria-label={on ? 'Turn fans off' : 'Turn fans on'}
           aria-pressed={on}
         >
-          {on ? 'ON' : 'OFF'}
+          <FanDisc spinning={on} level={level} />
         </button>
         {/*
          * Disabled controls with no explanation read as a broken app, so still say
@@ -126,29 +188,9 @@ export function Windy({
             />
           ))}
         </div>
-        <div className={styles.stepper}>
-          <button
-            type="button"
-            className={styles.step}
-            disabled={!ready || level <= WINDY_MIN_LEVEL}
-            onClick={() => onSpeed(level - 1)}
-            aria-label="Decrease fan speed"
-          >
-            −
-          </button>
-          <span className={`${styles.readout}${on ? ` ${styles.readoutOn}` : ''}`}>
-            LEVEL {level}
-          </span>
-          <button
-            type="button"
-            className={styles.step}
-            disabled={!ready || level >= WINDY_MAX_LEVEL}
-            onClick={() => onSpeed(level + 1)}
-            aria-label="Increase fan speed"
-          >
-            +
-          </button>
-        </div>
+        <span className={`${styles.readout}${on ? ` ${styles.readoutOn}` : ''}`}>
+          LEVEL {level}
+        </span>
       </PanelCard>
     </div>
   )

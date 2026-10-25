@@ -18,12 +18,9 @@ export function PushPullKnob({ label, pulled, pushed }: Props) {
     <>
       <span className={styles.label}>{label}</span>
 
-      <div className={styles.mount}>
-        <span className={styles.boss} />
-        <span className={`${styles.plunger} ${pos}`}>
-          <span className={`${styles.knob}${on ? ` ${styles.on}` : ''}`} />
-          <span className={styles.shaft} />
-        </span>
+      <div className={`${styles.mount} ${pos}`}>
+        <span className={styles.bezel} />
+        <span className={styles.knob} />
       </div>
 
       <span className={`${styles.state}${on ? ` ${styles.stateOn}` : ''}`}>{state}</span>
