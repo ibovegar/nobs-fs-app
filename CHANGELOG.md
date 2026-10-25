@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.2] - 2026-10-25
+
+### Fixed
+- The Nobs Yoke's AP DISC and PTT buttons were swapped: AP DISC now reads button 6 and PTT button
+  0, matching how the grip is wired (`YOKE_CONTROLS` in `src/panel/panel.ts`).
+
 ## [0.9.1] - 2026-10-24
 
 ### Fixed

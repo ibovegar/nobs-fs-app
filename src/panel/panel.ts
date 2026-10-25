@@ -336,13 +336,15 @@ export type YokeControl =
   | { kind: 'toggle'; label: string; up: number; down: number }
 
 // In switch order SW1..SW9, which is also the Home card's cell order. Switches with
-// no fixed function yet are labelled by their switch number.
+// no fixed function yet are labelled by their switch number. Exception: AP DISC and
+// PTT are wired to each other's pins, so AP DISC (first cell) reads button 6 and PTT
+// reads button 0.
 export const YOKE_CONTROLS: YokeControl[] = [
-  { kind: 'push', label: 'AP DISC', cap: 'red', button: 0 },
+  { kind: 'push', label: 'AP DISC', cap: 'red', button: 6 },
   { kind: 'push', label: 'CWS', cap: 'red-small', button: 1 },
   { kind: 'toggle', label: 'TRIM L', up: 3, down: 2 },
   { kind: 'toggle', label: 'TRIM R', up: 5, down: 4 },
-  { kind: 'push', label: 'PTT', cap: 'black', button: 6 },
+  { kind: 'push', label: 'PTT', cap: 'black', button: 0 },
   { kind: 'push', label: 'SW6', cap: 'black', button: 7 },
   { kind: 'push', label: 'SW7', cap: 'black', button: 8 },
   { kind: 'push', label: 'SW8', cap: 'black', button: 9 },

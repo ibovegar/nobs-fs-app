@@ -27,8 +27,8 @@ Autopilot `0x80F4`+, Approach `0x80F8`+, Light `0x80FC`+, Yoke `0x8100`+). Full 
   switches — 22 buttons. `buttons[0–17]` = encoders (CW/CCW/push triplets), `buttons[18–21]` =
   up/down pairs, SW2 first (18/19) then SW1 (20/21).
 - **Nobs Yoke**: Beechcraft King Air yoke grip — 7 push buttons + 2 momentary (ON)-OFF-(ON) trim
-  toggles — 11 buttons, in switch order SW1–SW9: `buttons[0]` AP DISC, `[1]` CWS, `[2–3]` TRIM L
-  down/up, `[4–5]` TRIM R down/up, `[6]` PTT, `[7–10]` SW6–SW9.
+  toggles — 11 buttons, in switch order SW1–SW9: `buttons[0]` PTT, `[1]` CWS, `[2–3]` TRIM L
+  down/up, `[4–5]` TRIM R down/up, `[6]` AP DISC, `[7–10]` SW6–SW9.
 
 Plus one **serial** module, which shares none of the above machinery:
 
